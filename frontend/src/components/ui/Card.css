@@ -1,0 +1,52 @@
+@import "../../styles/variables.css";
+
+/* Base Card Style */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 16px;
+  border: 1px solid var(--border-light);
+  transition: transform var(--fast), box-shadow var(--fast);
+  width: 200px;
+  margin: 10px;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-card);
+}
+
+/* -------------------------------
+   VARIANTS
+-------------------------------- */
+
+/* Post Card */
+.post-card {
+  width: 100%;
+  height: auto;
+}
+
+/* Community Card */
+.community-card {
+  border-left: 4px solid var(--color-blue);
+  padding: 18px;
+}
+
+/* Profile Stats Card */
+.stats-card {
+  text-align: center;
+  padding: 24px;
+  background: var(--gray-50);
+}
+
+/* Task Card */
+.task-card {
+  border-left: 4px solid var(--color-purple);
+}
+
+/* Minimal Card (like a container) */
+.flat-card {
+  box-shadow: none;
+  border: none;
+  background: transparent;
+}

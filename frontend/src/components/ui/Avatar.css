@@ -1,0 +1,19 @@
+@import "../../styles/variables.css";
+
+.avatar {
+  background: var(--gray-200);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  overflow: hidden;
+  color: var(--gray-900);
+  margin: 5px;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

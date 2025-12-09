@@ -1,0 +1,27 @@
+<svg width="120" height="120" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Brighter & more saturated gradient -->
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7EE8FF" />
+      <stop offset="50%" stop-color="#B67CFF" />
+      <stop offset="100%" stop-color="#E684FF" />
+    </linearGradient>
+  </defs>
+
+  <text x="50%" y="50%" 
+        text-anchor="middle" 
+        dominant-baseline="central"
+        font-family="Poppins, sans-serif" 
+        font-size="150" 
+        font-weight="700"
+        fill="url(#grad)"
+        paint-order="stroke"
+        stroke="url(#grad)"
+        stroke-width="8"
+        stroke-linejoin="round">
+    P
+  </text>
+
+  <!-- Rounded dot with more vibrant gradient -->
+  <circle cx="160" cy="150" r="14" fill="url(#grad)" />
+</svg>

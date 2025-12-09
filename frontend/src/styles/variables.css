@@ -1,0 +1,52 @@
+/* ================================
+   CSS VARIABLES (DESIGN SYSTEM)
+   ================================ */
+
+:root {
+  /* Fonts */
+  --font-primary: "Poppins", system-ui, sans-serif;
+
+  /* Brand Colors */
+  --color-blue: #2563eb;
+  --hover-blue: #024dee;
+  --color-purple: #7d5af4;
+  --hover-purple: #6c42f7;
+  --color-gradient: linear-gradient(90deg, #2563eb, #7d5af4);
+  
+
+  /* Grays */
+  --gray-50: #f8f9fb;
+  --gray-100: #eceef2;
+  --gray-200: #d5d8de;
+  --gray-300: #bfc3cb;
+  --gray-500: #6c7280;
+  --gray-700: #3d4046;
+  --gray-900: #111113;
+
+  /* Backgrounds */
+  --bg-main: #ffffff;      /* your app main background */
+  --bg-card: #ffffff;
+  --bg-soft: #f3f3f4;
+
+  /* Borders */
+  --border-light: #e6e7eb;
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* Shadows */
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  /* Transitions */
+  --fast: 150ms ease;
+  --normal: 250ms ease;
+
+  /* Z-index */
+  --z-modal: 1000;
+  --z-dropdown: 900;
+  --z-overlay: 800;
+}

@@ -1,0 +1,40 @@
+@import "../../styles/variables.css";
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  margin: 5px;
+}
+
+/* Variants */
+.default-badge {
+  background: var(--gray-100);
+  color: var(--gray-700);
+}
+
+.community-badge {
+  background: var(--color-purple);
+  color: var(--gray-100);
+  padding: 2px 10px;
+
+}
+
+.purple-badge {
+  background: rgba(124, 58, 237, 0.15);
+  color: var(--color-purple);
+}
+
+.streak-badge{
+  background-color: #fae8d0;
+  color: #e28e4a;
+  padding: 2px 10px;
+}
+
+img{
+  width: 16px;
+}

@@ -1,0 +1,77 @@
+@import "../../styles/variables.css";
+
+.btn {
+  padding: 10px 20px;
+  height: 50px;
+  font-size: 15px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-family: var(--font-primary);
+  margin: 5px;
+}
+
+/* Login Button */
+.login-button {
+  background-color: var(--color-purple);
+  color: white;
+  font-weight: 600;
+  width: 100%;
+  
+}
+.login-button:hover {
+  background-color: var(--hover-purple)
+}
+
+/* Create Post Button */
+.create-post {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-purple);
+  color: white;
+  font-weight: 600;
+}
+.create-post:hover {
+  background-color: #682fb6;
+}
+
+.sso-button{
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  width: 400px;
+  height:60px;
+  background-color: transparent;
+  color: var(--gray-700);
+  border: 1px solid var(--gray-300);
+  font-weight: 600;
+  font-size: medium;
+}
+
+.sso-button:hover {
+  background-color: var(--gray-100);
+}
+
+.notes-button{
+  display: flex;
+  align-items: center;
+  background-color: #eff6ff;
+  color: var(--color-blue);
+  box-shadow: 0 0 0 0.5px var(--color-blue);
+  gap: 10px;
+  margin: 0;
+  height: 30px;
+  width: 100%;
+}
+
+.notes-button:hover{
+  background-color: #e4f0ff;
+}
+
+.comment-button{
+  background-color: var(--color-blue);
+  color: var(--gray-100);
+  font-weight: 500;
+}

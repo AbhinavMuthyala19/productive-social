@@ -1,0 +1,34 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg">
+
+  <defs>
+    <!-- Darker cool gradient -->
+    <radialGradient id="blob1">
+      <stop offset="0%" stop-color="#8B5FFF"/>
+      <stop offset="100%" stop-color="#4AB5FF"/>
+    </radialGradient>
+
+    <!-- Darker warm gradient -->
+    <radialGradient id="blob2">
+      <stop offset="0%" stop-color="#FF537A"/>
+      <stop offset="100%" stop-color="#FF9A7C"/>
+    </radialGradient>
+
+    <!-- Subtle dark background gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#FFFFFF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="900" fill="url(#bg)"/>
+
+  <!-- Big blobs -->
+  <circle cx="300" cy="300" r="240" fill="url(#blob1)" opacity="0.65"/>
+  <circle cx="900" cy="400" r="280" fill="url(#blob2)" opacity="0.65"/>
+  <circle cx="600" cy="700" r="220" fill="url(#blob1)" opacity="0.50"/>
+
+  <!-- Small blobs -->
+  <circle cx="1030" cy="760" r="90"  fill="url(#blob2)" opacity="0.75"/>
+  <circle cx="260"  cy="640" r="100" fill="url(#blob1)" opacity="0.75"/>
+</svg>

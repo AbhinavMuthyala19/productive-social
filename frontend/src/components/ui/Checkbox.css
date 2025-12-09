@@ -1,0 +1,37 @@
+@import "../../styles/variables.css";
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  margin: 5px;
+  padding: 10px;
+}
+
+.checkmark {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--gray-400);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: var(--fast);
+}
+
+.checkbox-container input:checked + .checkmark {
+  background: var(--color-blue);
+  border-color: var(--color-blue);
+}
+
+.checkmark::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  display: none;
+  background: white;
+}
+
+.checkbox-container input:checked + .checkmark::after {
+  display: block;
+}

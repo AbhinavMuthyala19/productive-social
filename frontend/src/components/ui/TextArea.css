@@ -1,0 +1,58 @@
+@import "../../styles/variables.css";
+
+/* Base Textarea */
+.textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-primary);
+  background-color: white;
+  resize: none;
+  transition: border var(--fast), box-shadow var(--fast);
+  margin: 5px;
+}
+
+.textarea:focus {
+  border-color: var(--color-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  outline: none;
+}
+
+/* -------------------------------
+   VARIANTS
+-------------------------------- */
+
+/* Post Body for Create-Post Page */
+.post-textarea {
+  min-height: 120px;
+  font-size: 16px;
+  line-height: 1.5;
+  resize: none;
+}
+
+/* Comment Textarea */
+.comment-textarea {
+  height: 60px;
+  border: none;
+  padding: 5px;
+}
+
+.comment-textarea:focus {
+  border: none;
+  box-shadow: none;
+}
+
+/* Notes Editor Textarea */
+.notes-textarea {
+  min-height: 300px;
+  border-left: 3px solid var(--color-blue);
+  font-size: 16px;
+}
+
+/* Error State */
+.error-textarea {
+  border-color: #e03131;
+  background-color: #fff5f5;
+}

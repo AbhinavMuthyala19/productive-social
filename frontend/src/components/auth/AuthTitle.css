@@ -1,0 +1,14 @@
+.auth-title{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+    padding: 10px;
+    width: 100%;
+}
+
+.auth-title h1{
+    font-size: 26px;
+    font-weight: 500;
+
+}

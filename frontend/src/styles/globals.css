@@ -1,0 +1,71 @@
+/* ================================
+   GLOBAL RESET & BASE STYLING
+   ================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import "./variables.css";
+@import "./animations.css";
+
+
+
+/* Reset defaults */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Smooth fonts */
+html, body {
+  font-family: var(--font-primary);
+  background: var(--bg-main);
+  color: var(--gray-900);
+  height: 100%;
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* Remove list styles */
+ul, li {
+  list-style: none;
+}
+
+/* Anchor defaults */
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: color var(--fast);
+}
+
+/* Input defaults */
+input, textarea, button, select {
+  font-family: inherit;
+  border: none;
+  outline: none;
+}
+
+/* Make scrolling smooth */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scrollbar styling (modern + subtle) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-50);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-200);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-300);
+}

@@ -1,0 +1,19 @@
+@import "../../styles/variables.css";
+
+.select {
+  width: auto;
+  padding: 10px 12px;
+  font-size: 15px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  background: white;
+  font-family: var(--font-primary);
+  transition: var(--fast);
+  margin: 5px;
+}
+
+.select:focus {
+  border-color: var(--color-blue);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}

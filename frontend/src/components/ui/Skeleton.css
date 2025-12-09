@@ -1,0 +1,14 @@
+@import "../../styles/variables.css";
+
+.skeleton {
+  background: var(--gray-200);
+  animation: pulse 1.5s infinite ease-in-out;
+  margin: 5px;
+}
+
+/* Animation */
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
