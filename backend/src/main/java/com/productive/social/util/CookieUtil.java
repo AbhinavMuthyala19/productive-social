@@ -15,8 +15,8 @@ public class CookieUtil {
     public static final String REFRESH_TOKEN_COOKIE = "refresh_token";
 
     // Adjust these for prod (e.g. Secure = true on HTTPS)
-    private static final boolean SECURE = false;               // set true in production (HTTPS)
-    private static final String SAME_SITE = "Lax";             // or "None" if cross-site
+    private static final boolean SECURE = true;               // set true in production (HTTPS)
+    private static final String SAME_SITE = "None";             // or "None" if cross-site // Lax if same-site
     private static final String PATH = "/";                    // cookie available for whole app
 
     // Example lifetimes (in seconds)
