@@ -24,6 +24,18 @@
   background-color: var(--hover-purple)
 }
 
+.logout-button {
+  background-color: var(--color-red);
+  color: white;
+  font-weight: 600;
+  width: 100%;
+  margin-top: auto;
+  
+}
+.logout-button:hover {
+  background-color: var(--hover-red)
+}
+
 /* Create Post Button */
 .create-post {
   display: flex;
