@@ -6,17 +6,23 @@ export const Input = ({
     placeholder = "",
     value,
     onChange,
+    onClick,
     variant = "default-input",
+    icon = "",
     ...rest
 }) => {
 
     return (
-        <input className = {`input ${variant}`}
-        type = {type}
-        placeholder = {placeholder}
-        value={value}
-        onChange = {onChange}
-        {...rest}
-        />
+        <div className="input-wrapper">
+
+            <input className={`input ${variant}`}
+                type={type}
+                placeholder={placeholder}
+                value={value}
+                onChange={onChange}
+                {...rest}
+            />
+            {icon && <img className="input-icon" onClick={onClick} src={icon} alt="toggle-icon" />}
+        </div>
     )
 }

@@ -10,18 +10,33 @@ import { OrDivider } from "../../components/auth/OrDivider"
 import { Button } from "../../components/ui/Button"
 import { Input } from "../../components/ui/Input"
 import loginHeader from "../../assets/loginheader.svg"
-import { Link, useNavigate } from "react-router-dom"
-import { useState } from "react"
-import { loginUser } from "../../lib/api"
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom"
+import { useContext, useEffect, useState } from "react"
+import { usePasswordToggle } from "../../hooks/usePasswordToggle"
+import { AuthContext } from "../../context/AuthContext"
 
 export const Login = () => {
 
-    const navigate = useNavigate()
-
+    const navigate = useNavigate();
+    const {login, user, loading} = useContext(AuthContext);
+    const passwordToggle = usePasswordToggle();
+    const location = useLocation();
+    
     const [form, setForm] = useState({
         identifier:"",
         password:""
     })
+    
+    const from = location.state?.from || "/";
+
+    // 🔥 Automatic redirect when user becomes authenticated
+    useEffect(() => {
+        if (!loading && user) {
+            navigate(from, { replace: true });
+        }
+    }, [user, loading]);
+
+    if (loading) return null;  // wait until AuthContext finishes
 
     const handleChange = (e) =>{
         setForm({ ...form, [e.target.name]: e.target.value})
@@ -32,13 +47,11 @@ export const Login = () => {
         console.log(form)
 
         try {
-            const res = await loginUser(form.identifier, form.password);
-            console.log("Logged in:", res.data)
+            await login(form.identifier, form.password);
             alert("Login successful!")
-            navigate("/")
         } catch (error) {
-            console.error("Login error: ", error.response?.data)
             alert("Incorrect email or password")
+            
         }
     }
     return (
@@ -59,7 +72,7 @@ export const Login = () => {
                         variant="login-input" 
                         placeholder="Email or username" 
                         type="text"
-                        value={form.identifer}
+                        value={form.identifier}
                         onChange={handleChange} 
                         />
 
@@ -67,7 +80,9 @@ export const Login = () => {
                         name="password"
                         variant="login-input" 
                         placeholder="Password" 
-                        type="password"
+                        type={passwordToggle.type}
+                        icon={passwordToggle.icon}
+                        onClick={passwordToggle.toggle}
                         value={form.password}
                         onChange={handleChange} 
                         />

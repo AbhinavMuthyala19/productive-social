@@ -1,9 +1,15 @@
 @import "../../styles/variables.css";
 
+.input-wrapper{
+  position: relative;
+  width: 100%;
+}
+
 /* Base Input */
 .input {
   width: auto;
-  padding: 12px 14px;
+  padding: 12px;
+  padding-right: 50px;
   font-size: 15px;
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-sm);
@@ -19,6 +25,15 @@
   outline: none;
 }
 
+.input-icon{
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  cursor: pointer;
+}
+
 /* Variants Below */
 
 /* Login Input Styling */
@@ -28,7 +43,6 @@
   width: 400px;
   height: 60px;
   margin: 5px;
-  padding: 10px;
 }
 
 .login-input:focus {

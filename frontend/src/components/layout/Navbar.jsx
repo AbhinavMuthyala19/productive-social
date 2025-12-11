@@ -1,15 +1,24 @@
 import { Home, UsersRound, UserRound } from "lucide-react";
 import "./Navbar.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Button } from "../ui/Button";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 export const Navbar = () => {
+    const {logout} = useContext(AuthContext)
+    const navigate = useNavigate()
+
+    const handleLogout = async() =>{
+        await logout();
+        navigate("/login")
+    }
     return (
         <div className="sidebar">
             <div className="sidebar-logo">
                 <h1>Procial</h1>
                 <p>Tagline - chai peelo</p>
             </div>
-            
 
             <nav className="sidebar-nav">
                 <NavLink
@@ -39,6 +48,13 @@ export const Navbar = () => {
                     <UserRound size={18} /> Profile
                 </NavLink>
             </nav>
+
+            <Button
+                variant="logout-button"
+                onClick={handleLogout}
+            >
+                Logout
+            </Button>
         </div>
     );
 };

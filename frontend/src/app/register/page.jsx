@@ -10,13 +10,19 @@ import { OrDivider } from "../../components/auth/OrDivider"
 import { Button } from "../../components/ui/Button"
 import { Input } from "../../components/ui/Input"
 import loginHeader from "../../assets/loginheader.svg"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { registerUser } from "../../lib/api"
+import { usePasswordToggle } from "../../hooks/usePasswordToggle"
+import { AuthContext } from "../../context/AuthContext"
+
 
 export const Register = () => {
 
     const navigate = useNavigate()
+    const passwordToggle = usePasswordToggle()
+    const confirmPasswordToggle = usePasswordToggle()
+    const { register } = useContext(AuthContext)
 
     const [form, setForm] = useState({
         name: "",
@@ -39,16 +45,14 @@ export const Register = () => {
         }
 
         try {
-            const body ={
+            const body = {
                 name: form.name,
                 username: form.username,
                 email: form.email,
                 password: form.password
             }
 
-            const res = await registerUser(body);
-
-            console.log("Register Success: ", res.data);
+            await register(body);
             alert("Registration Successful!")
             navigate("/login")
         } catch (error) {
@@ -102,17 +106,21 @@ export const Register = () => {
                             name="password"
                             variant="login-input"
                             placeholder="Password"
-                            type="password"
+                            type={passwordToggle.type}
                             value={form.password}
                             onChange={handleChange}
+                            icon={passwordToggle.icon}
+                            onClick={passwordToggle.toggle}
                         />
                         <Input
                             name="confirmPassword"
                             variant="login-input"
                             placeholder="Confirm password"
-                            type="password"
+                            type={confirmPasswordToggle.type}
                             value={form.confirmPassword}
                             onChange={handleChange}
+                            icon={confirmPasswordToggle.icon}
+                            onClick={confirmPasswordToggle.toggle}
                         />
 
                         <AuthActionsRow>

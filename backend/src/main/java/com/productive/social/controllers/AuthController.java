@@ -28,12 +28,12 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
-    
+
 //    @PostMapping("/login")
 //    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
 //        return ResponseEntity.ok(authService.login(request));
 //    }
-    
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletResponse response) {
 
@@ -46,7 +46,7 @@ public class AuthController {
 
         return ResponseEntity.ok(
                 new HashMap<>() {{
-                    put("message", "Login successful");
+                        put("message", "Login successful");
                 }}
         );
     }
@@ -63,7 +63,11 @@ public class AuthController {
 
         // Get refresh token from cookie
         String refreshToken = CookieUtil.getCookieValue(request, CookieUtil.REFRESH_TOKEN_COOKIE)
-                .orElseThrow(() -> new RuntimeException("Refresh token missing"));
+                .orElse(null);
+
+        if (refreshToken == null) {
+            return ResponseEntity.status(401).body("Refresh token missing");
+        }
 
         // Validate + rotate tokens
         AuthResponse authResult = authService.refresh(refreshToken);
@@ -74,7 +78,7 @@ public class AuthController {
 
         return ResponseEntity.ok(
                 new HashMap<>() {{
-                    put("message", "Token refreshed");
+                        put("message", "Token refreshed");
                 }}
         );
     }
@@ -84,7 +88,7 @@ public class AuthController {
 //    public ResponseEntity<String> logout(@RequestBody RefreshRequest request) {
 //        return ResponseEntity.ok(authService.logout(request.getRefreshToken()));
 //    }
-    
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
 
@@ -105,7 +109,7 @@ public class AuthController {
 
         return ResponseEntity.ok(
                 new HashMap<>() {{
-                    put("message", "Logged out successfully");
+                        put("message", "Logged out successfully");
                 }}
         );
     }
