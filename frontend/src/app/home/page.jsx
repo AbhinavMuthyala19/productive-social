@@ -1,22 +1,18 @@
 import { PageContainer } from "../../components/layout/PageContainer"
 import { Navbar } from "../../components/layout/Navbar"
 import { PostCard } from "../../components/feed/PostCard"
-import "./home.css"
 import { NewPostButton } from "../../components/feed/NewPostButton"
+import { PageHeader } from "../../components/layout/PageHeader"
+import "../../App.css"
 
 export const Home = () => {
 
     return (
         <PageContainer>
             <Navbar />
-            <div className="global-feed">
-                <div className="global-header">
-                    <div className="title">
-                        <h1>Global Feed</h1>
-                        <p>Posts from your communities</p>
-                    </div>
-                    <NewPostButton />
-                </div>
+            <PageHeader title="Global Feed" description="Join challenge-based communities and stay accountable" 
+            ><NewPostButton/></PageHeader>
+            <div className="main">
                 <PostCard
                     post={{
                         comments: [
@@ -61,8 +57,6 @@ export const Home = () => {
                         ]
                     }}
                 />
-
-                
             </div>
         </PageContainer>
     )

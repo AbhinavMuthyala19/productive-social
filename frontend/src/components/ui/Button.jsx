@@ -6,16 +6,19 @@ export const Button = ({
     onClick,
     type = "button",
     variant = "default",
-    disabled = false
+    className ="",
+    disabled = false,
+    style
 }) =>{
 
     return (
        <button 
-       className={`btn ${variant}`}
+       className={`btn ${variant} ${className}`}
        onClick={onClick} 
        type={type}
        variant={variant}
        disabled={disabled}
+       style={style}
        >
         {children}
        </button>

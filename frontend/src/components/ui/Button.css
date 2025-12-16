@@ -87,3 +87,28 @@
   color: var(--gray-100);
   font-weight: 500;
 }
+
+.community-join-button{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: var(--color-blue);
+  color: var(--gray-100);
+  object-fit: contain;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.community-join-button:hover {
+  background-color: var(--hover-blue);
+}
+
+.community-join-button.joined {
+  color: var(--gray-700);
+  background-color: var(--gray-200)
+}
+
+.community-join-button.joined:hover {
+  background-color: var(--gray-300)
+}

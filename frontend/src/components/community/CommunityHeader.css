@@ -1,0 +1,24 @@
+.community-header{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px;
+    height: 100%;
+}
+
+.community-title{
+    font-size: 20px;
+    font-weight: 600;
+    height: 100%;
+}
+
+.community-description{
+    font-size: 14px;
+    color: var(--gray-500);
+    height: 100%;
+}
+
+.community-stats{
+    height: 100%;
+}
+

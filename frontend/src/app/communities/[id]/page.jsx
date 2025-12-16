@@ -1,5 +1,11 @@
+import { Navbar } from "../../../components/layout/Navbar"
+import { PageContainer } from "../../../components/layout/PageContainer"
+
 export const CommunityPage = () => {
     return (
-        <h1>CommunityPage</h1>
+        <PageContainer>
+            <Navbar />
+
+        </PageContainer>
     )
 }

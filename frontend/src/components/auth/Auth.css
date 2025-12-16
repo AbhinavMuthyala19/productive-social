@@ -4,35 +4,21 @@
 
 .auth-container {
   display: grid;
-  grid-template-columns: minmax(400px, 700px) 1fr; /* safer than 700px */
+  grid-template-columns: 1fr minmax(400px, 700px); /* safer than 700px */
   width: 100%;
   height: 100vh;
   gap: 20px;
 }
 
-/* LEFT (FORM AREA) */
+/* LEFT (IMAGE AREA) */
 .auth-left {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px; /* good spacing */
+  
 }
 
 .auth-left-panel {
-  width: 400px; /* form max width */
-  display: flex;
-  flex-direction: column;
-  gap: 10px; /* spacing between components */
-}
-
-/* RIGHT (IMAGE AREA) */
-.auth-right {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.auth-right-panel {
   width: 100%;
   height: 100%;
   display: flex;
@@ -42,11 +28,28 @@
   overflow: hidden;
 }
 
-.auth-right-panel img {
+.auth-left-panel img {
   width: 100%;
   height: 100%;
   object-fit: contain; /* keeps image clean */
   display: block;
+}
+
+/* RIGHT (FORM AREA) */
+.auth-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  padding: 40px; /* good spacing */
+}
+
+.auth-right-panel {
+  width: 400px; /* form max width */
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* spacing between components */
+  
 }
 
 .forgot-password{

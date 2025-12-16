@@ -56,8 +56,14 @@ export const Login = () => {
     }
     return (
         <AuthLayout
+            
             left={
-                <AuthLeftPanel>
+                < AuthLeftPanel
+                    imageSrc={loginHeader}
+                />
+            }
+            right={
+                <AuthRightPanel>
                     <form onSubmit={handleLogin} className="auth-form">
                         <AuthLogo />
 
@@ -100,12 +106,7 @@ export const Login = () => {
                             linkText="Sign up"
                             linkTo="/register" />
                     </form>
-                </AuthLeftPanel >
-            }
-            right={
-                < AuthRightPanel
-                    imageSrc={loginHeader}
-                />
+                </AuthRightPanel >
             }
         />
     )

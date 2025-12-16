@@ -1,11 +1,9 @@
+import "./Auth.css";
 
-import "./Auth.css"
-
-
-export const AuthLeftPanel = ({children}) => {
-    return(
-        <div className="auth-left-panel">
-            {children}
-        </div>
-    )
-}
+export const AuthLeftPanel = ({imageSrc}) => {
+  return (
+    <div className="auth-left-panel">
+      {<img src={imageSrc} alt="Auth visual" />}
+    </div>
+  );
+};

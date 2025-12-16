@@ -1,0 +1,5 @@
+
+.community-card-footer {
+  margin-top: auto; /* ✅ this is the key */
+  padding: 12px;
+}

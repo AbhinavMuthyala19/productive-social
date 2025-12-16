@@ -2,7 +2,12 @@ import "./Badge.css";
 
 export const Badge = ({ label, variant = "default-badge", icon }) => {
   return <span className={`badge ${variant}`}>
-    {icon && <img src={icon} alt="icon" />}
+    {typeof icon === "string" ? (
+      <img src={icon} alt="icon" className="icon" />
+    ) : (
+      icon
+    )}
+
     {label}
-    </span>;
+  </span>;
 }

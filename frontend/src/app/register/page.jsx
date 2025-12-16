@@ -10,9 +10,8 @@ import { OrDivider } from "../../components/auth/OrDivider"
 import { Button } from "../../components/ui/Button"
 import { Input } from "../../components/ui/Input"
 import loginHeader from "../../assets/loginheader.svg"
-import { useContext, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { registerUser } from "../../lib/api"
+import { useContext, useEffect, useState } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
 import { usePasswordToggle } from "../../hooks/usePasswordToggle"
 import { AuthContext } from "../../context/AuthContext"
 
@@ -22,7 +21,8 @@ export const Register = () => {
     const navigate = useNavigate()
     const passwordToggle = usePasswordToggle()
     const confirmPasswordToggle = usePasswordToggle()
-    const { register } = useContext(AuthContext)
+    const { register, user, loading } = useContext(AuthContext)
+    const location = useLocation();
 
     const [form, setForm] = useState({
         name: "",
@@ -31,6 +31,17 @@ export const Register = () => {
         password: "",
         confirmPassword: ""
     })
+
+    const from = location.state?.from || "/";
+
+    // 🔥 Automatic redirect when user becomes authenticated
+    useEffect(() => {
+        if (!loading && user) {
+            navigate(from, { replace: true });
+        }
+    }, [user, loading]);
+
+    if (loading) return null;  // wait until AuthContext finishes
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value })
@@ -64,7 +75,12 @@ export const Register = () => {
     return (
         <AuthLayout
             left={
-                <AuthLeftPanel>
+                <AuthLeftPanel
+                    imageSrc={loginHeader}
+                />
+            }
+            right={
+                <AuthRightPanel>
                     <form onSubmit={handleRegister} className="auth-form">
 
                         <AuthLogo />
@@ -132,13 +148,9 @@ export const Register = () => {
                             linkText="Sign in"
                             linkTo="/login" />
                     </form>
-                </AuthLeftPanel>
+                </AuthRightPanel>
             }
-            right={
-                <AuthRightPanel
-                    imageSrc={loginHeader}
-                />
-            }
+
         />
     )
 }

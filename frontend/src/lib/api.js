@@ -78,7 +78,8 @@ export const getProfile = () =>
 export const logoutUser = () =>
   api.post("/auth/logout");
 
-
+export const getCommunities = () =>
+  api.get("/communities")
 // export const getPosts = () =>
 //   api.get("/api/posts");
 

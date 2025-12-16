@@ -3,7 +3,7 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   padding: 4px 10px;
   font-size: 12px;
   border-radius: var(--radius-md);
@@ -14,7 +14,12 @@
 /* Variants */
 .default-badge {
   background: var(--gray-100);
-  color: var(--gray-700);
+  color: var(--gray-500);
+}
+
+.transparent-badge{
+  background-color: transparent;
+  color: var(--gray-500);
 }
 
 .community-badge {
@@ -22,6 +27,12 @@
   color: var(--gray-100);
   padding: 2px 10px;
 
+}
+
+.white-badge{
+  background-color: white;
+  color: var(--gray-900);
+  margin: 20px;
 }
 
 .purple-badge {
@@ -35,6 +46,6 @@
   padding: 2px 10px;
 }
 
-img{
+.badge img{
   width: 16px;
 }
