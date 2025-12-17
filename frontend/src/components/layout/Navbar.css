@@ -67,3 +67,69 @@
 .nav-item:hover {
   background-color: var(--gray-100);
 }
+
+.profile-card{
+  position: relative;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  width: 100%;
+  margin-top: auto;
+  border: 1px solid var(--border-light);
+  padding: 10px;
+  border-radius: var(--radius-lg);
+  box-shadow: 1px 1px 5px;
+  cursor: pointer;
+}
+
+.profile-details{
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-name{
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.profile-user-name{
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.profile-more-icon{
+  position: absolute;
+  right: 10px;
+}
+
+.profile-options{
+  width: 100%;
+  position: absolute;
+  top: -60px;
+  left: -1px;
+  box-shadow: 1px 1px 5px;
+  border-radius: var(--radius-md);
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.profile-options.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.profile-options p{
+  height: 40px;
+  padding-left: 8px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+.profile-options p:hover{
+  cursor: pointer;
+  background-color: var(--gray-200);
+}

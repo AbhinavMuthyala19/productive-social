@@ -4,7 +4,7 @@ import { getCommunities } from "../lib/api";
 
 export const CommunityContext = createContext()
 
-export const CommunityProvider = ({children}) =>{
+export const CommunityProvider = ({ children }) => {
 
     const [communities, setCommunities] = useState([])
 
@@ -12,18 +12,25 @@ export const CommunityProvider = ({children}) =>{
         fetchCommunities()
     }, [])
 
-    const fetchCommunities = async () =>{
+    const fetchCommunities = async () => {
         try {
             const res = await getCommunities()
-            setCommunities(res.data)
+            const sorted = [...res.data].sort((a, b) => {
+                if (a.joined !== b.joined) {
+                    return Number(b.joined) - Number(a.joined);
+                }
+                return b.memberCount - a.memberCount;
+            });
+            setCommunities(sorted)
+
         } catch (error) {
             console.error(error)
         }
     }
 
     return (
-            <CommunityContext.Provider value={{communities, fetchCommunities}}>
-                {children}
-            </CommunityContext.Provider>
-        );
+        <CommunityContext.Provider value={{ communities, fetchCommunities }}>
+            {children}
+        </CommunityContext.Provider>
+    );
 }
