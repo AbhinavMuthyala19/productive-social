@@ -3,8 +3,10 @@ package com.productive.social.service;
 import com.productive.social.dto.auth.AuthResponse;
 import com.productive.social.dto.auth.LoginRequest;
 import com.productive.social.dto.auth.RegisterRequest;
+import com.productive.social.dto.auth.UserMeResponse;
 import com.productive.social.entity.RefreshToken;
 import com.productive.social.entity.User;
+import com.productive.social.repository.UserCommunityRepository;
 import com.productive.social.repository.UserRepository;
 import com.productive.social.security.CustomUserDetails;
 import com.productive.social.security.JwtUtil;
@@ -26,6 +28,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     public final RefreshTokenService refreshTokenService;
+    public final UserCommunityRepository userCommunityRepository;
 
     public String register(RegisterRequest request) {
 
@@ -110,6 +113,26 @@ public class AuthService {
 
         throw new RuntimeException("No authenticated user");
     }
+    
+    
+    public UserMeResponse getCurrentUserProfile() {
+
+        User user = getCurrentUser();
+
+        Long joinedCommunitiesCount =
+                userCommunityRepository.countByUserId(user.getId());
+
+        return UserMeResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .profilePicture(user.getProfilePicture())
+                .bio(user.getBio())
+                .joinedCommunitiesCount(joinedCommunitiesCount)
+                .createdAt(user.getCreatedAt())
+                .build();
+    }
+
 
 
 

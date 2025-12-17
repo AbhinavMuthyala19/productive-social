@@ -31,10 +31,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         // Skip authentication routes
-        if (request.getServletPath().startsWith("/auth")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+    	String path = request.getServletPath();
+
+    	if (
+    	    path.equals("/auth/login") ||
+    	    path.equals("/auth/register") ||
+    	    path.equals("/auth/refresh") ||
+    	    path.equals("/auth/logout")
+    	) {
+    	    filterChain.doFilter(request, response);
+    	    return;
+    	}
 
         var accessTokenOpt = CookieUtil.getCookieValue(request, CookieUtil.ACCESS_TOKEN_COOKIE);
         var refreshTokenOpt = CookieUtil.getCookieValue(request, CookieUtil.REFRESH_TOKEN_COOKIE);

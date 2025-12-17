@@ -4,6 +4,7 @@ import com.productive.social.dto.auth.AuthResponse;
 import com.productive.social.dto.auth.LoginRequest;
 import com.productive.social.dto.auth.RefreshRequest;
 import com.productive.social.dto.auth.RegisterRequest;
+import com.productive.social.dto.auth.UserMeResponse;
 import com.productive.social.service.AuthService;
 import com.productive.social.util.CookieUtil;
 
@@ -113,6 +114,12 @@ public class AuthController {
                 }}
         );
     }
+    
+    @GetMapping("/me")
+    public ResponseEntity<UserMeResponse> me() {
+        return ResponseEntity.ok(authService.getCurrentUserProfile());
+    }
+
 
 
 }
