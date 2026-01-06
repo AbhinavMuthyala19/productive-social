@@ -1,1 +1,13 @@
 
+.community-page-header{
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.community-details{
+    display: flex;
+    box-shadow: none;
+    border: none;
+}

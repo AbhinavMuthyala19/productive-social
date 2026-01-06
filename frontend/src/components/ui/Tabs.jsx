@@ -1,8 +1,8 @@
 import "./Tabs.css";
 
-export const Tabs = ({ tabs = [], active, onChange }) => {
+export const Tabs = ({ tabs = [], active, onChange, className }) => {
   return (
-    <div className="tabs">
+    <div className={`tabs ${className}`}>
       {tabs.map((tab) => (
         <button
           key={tab}

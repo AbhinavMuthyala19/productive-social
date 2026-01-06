@@ -7,7 +7,17 @@ import "./CommunityCard.css"
 import { useContext } from "react"
 import { CommunityContext } from "../../context/CommunityContext"
 
-export const CommunityCard = ({ id, name, description, memberCount, joined, streak, view }) => {
+export const CommunityCard = ({
+    id,
+    name,
+    description,
+    memberCount,
+    joined,
+    streak,
+    view,
+    className,
+    clickable = true,
+    onToggleJoin }) => {
 
     const { toggleJoinCommunity } = useContext(CommunityContext)
 
@@ -21,8 +31,8 @@ export const CommunityCard = ({ id, name, description, memberCount, joined, stre
         6: "#14b8a6",
     };
     return (
-        <Card className={`community-card ${view === "list" ? "list" : ""}`}
-            onClick={() => navigate(`/communities/${id}`)}
+        <Card className={`community-card ${view === "list" ? "list" : ""} ${className}`}
+            onClick={clickable ? () => navigate(`/communities/${id}`) : undefined}
         >
             <CommunityBanner streak={streak} bannerColor={CATEGORY_COLORS[id]} view={view} />
             <CommunityHeader name={name} description={description} members={memberCount} streak={streak} view={view} />
@@ -32,6 +42,7 @@ export const CommunityCard = ({ id, name, description, memberCount, joined, stre
                     onClick={(e) => {
                         e.stopPropagation();
                         console.log(`${id}: joined`)
+                        onToggleJoin?.()
                         toggleJoinCommunity(id)
                     }}
                 >

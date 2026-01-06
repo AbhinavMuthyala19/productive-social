@@ -89,6 +89,10 @@ export const joinCommunity = (communityId) =>
 
 export const leaveCommunity = (communityId) =>
   api.post(`/communities/${communityId}/leave`)
+
+export const getCommunity = (communityId) =>
+  api.get(`/communities/${communityId}`)
+
 // export const getPosts = () =>
 //   api.get("/api/posts");
 

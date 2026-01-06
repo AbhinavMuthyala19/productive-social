@@ -2,40 +2,35 @@
 
 .tabs {
   display: flex;
-  gap: 12px;
-  border-bottom: 1px solid var(--gray-200);
-  padding-bottom: 6px;
-  margin: 5px;
+  gap: 28px;
 }
 
 .tab-item {
   background: none;
   border: none;
-  padding: 8px 14px;
-  cursor: pointer;
+  padding: 0 14px;
   font-size: 15px;
-  color: var(--gray-600);
-  border-radius: var(--radius-md);
-  transition: var(--fast);
+  font-weight: 500;
+  color: var(--color-blue); /* for blue header */
+  cursor: pointer;
+  position: relative;
 }
 
 .tab-item:hover {
-  background: var(--gray-100);
+  color: var(--color-blue);
 }
 
 .tab-item.active {
   color: var(--color-blue);
-  font-weight: 600;
-  position: relative;
 }
 
-.tab-item.active::before {
+.tab-item.active::after {
   content: "";
   position: absolute;
   left: 0;
-  bottom: -6px;
+  bottom: -10px;
   width: 100%;
-  height: 3px;
+  height: 2px;
   background: var(--color-blue);
-  border-radius: 10px;
+  border-radius: 2px;
 }
