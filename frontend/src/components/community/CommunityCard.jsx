@@ -1,4 +1,4 @@
-import { useNavigate, NavLink } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { Button } from "../ui/Button"
 import { Card } from "../ui/Card"
 import { CommunityBanner } from "./CommunityBanner"

@@ -31,7 +31,7 @@ export const CommentModal = ({ comments, onClose, isOpen }) => {
                 <img onClick={onClose} src={closeIcon} alt="close" />
             </div>
 
-            <div className="comments-list">
+            {/* <div className="comments-list">
                 {commentList.map((c, i) => (
                     <div key={i} className="comment-item">
                         <p className="name">
@@ -40,7 +40,7 @@ export const CommentModal = ({ comments, onClose, isOpen }) => {
                         <p className="text">{c.comment}</p>
                     </div>
                 ))}
-            </div>
+            </div> */}
 
             <div className="comment-input-container">
                 <form onSubmit={(e) => {  // if this does NOT print → form isn't submitting through React

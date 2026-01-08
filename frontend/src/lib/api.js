@@ -93,7 +93,20 @@ export const leaveCommunity = (communityId) =>
 export const getCommunity = (communityId) =>
   api.get(`/communities/${communityId}`)
 
-// export const getPosts = () =>
-//   api.get("/api/posts");
+export const getGlobalPosts = () =>
+  api.get("/posts/feed/global")
+
+export const getCommunityPosts = (communityId) =>
+  api.get(`/posts/feed/community/${communityId}`)
+
+export const getUserPosts = () =>
+  api.get("posts/feed/me")
+
+export const likePosts = (postId) =>
+  api.post(`/posts/${postId}/like`)
+
+export const unlikePosts = (postId) =>
+  api.delete(`/posts/${postId}/like`)
+
 
 export default api;

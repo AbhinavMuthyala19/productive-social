@@ -4,59 +4,24 @@ import { PostCard } from "../../components/feed/PostCard"
 import { NewPostButton } from "../../components/feed/NewPostButton"
 import { PageHeader } from "../../components/layout/PageHeader"
 import "../../App.css"
+import { useContext } from "react"
+import { PostContext } from "../../context/PostContext"
 
 export const Home = () => {
+    const { globalPosts, loading } = useContext(PostContext)
+
+
+    if(loading) return <div>Loading.....</div>
 
     return (
         <PageContainer>
             <Navbar />
-            <PageHeader title="Global Feed" description="Join challenge-based communities and stay accountable" 
-            ><NewPostButton/></PageHeader>
+            <PageHeader title="Global Feed" description="Join challenge-based communities and stay accountable"
+            ><NewPostButton /></PageHeader>
             <div className="main">
-                <PostCard
-                    post={{
-                        comments: [
-                            { name: "Sai Teja", username: "@saiteja", comment: "Nice..." },
-                            { name: "Abhinav", username: "@abhinav", comment: "Pakakeli aduko" },
-                            { name: "Vinay", username: "@vinay", comment: "Ahaaa...." },
-                            { name: "Anil", username: "@anil", comment: "Super ra bittu" },
-                            { name: "Prasanna", username: "@prasanna", comment: "❤️🔥" }
-                        ]
-                    }}
-                />
-                <PostCard
-                    post={{
-                        comments: [
-                            { name: "Sai Teja", username: "@saiteja", comment: "Nice..." },
-                            { name: "Abhinav", username: "@abhinav", comment: "Pakakeli aduko" },
-                            { name: "Vinay", username: "@vinay", comment: "Ahaaa...." },
-                            { name: "Anil", username: "@anil", comment: "Super ra bittu" },
-                            { name: "Prasanna", username: "@prasanna", comment: "❤️🔥" }
-                        ]
-                    }}
-                />
-                <PostCard
-                    post={{
-                        comments: [
-                            { name: "Sai Teja", username: "@saiteja", comment: "Nice..." },
-                            { name: "Abhinav", username: "@abhinav", comment: "Pakakeli aduko" },
-                            { name: "Vinay", username: "@vinay", comment: "Ahaaa...." },
-                            { name: "Anil", username: "@anil", comment: "Super ra bittu" },
-                            { name: "Prasanna", username: "@prasanna", comment: "❤️🔥" }
-                        ]
-                    }}
-                />
-                <PostCard
-                    post={{
-                        comments: [
-                            { name: "Sai Teja", username: "@saiteja", comment: "Nice..." },
-                            { name: "Abhinav", username: "@abhinav", comment: "Pakakeli aduko" },
-                            { name: "Vinay", username: "@vinay", comment: "Ahaaa...." },
-                            { name: "Anil", username: "@anil", comment: "Super ra bittu" },
-                            { name: "Prasanna", username: "@prasanna", comment: "❤️🔥" }
-                        ]
-                    }}
-                />
+                {globalPosts.map(post => (
+                    <PostCard key={post.postId} post={post} />
+                ))}
             </div>
         </PageContainer>
     )

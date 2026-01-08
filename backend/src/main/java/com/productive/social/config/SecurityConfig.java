@@ -25,6 +25,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults()) // Cors Filter added
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()  // Everything else requires token
                 )

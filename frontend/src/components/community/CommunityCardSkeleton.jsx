@@ -27,8 +27,6 @@ export const CommunityCardSkeleton = ({ view }) => {
                 <div className="community-stats">
                     <Skeleton width="70px" height="20px" />
                     <Skeleton width="70px" height="20px" />
-                    <Skeleton width="100px" height="16px" />
-
                 </div>
             </div>
 
