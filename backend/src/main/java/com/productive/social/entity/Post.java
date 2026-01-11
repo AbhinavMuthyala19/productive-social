@@ -32,6 +32,9 @@ public class Post {
     private Community community;
 
     @Column(columnDefinition = "TEXT")
+    private String title;
+    
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @CreationTimestamp

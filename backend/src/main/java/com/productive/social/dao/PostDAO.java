@@ -118,6 +118,7 @@ public class PostDAO {
                                 .name(post.getCommunity().getName())
                                 .build())
 
+                        .title(post.getTitle())
                         .content(post.getContent())
                         .images(imagesMap.getOrDefault(post.getId(), List.of()))
 

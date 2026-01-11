@@ -42,6 +42,7 @@ public class PostService {
             Post post = Post.builder()
                     .user(user)
                     .community(community)
+                    .title(request.getTitle())
                     .content(request.getContent())
                     .build();
 

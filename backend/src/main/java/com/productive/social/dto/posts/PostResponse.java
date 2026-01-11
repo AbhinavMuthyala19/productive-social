@@ -16,6 +16,7 @@ public class PostResponse {
     private PostCommunityDTO community;
 
     private String content;
+    private String title;
     private List<PostImageDTO> images;
 
     private long likesCount;
