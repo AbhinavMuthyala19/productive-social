@@ -4,6 +4,10 @@ import com.productive.social.dao.PostDAO;
 import com.productive.social.dto.posts.PostCreateRequest;
 import com.productive.social.dto.posts.PostResponse;
 import com.productive.social.entity.*;
+import com.productive.social.exceptions.NotFoundException;
+import com.productive.social.exceptions.community.CommunityNotFoundException;
+import com.productive.social.exceptions.posts.PostCreationException;
+import com.productive.social.exceptions.posts.PostImageUploadException;
 import com.productive.social.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,37 +32,43 @@ public class PostService {
     // -------------------------
     // CREATE POST
     // -------------------------
-    public PostResponse createPost(PostCreateRequest request, List<MultipartFile> images)
- throws Exception {
+    public PostResponse createPost(PostCreateRequest request, List<MultipartFile> images) {
+        try {
+            User user = authService.getCurrentUser();
 
-        User user = authService.getCurrentUser();
+            Community community = communityRepository.findById(request.getCommunityId())
+                    .orElseThrow(() -> new CommunityNotFoundException("Community not found"));
 
-        Community community = communityRepository.findById(request.getCommunityId())
-                .orElseThrow(() -> new RuntimeException("Community not found"));
+            Post post = Post.builder()
+                    .user(user)
+                    .community(community)
+                    .content(request.getContent())
+                    .build();
 
-        // 1. Save post
-        Post post = Post.builder()
-                .user(user)
-                .community(community)
-                .content(request.getContent())
-                .noteAttachmentId(request.getNoteAttachmentId()) // for later
-                .build();
+            post = postRepository.save(post);
 
-        post = postRepository.save(post);
+            if (images != null && !images.isEmpty()) {
+                try {
+                    savePostImages(post, images);
+                } catch (Exception e) {
+                    throw new PostImageUploadException("Failed to upload images");
+                }
+            }
 
-        // 2. Save images
-        if (images != null && !images.isEmpty()) {
-            savePostImages(post, images);
+            return postDAO.getUserPosts(user.getId(), user, 0, 1).get(0);
         }
-
-        // 3. Return PostResponse using DAO aggregations
-        return postDAO.getUserPosts(user.getId(), user, 0, 1).get(0);
+        catch (CommunityNotFoundException | PostImageUploadException e) {
+            throw e; // handled by GlobalExceptionHandler
+        }
+        catch (Exception e) {
+            throw new PostCreationException("Failed to create post");
+        }
     }
+
 
     private void savePostImages(Post post, List<MultipartFile> images) throws IOException {
         for (MultipartFile file : images) {
             if (!file.isEmpty()) {
-
                 String savedPath = imageStorageService.store(file);
 
                 PostImage postImage = PostImage.builder()
@@ -71,25 +81,9 @@ public class PostService {
         }
     }
 
-
-    private String saveImageToLocalStorage(MultipartFile file) throws Exception {
-
-        if (file.isEmpty()) return null;
-
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        String filePath = "uploads/images/" + fileName;
-
-        java.nio.file.Path destination = java.nio.file.Paths.get(filePath);
-        java.nio.file.Files.createDirectories(destination.getParent());
-        java.nio.file.Files.write(destination, file.getBytes());
-
-        return "/" + filePath;
-    }
-
     // -------------------------
     // FEEDS
     // -------------------------
-
     public List<PostResponse> getGlobalFeed(int page, int pageSize) {
         User user = authService.getCurrentUser();
         return postDAO.getGlobalFeed(user, page, pageSize);
@@ -110,14 +104,16 @@ public class PostService {
     // -------------------------
     public void likePost(Long postId) {
         User user = authService.getCurrentUser();
+
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(() -> new NotFoundException("Post not found"));
 
         if (!postLikeRepository.existsByPostAndUser(post, user)) {
             PostLike like = PostLike.builder()
                     .post(post)
                     .user(user)
                     .build();
+
             postLikeRepository.save(like);
         }
     }
@@ -125,8 +121,9 @@ public class PostService {
     @Transactional
     public void unlikePost(Long postId) {
         User user = authService.getCurrentUser();
+
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(() -> new NotFoundException("Post not found"));
 
         postLikeRepository.deleteByPostAndUser(post, user);
     }

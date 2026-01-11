@@ -6,13 +6,14 @@ import com.productive.social.dto.auth.RegisterRequest;
 import com.productive.social.dto.auth.UserMeResponse;
 import com.productive.social.entity.RefreshToken;
 import com.productive.social.entity.User;
+import com.productive.social.exceptions.BadRequestException;
+import com.productive.social.exceptions.InternalServerException;
+import com.productive.social.exceptions.UnauthorizedException;
 import com.productive.social.repository.UserCommunityRepository;
 import com.productive.social.repository.UserRepository;
 import com.productive.social.security.CustomUserDetails;
 import com.productive.social.security.JwtUtil;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,94 +31,122 @@ public class AuthService {
     public final RefreshTokenService refreshTokenService;
     public final UserCommunityRepository userCommunityRepository;
 
+    // -------------------------
+    // REGISTER
+    // -------------------------
     public String register(RegisterRequest request) {
+        try {
+            // 1. Check if email already exists
+            if (userRepository.existsByEmail(request.getEmail())) {
+                throw new BadRequestException("Email already exists");
+            }
 
-        // 1. Check if email already exists
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            // 2. Check if username already exists
+            if (userRepository.existsByUsername(request.getUsername())) {
+                throw new BadRequestException("Username already exists");
+            }
+
+            // 3. Create new user with encrypted password
+            User user = User.builder()
+                    .username(request.getUsername())
+                    .name(request.getName())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .build();
+
+            // 4. Save user
+            userRepository.save(user);
+            return "User registered successfully!";
         }
-
-        // 2. Check if username already exists
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username already exists");
+        catch (BadRequestException e) {
+            throw e;
         }
-
-        // 3. Create new user with encrypted password
-        User user = User.builder()
-                .username(request.getUsername())
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .build();
-
-        // 4. Save user
-        userRepository.save(user);
-
-        // 5. Return message for now (token will be added in Step 5)
-        return "User registered successfully!";
+        catch (Exception e) {
+            throw new InternalServerException("Failed to register user");
+        }
     }
-    
-//    public String login(LoginRequest request) {
-//
-//        authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-//        );
-//
-//        return jwtUtil.generateToken(request.getEmail());
-//    }
+
+    // -------------------------
+    // LOGIN
+    // -------------------------
     public AuthResponse login(LoginRequest request) {
-    	// 1. Try to find user by either email or username
-        User user = userRepository
-                .findByEmailOrUsername(request.getIdentifier(), request.getIdentifier())
-                .orElseThrow(() -> new RuntimeException("Invalid username/email or password"));
-        
-        
-        // 2. Authenticate using resolved username (Spring Security matches password from DB)
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getIdentifier(), request.getPassword())
-        );
+        try {
+            // 1. Try to find user by either email or username
+            User user = userRepository
+                    .findByEmailOrUsername(request.getIdentifier(), request.getIdentifier())
+                    .orElseThrow(() -> new UnauthorizedException("Invalid username/email or password"));
 
-        String accessToken = jwtUtil.generateToken(user.getEmail());
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+            // 2. Authenticate credentials (may throw)
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getIdentifier(), request.getPassword())
+            );
 
-        return new AuthResponse(accessToken, refreshToken.getToken());
+            String accessToken = jwtUtil.generateToken(user.getEmail());
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+
+            return new AuthResponse(accessToken, refreshToken.getToken());
+        }
+        catch (UnauthorizedException e) {
+            throw e;
+        }
+        catch (Exception e) {
+            throw new UnauthorizedException("Invalid username/email or password");
+        }
     }
 
-
-
+    // -------------------------
+    // REFRESH TOKEN
+    // -------------------------
     public AuthResponse refresh(String refreshToken) {
+        try {
+            RefreshToken token = refreshTokenService.validateRefreshToken(refreshToken);
 
-        RefreshToken token = refreshTokenService.validateRefreshToken(refreshToken);
+            String newAccessToken = jwtUtil.generateToken(token.getUser().getEmail());
 
-        String newAccessToken = jwtUtil.generateToken(token.getUser().getEmail());
+            refreshTokenService.deleteToken(refreshToken);
+            RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(token.getUser());
 
-        // optional: rotate refresh token
-        refreshTokenService.deleteToken(refreshToken);
-        RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(token.getUser());
-
-        return new AuthResponse(newAccessToken, newRefreshToken.getToken());
+            return new AuthResponse(newAccessToken, newRefreshToken.getToken());
+        }
+        catch (UnauthorizedException e) {
+            throw e;
+        }
+        catch (Exception e) {
+            throw new InternalServerException("Failed to refresh token");
+        }
     }
 
-    
+    // -------------------------
+    // LOGOUT
+    // -------------------------
     public String logout(String refreshToken) {
-        refreshTokenService.deleteToken(refreshToken);
-        return "Logged out successfully.";
+        try {
+            refreshTokenService.deleteToken(refreshToken);
+            return "Logged out successfully.";
+        }
+        catch (Exception e) {
+            throw new InternalServerException("Failed to logout");
+        }
     }
-    
+
+    // -------------------------
+    // GET CURRENT USER ENTITY
+    // -------------------------
     public User getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (principal instanceof CustomUserDetails customUserDetails) {
             return userRepository.findById(customUserDetails.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new UnauthorizedException("User not found"));
         }
 
-        throw new RuntimeException("No authenticated user");
+        throw new UnauthorizedException("No authenticated user");
     }
-    
-    
-    public UserMeResponse getCurrentUserProfile() {
 
+    // -------------------------
+    // GET USER PROFILE
+    // -------------------------
+    public UserMeResponse getCurrentUserProfile() {
         User user = getCurrentUser();
 
         Long joinedCommunitiesCount =
@@ -134,8 +163,4 @@ public class AuthService {
                 .createdAt(user.getCreatedAt())
                 .build();
     }
-
-
-
-
 }

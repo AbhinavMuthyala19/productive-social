@@ -10,6 +10,7 @@ public class PostUserDTO {
 
     private Long id;
     private String username;
+    private String name;
     private String profilePicture;
 
     // For later streak integration

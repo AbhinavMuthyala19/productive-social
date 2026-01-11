@@ -1,5 +1,6 @@
 package com.productive.social.service;
 
+import com.productive.social.exceptions.posts.PostImageUploadException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,8 +31,8 @@ public class FileSystemImageStorageService implements ImageStorageService {
             return "/uploads/" + filename;
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to store image", e);
+            log.error("Error saving image to filesystem", e);
+            throw new PostImageUploadException("Failed to store image");
         }
     }
-
 }

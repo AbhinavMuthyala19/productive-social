@@ -3,6 +3,8 @@ package com.productive.social.service;
 import com.productive.social.dto.comments.CommentCreateRequest;
 import com.productive.social.dto.comments.CommentResponse;
 import com.productive.social.entity.*;
+import com.productive.social.exceptions.InternalServerException;
+import com.productive.social.exceptions.NotFoundException;
 import com.productive.social.repository.CommentRepository;
 import com.productive.social.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,40 +24,47 @@ public class CommentService {
     // ADD COMMENT
     // -------------------------
     public CommentResponse addComment(CommentCreateRequest request) {
+        try {
+            User user = authService.getCurrentUser();
 
-        User user = authService.getCurrentUser();
+            Post post = postRepository.findById(request.getPostId())
+                    .orElseThrow(() -> new NotFoundException("Post not found"));
 
-        Post post = postRepository.findById(request.getPostId())
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+            Comment parent = null;
+            if (request.getParentCommentId() != null) {
+                parent = commentRepository.findById(request.getParentCommentId())
+                        .orElseThrow(() -> new NotFoundException("Parent comment not found"));
+            }
 
-        Comment parent = null;
-        if (request.getParentCommentId() != null) {
-            parent = commentRepository.findById(request.getParentCommentId())
-                    .orElseThrow(() -> new RuntimeException("Parent comment not found"));
+            Comment comment = Comment.builder()
+                    .post(post)
+                    .user(user)
+                    .content(request.getContent())
+                    .parentComment(parent)
+                    .build();
+
+            comment = commentRepository.save(comment);
+
+            return convertToResponse(comment);
         }
-
-        Comment comment = Comment.builder()
-                .post(post)
-                .user(user)
-                .content(request.getContent())
-                .parentComment(parent)
-                .build();
-
-        comment = commentRepository.save(comment);
-
-        return convertToResponse(comment);
+        catch (NotFoundException e) {
+            throw e; // handled globally
+        }
+        catch (Exception e) {
+            // unexpected persistence or database error
+            throw new InternalServerException("Failed to add comment");
+        }
     }
 
     // -------------------------
     // GET COMMENTS FOR POST
     // -------------------------
     public List<CommentResponse> getCommentsForPost(Long postId) {
-
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(() -> new NotFoundException("Post not found"));
 
-        List<Comment> comments = commentRepository
-                .findByPostAndParentCommentIsNullOrderByCreatedAtAsc(post);
+        List<Comment> comments =
+                commentRepository.findByPostAndParentCommentIsNullOrderByCreatedAtAsc(post);
 
         return comments.stream()
                 .map(this::convertToResponse)

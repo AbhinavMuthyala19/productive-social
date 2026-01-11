@@ -108,6 +108,7 @@ public class PostDAO {
                         .user(PostUserDTO.builder()
                                 .id(post.getUser().getId())
                                 .username(post.getUser().getUsername())
+                                .name(post.getUser().getName())
                                 .profilePicture(post.getUser().getProfilePicture())
                                 .streak(0) // TODO: integrate streak module
                                 .build())
