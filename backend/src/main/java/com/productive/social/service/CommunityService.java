@@ -15,6 +15,8 @@ import com.productive.social.repository.CommunityRepository;
 import com.productive.social.repository.UserCommunityRepository;
 import com.productive.social.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommunityService {
@@ -31,14 +34,6 @@ public class CommunityService {
     private final UserCommunityRepository userCommunityRepository;
     private final AuthService authService;
     private final CommunityDAO communityDAO;
-
-    // Helper: Get currently logged-in user
-    private User getCurrentUser() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UnauthorizedException("User not found"));
-    }
 
     /** -----------------------------------------
      *  Get All Communities with Joined Status
@@ -70,7 +65,7 @@ public class CommunityService {
     @Transactional
     public JoinCommunityResponse joinCommunity(JoinCommunityRequest request) {
         try {
-            User user = getCurrentUser();
+            User user = authService.getCurrentUser();
             Community community = communityRepository.findById(request.getCommunityId())
                     .orElseThrow(() -> new CommunityNotFoundException("Community not found"));
 
@@ -79,6 +74,7 @@ public class CommunityService {
                     .isPresent();
 
             if (alreadyJoined) {
+            	log.info("User {} tried to join community {} again", user.getId(), community.getId());
                 return new JoinCommunityResponse("Already joined this community");
             }
 
@@ -89,13 +85,14 @@ public class CommunityService {
                     .build();
 
             userCommunityRepository.save(mapping);
-
+            log.info("User {} joined community {}", user.getId(), community.getId());
             return new JoinCommunityResponse("Successfully joined community");
         }
         catch (CommunityNotFoundException e) {
             throw e;
         }
         catch (Exception e) {
+        	log.error("Unexpected error while user joining community", e);
             throw new InternalServerException("Failed to join community");
         }
     }
@@ -104,7 +101,7 @@ public class CommunityService {
      *  Get Community Details
      * ----------------------------------------- */
     public CommunityDetailResponse getCommunityDetails(Long communityId) {
-        User user = getCurrentUser();
+        User user = authService.getCurrentUser();
 
         Community community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new CommunityNotFoundException("Community not found"));
@@ -131,7 +128,7 @@ public class CommunityService {
     @Transactional
     public String leaveCommunity(Long communityId) {
         try {
-            User user = getCurrentUser();
+            User user = authService.getCurrentUser();
             Community community = communityRepository.findById(communityId)
                     .orElseThrow(() -> new CommunityNotFoundException("Community not found"));
 
@@ -139,16 +136,19 @@ public class CommunityService {
                     userCommunityRepository.findByUserAndCommunity(user, community);
 
             if (record.isEmpty()) {
+            	log.info("User {} attempted to leave community {} without being a member", user.getId(), communityId);
                 return "You are not part of this community";
             }
 
             userCommunityRepository.delete(record.get());
+            log.info("User {} left community {}", user.getId(), communityId);
             return "Successfully left community";
         }
         catch (CommunityNotFoundException e) {
             throw e;
         }
         catch (Exception e) {
+        	log.error("Unexpected error while user leaving community", e);
             throw new InternalServerException("Failed to leave community");
         }
     }

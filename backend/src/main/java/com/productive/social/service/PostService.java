@@ -10,13 +10,15 @@ import com.productive.social.exceptions.posts.PostCreationException;
 import com.productive.social.exceptions.posts.PostImageUploadException;
 import com.productive.social.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -52,16 +54,19 @@ public class PostService {
                 try {
                     savePostImages(post, images);
                 } catch (Exception e) {
+                	log.error("Failed to upload images for postId={}", post.getId(), e);
                     throw new PostImageUploadException("Failed to upload images");
                 }
             }
 
+            log.info("Post created successfully. userId={}, postId={}", user.getId(), post.getId());
             return postDAO.getUserPosts(user.getId(), user, 0, 1).get(0);
         }
         catch (CommunityNotFoundException | PostImageUploadException e) {
             throw e; // handled by GlobalExceptionHandler
         }
         catch (Exception e) {
+        	log.error("Unexpected error while creating post for user", e);
             throw new PostCreationException("Failed to create post");
         }
     }
@@ -116,6 +121,7 @@ public class PostService {
                     .build();
 
             postLikeRepository.save(like);
+            log.info("Post liked. userId={}, postId={}", user.getId(), postId);
         }
     }
 
@@ -127,5 +133,6 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException("Post not found"));
 
         postLikeRepository.deleteByPostAndUser(post, user);
+        log.info("Post unliked. userId={}, postId={}", user.getId(), postId);
     }
 }

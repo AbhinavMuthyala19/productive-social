@@ -9,6 +9,8 @@ import com.productive.social.exceptions.NotFoundException;
 import com.productive.social.exceptions.community.CommunityNotFoundException;
 import com.productive.social.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TaskService {
@@ -39,11 +42,14 @@ public class TaskService {
 
             boolean isMember = userCommunityRepository.findByUserAndCommunity(user, community).isPresent();
             if (!isMember) {
+            	log.warn("User {} attempted to view tasks without joining community {}", user.getId(), communityId);
                 throw new ForbiddenException("Join the community to view its syllabus");
             }
 
             List<Task> tasks = taskRepository.findByCommunityOrderByOrderIndexAsc(community);
             List<UserTaskProgress> progressList = userTaskProgressRepository.findByUser(user);
+            
+            log.info("Fetched {} tasks for user {} in community {}", tasks.size(), user.getId(), communityId);
 
             return tasks.stream().map(task -> {
                 Optional<UserTaskProgress> matchingProgress =
@@ -65,6 +71,7 @@ public class TaskService {
             throw e;
         }
         catch (Exception e) {
+        	log.error("Failed to load tasks for communityId={}", communityId, e);
             throw new InternalServerException("Failed to load tasks");
         }
     }
@@ -101,6 +108,7 @@ public class TaskService {
                     userTaskProgressRepository.save(progress);
                 }
 
+                log.info("Task {} marked completed by user {}", task.getId(), user.getId());
                 return "Task marked as completed";
 
             } else {
@@ -112,6 +120,7 @@ public class TaskService {
                     userTaskProgressRepository.save(progress);
                 }
 
+                log.info("Task {} marked incomplete by user {}", task.getId(), user.getId());
                 return "Task marked as incomplete";
             }
         }
@@ -119,6 +128,10 @@ public class TaskService {
             throw e;
         }
         catch (Exception e) {
+        	log.error("Failed to update task progress for taskId={} by userId={}",
+                    request.getTaskId(),
+                    authService.getCurrentUser().getId(), 
+                    e);
             throw new InternalServerException("Failed to update task progress");
         }
     }

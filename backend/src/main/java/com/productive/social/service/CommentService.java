@@ -8,10 +8,13 @@ import com.productive.social.exceptions.NotFoundException;
 import com.productive.social.repository.CommentRepository;
 import com.productive.social.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -44,6 +47,9 @@ public class CommentService {
                     .build();
 
             comment = commentRepository.save(comment);
+            
+            log.info("Comment added. userId={}, postId={}, commentId={}",
+                    user.getId(), post.getId(), comment.getId());
 
             return convertToResponse(comment);
         }
@@ -51,6 +57,10 @@ public class CommentService {
             throw e; // handled globally
         }
         catch (Exception e) {
+        	log.error("Unexpected failure adding comment. postId={}, userId={}",
+                    request.getPostId(),
+                    authService.getCurrentUser().getId(), // safe call; request passed auth
+                    e);
             // unexpected persistence or database error
             throw new InternalServerException("Failed to add comment");
         }
@@ -66,6 +76,7 @@ public class CommentService {
         List<Comment> comments =
                 commentRepository.findByPostAndParentCommentIsNullOrderByCreatedAtAsc(post);
 
+        log.info("Fetching comments. postId={}, total={}", postId, comments.size());
         return comments.stream()
                 .map(this::convertToResponse)
                 .toList();

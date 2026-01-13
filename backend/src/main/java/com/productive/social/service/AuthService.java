@@ -14,12 +14,15 @@ import com.productive.social.repository.UserRepository;
 import com.productive.social.security.CustomUserDetails;
 import com.productive.social.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -38,11 +41,13 @@ public class AuthService {
         try {
             // 1. Check if email already exists
             if (userRepository.existsByEmail(request.getEmail())) {
+            	log.warn("Registration failed - email already exists {}", request.getEmail());
                 throw new BadRequestException("Email already exists");
             }
 
             // 2. Check if username already exists
             if (userRepository.existsByUsername(request.getUsername())) {
+            	log.warn("Registration failed - username already exists {}", request.getUsername());
                 throw new BadRequestException("Username already exists");
             }
 
@@ -56,12 +61,15 @@ public class AuthService {
 
             // 4. Save user
             userRepository.save(user);
+            
+            log.info("User registered successfully. userId={}", user.getId());
             return "User registered successfully!";
         }
         catch (BadRequestException e) {
             throw e;
         }
         catch (Exception e) {
+        	log.error("Unexpected error during registration", e);
             throw new InternalServerException("Failed to register user");
         }
     }
@@ -83,13 +91,17 @@ public class AuthService {
 
             String accessToken = jwtUtil.generateToken(user.getEmail());
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+            
+            log.info("User logged in successfully. userId={}", user.getId());
 
             return new AuthResponse(accessToken, refreshToken.getToken());
         }
         catch (UnauthorizedException e) {
+        	log.warn("Unauthorized login attempt for identifier={}", request.getIdentifier());
             throw e;
         }
         catch (Exception e) {
+        	log.error("Unexpected error during login for identifier={}", request.getIdentifier(), e);
             throw new UnauthorizedException("Invalid username/email or password");
         }
     }
@@ -106,12 +118,14 @@ public class AuthService {
             refreshTokenService.deleteToken(refreshToken);
             RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(token.getUser());
 
+            log.info("Refresh token rotated. userId={}", token.getUser().getId());
             return new AuthResponse(newAccessToken, newRefreshToken.getToken());
         }
         catch (UnauthorizedException e) {
             throw e;
         }
         catch (Exception e) {
+        	log.error("Unexpected error while refreshing token", e);
             throw new InternalServerException("Failed to refresh token");
         }
     }
@@ -122,9 +136,11 @@ public class AuthService {
     public String logout(String refreshToken) {
         try {
             refreshTokenService.deleteToken(refreshToken);
+            log.info("User logged out successfully.");
             return "Logged out successfully.";
         }
         catch (Exception e) {
+        	log.error("Unexpected error during logout", e);
             throw new InternalServerException("Failed to logout");
         }
     }
@@ -137,9 +153,13 @@ public class AuthService {
 
         if (principal instanceof CustomUserDetails customUserDetails) {
             return userRepository.findById(customUserDetails.getUserId())
-                    .orElseThrow(() -> new UnauthorizedException("User not found"));
+            		.orElseThrow(() -> {
+                        log.warn("User not found in DB for principal userId={}", customUserDetails.getUserId());
+                        return new UnauthorizedException("User not found");
+                    });
         }
 
+        log.warn("Access denied: no authenticated principal");
         throw new UnauthorizedException("No authenticated user");
     }
 
@@ -151,6 +171,8 @@ public class AuthService {
 
         Long joinedCommunitiesCount =
                 userCommunityRepository.countByUserId(user.getId());
+        
+        log.info("Fetched profile for userId={}", user.getId());
 
         return UserMeResponse.builder()
                 .id(user.getId())
