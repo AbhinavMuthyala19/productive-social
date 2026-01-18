@@ -9,6 +9,7 @@ import com.productive.social.entity.User;
 import com.productive.social.exceptions.BadRequestException;
 import com.productive.social.exceptions.InternalServerException;
 import com.productive.social.exceptions.UnauthorizedException;
+import com.productive.social.logging.NoisyLogLimiter;
 import com.productive.social.repository.UserCommunityRepository;
 import com.productive.social.repository.UserRepository;
 import com.productive.social.security.CustomUserDetails;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -58,6 +60,7 @@ public class AuthService {
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .build();
+            
 
             // 4. Save user
             userRepository.save(user);
@@ -96,12 +99,37 @@ public class AuthService {
 
             return new AuthResponse(accessToken, refreshToken.getToken());
         }
+        // ✅ WRONG PASSWORD / USER ERROR
+        catch (BadCredentialsException e) {
+
+            if (NoisyLogLimiter.shouldLog("bad-login-attempt", 30)) {
+                log.warn("Invalid login credentials attempts detected (rate-limited)");
+            }
+
+            throw new UnauthorizedException("Invalid username/email or password");
+        }
+
+        // ✅ USER NOT FOUND / EXPLICIT UNAUTHORIZED
         catch (UnauthorizedException e) {
-        	log.warn("Unauthorized login attempt for identifier={}", request.getIdentifier());
+
+            if (NoisyLogLimiter.shouldLog("bad-login-attempt", 30)) {
+                log.warn("Unauthorized login attempts detected (rate-limited)");
+            }
+
             throw e;
         }
+
+        // ❌ REAL SYSTEM FAILURE
         catch (Exception e) {
-        	log.error("Unexpected error during login for identifier={}", request.getIdentifier(), e);
+
+            if (NoisyLogLimiter.shouldLog("login-system-error", 60)) {
+                log.error(
+                        "Unexpected login system failure (rate-limited). identifier={}",
+                        request.getIdentifier(),
+                        e
+                );
+            }
+
             throw new UnauthorizedException("Invalid username/email or password");
         }
     }
