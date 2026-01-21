@@ -1,17 +1,26 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import {
   getGlobalPosts,
-  getCommunityPosts,
   likePosts,
   unlikePosts,
 } from "../lib/api";
+import { AuthContext } from "./AuthContext";
 
 export const PostContext = createContext();
 
 export const PostProvider = ({ children }) => {
+  const { user } = useContext(AuthContext);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!user) {
+      setPosts([]); // 🔥 RESET POSTS ON LOGOUT
+    } else {
+      fetchPosts(); // 🔥 REFRESH POSTS ON LOGIN
+    }
+  }, [user]);
 
   const fetchPosts = async () => {
     try {
@@ -51,6 +60,14 @@ export const PostProvider = ({ children }) => {
     await unlikePosts(postId);
   };
 
+  const toggleLike = async (post) => {
+    if (post.likedByCurrentUser) {
+      await unlikePost(post.postId);
+    } else {
+      await likePost(post.postId);
+    }
+  };
+
   const handleCommentAdded = (postId) => {
     updatePost(postId, (p) => ({
       ...p,
@@ -68,6 +85,7 @@ export const PostProvider = ({ children }) => {
         addPost,
         likePost,
         unlikePost,
+        toggleLike,
         handleCommentAdded,
       }}
     >

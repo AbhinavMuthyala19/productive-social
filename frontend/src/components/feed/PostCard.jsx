@@ -3,17 +3,17 @@ import { PostHeader } from "./PostHeader";
 import { PostBody } from "./PostBody";
 import { PostFooter } from "./PostFooter";
 import { CommentModal } from "./CommentModal";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "./PostCard.css";
+import { PostContext } from "../../context/PostContext";
 
 export const PostCard = ({
   post,
-  onLike,
-  onUnlike,
   onCommentAdded,
   displayCommunityBadge,
 }) => {
   const [showComments, setShowComments] = useState(false);
+  const {toggleLike} = useContext(PostContext)
 
   function timeAgo(dateString) {
     const date = new Date(dateString);
@@ -60,9 +60,9 @@ export const PostCard = ({
       <PostFooter
         post={post}
         onOpenComments={() => setShowComments(true)}
-        onLike={onLike}
-        onUnlike={onUnlike}
+        onToggleLike={() => toggleLike(post)}
       />
+
       <CommentModal
         postId={post.postId}
         isOpen={showComments}

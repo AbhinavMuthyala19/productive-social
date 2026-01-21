@@ -2,27 +2,15 @@ import "./PostFooter.css";
 import likeIcon from "../../assets/icons/like.svg";
 import commentIcon from "../../assets/icons/comment.svg";
 import shareIcon from "../../assets/icons/share.svg";
-import { useContext, useState } from "react";
 import unlikeIcon from "../../assets/icons/unlike.svg";
-import { PostContext } from "../../context/PostContext";
 
-export const PostFooter = ({ post, onOpenComments, onLike, onUnlike }) => {
-  const { likePost, unlikePost } = useContext(PostContext);
-
+export const PostFooter = ({ post, onOpenComments, onToggleLike }) => {
   const likeIconSrc = post.likedByCurrentUser ? likeIcon : unlikeIcon;
-
-  const handleLike = () => {
-    if (onLike && onUnlike) {
-      post.likedByCurrentUser ? onUnlike(post.postId) : onLike(post.postId);
-      return;
-    }
-    post.likedByCurrentUser ? unlikePost(post.postId) : likePost(post.postId);
-  };
 
   return (
     <div className="post-footer">
       <div className="left">
-        <div onClick={handleLike} className="likes">
+        <div onClick={onToggleLike} className="likes">
           <img className="post-footer-icon" src={likeIconSrc} alt="like" />
           <p>{post.likesCount}</p>
         </div>

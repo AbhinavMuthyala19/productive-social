@@ -144,8 +144,6 @@ export const CommunityPage = () => {
                 <PostCard
                   key={post.postId}
                   post={post}
-                  onLike={() => likePost(post.postId)}
-                  onUnlike={() => unlikePost(post.postId)}
                   onCommentAdded={() => handleCommentAdded(post.postId)}
                 />
               )))}
