@@ -70,8 +70,8 @@ api.interceptors.response.use(
   },
 );
 
-export const loginUser = (identifier, password) =>
-  api.post("/auth/login", { identifier, password });
+export const loginUser = (identifier, password, timezone) =>
+  api.post("/auth/login", { identifier, password, timezone });
 
 export const registerUser = (data) => api.post("/auth/register", data);
 

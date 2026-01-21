@@ -10,6 +10,7 @@ export const Register = () => {
   const confirmPasswordToggle = usePasswordToggle();
   const { register, user, loading } = useContext(AuthContext);
   const location = useLocation();
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   const [form, setForm] = useState({
     name: "",
@@ -48,6 +49,7 @@ export const Register = () => {
         username: form.username,
         email: form.email,
         password: form.password,
+        timezone
       };
 
       await register(body);

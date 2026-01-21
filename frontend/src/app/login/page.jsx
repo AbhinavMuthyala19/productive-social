@@ -9,6 +9,7 @@ export const Login = () => {
   const { login, user, loading } = useContext(AuthContext);
   const passwordToggle = usePasswordToggle();
   const location = useLocation();
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   const [form, setForm] = useState({
     identifier: "",
@@ -33,7 +34,7 @@ export const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await login(form.identifier, form.password);
+      await login(form.identifier, form.password, timezone);
       alert("Login successful!");
     } catch (error) {
       alert("Incorrect email or password");

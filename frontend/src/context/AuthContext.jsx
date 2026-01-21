@@ -24,8 +24,8 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (identifier, password) => {
-    await loginUser(identifier, password);
+  const login = async (identifier, password, timezone) => {
+    await loginUser(identifier, password, timezone);
     await fetchUser();
   };
 
