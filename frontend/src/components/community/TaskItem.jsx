@@ -4,12 +4,12 @@ import { Checkbox } from "../ui/Checkbox";
 import notesIcon from "../../assets/icons/notes.svg";
 import { Copy, Pencil } from "lucide-react";
 
-export const TaskItem = () => {
+export const TaskItem = ({title}) => {
   return (
     <Card className={"task-card"}>
       <Checkbox />
       <div className="task-details">
-        <h3 className="task-title">What is Machine learning?</h3>
+        <h3 className="task-title">{title}</h3>
         <span className="task-notes-link">
           <img src={notesIcon} alt="notes" />
           Notes linked

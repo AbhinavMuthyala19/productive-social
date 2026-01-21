@@ -15,6 +15,9 @@ import { CreatePostModal } from "../../../components/feed/CreatePostModal";
 import { CommunityBanner } from "../../../components/community/CommunityBanner";
 import { CommunityHeader } from "../../../components/community/CommunityHeader";
 import "../Communities.css";
+import { TaskItem } from "../../../components/community/TaskItem";
+import { getCommunitySyllabus } from "../../../lib/api";
+import { JoinButton } from "../../../components/community/JoinButton";
 
 export const CommunityPage = () => {
   const { communities, loading, fetchCommunities, toggleJoinCommunity } =
@@ -30,6 +33,8 @@ export const CommunityPage = () => {
   } = useContext(PostContext);
 
   const [showCreatePost, setShowCreatePost] = useState(false);
+  const [syllabus, setSyllabus] = useState([]);
+  const [loadingSyllabus, setLoadingSyllabus] = useState(false);
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const tabFromUrl = searchParams.get("tab") || "Feed";
@@ -48,6 +53,28 @@ export const CommunityPage = () => {
       fetchCommunities();
     }
   }, [communities.length, loading]);
+
+  useEffect(() => {
+    if (active === "Syllabus" && syllabus.length === 0) {
+      fetchCommunitySyllabus();
+    }
+  }, [active, id]);
+
+  useEffect(() => {
+    console.log("syllabus:", syllabus);
+  }, [syllabus]);
+
+  const fetchCommunitySyllabus = async () => {
+    try {
+      setLoadingSyllabus(true);
+      const res = await getCommunitySyllabus(id);
+      setSyllabus(res.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingSyllabus(false);
+    }
+  };
 
   const handelTabChange = (tab) => {
     setActive(tab);
@@ -123,7 +150,7 @@ export const CommunityPage = () => {
                 />
               )))}
 
-        {active === "Syllabus" && <TaskItem />}
+        {active === "Syllabus" && syllabus.length > 0 && <TaskItem title={syllabus[0].title}/>}
       </div>
 
       <CreatePostModal

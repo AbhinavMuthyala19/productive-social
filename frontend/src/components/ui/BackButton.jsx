@@ -4,23 +4,33 @@ import { Tooltip } from "./Tooltip";
 import "./BackButton.css";
 
 export const BackButton = ({
-  to = -1,
+  fallback = "/",      // safer than hardcoding
   label = "Go back",
-  size = 28,
+  size = 30,
   className = "",
 }) => {
   const navigate = useNavigate();
+
+  const handleBack = () => {
+    const idx = window.history.state?.idx ?? 0;
+
+    if (idx > 0) {
+      navigate(-1);        // 🔒 stays inside app
+    } else {
+      navigate(fallback); // 🔒 never leaves app
+    }
+  };
 
   return (
     <Tooltip label={label}>
       <ArrowLeft
         className={`back-arrow ${className}`}
         size={size}
-        onClick={() => navigate(to)}
         role="button"
         tabIndex={0}
+        onClick={handleBack}
         onKeyDown={(e) => {
-          if (e.key === "Enter") navigate(to);
+          if (e.key === "Enter") handleBack();
         }}
       />
     </Tooltip>
