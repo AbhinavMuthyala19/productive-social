@@ -111,7 +111,7 @@ export const createPost = (formData) => api.post("/posts", formData);
 export const getCommunitySyllabus = (communityId) =>
   api.get(`/communities/${communityId}/tasks`);
 
-export const updateCommunityTask = (communityId) =>
-  api.post(`/communities/${communityId}/tasks/update`)
+export const updateCommunityTask = (communityId, taskId, completed) =>
+  api.post(`/communities/${communityId}/tasks/update`, {taskId, completed})
 
 export default api;

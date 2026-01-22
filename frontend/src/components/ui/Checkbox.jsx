@@ -1,9 +1,14 @@
-import "./Checkbox.css";
+import "./Checkbox.css"
 
-export const Checkbox = ({ checked, onChange, label }) => {
+
+export const Checkbox = ({ completed, onChange, label }) => {
   return (
     <label className="checkbox-container">
-      <input type="checkbox" checked={checked} onChange={onChange} />
+      <input
+        type="checkbox"
+        checked={completed}
+        onChange={(e) => onChange(e.target.checked)}
+      />
       <span className="checkmark"></span>
       {label && <p>{label}</p>}
     </label>

@@ -16,8 +16,9 @@ import { CommunityBanner } from "../../../components/community/CommunityBanner";
 import { CommunityHeader } from "../../../components/community/CommunityHeader";
 import "../Communities.css";
 import { TaskItem } from "../../../components/community/TaskItem";
-import { getCommunitySyllabus } from "../../../lib/api";
+import { getCommunitySyllabus, updateCommunityTask } from "../../../lib/api";
 import { JoinButton } from "../../../components/community/JoinButton";
+import { TaskList } from "../../../components/community/TaskList";
 
 export const CommunityPage = () => {
   const { communities, loading, fetchCommunities, toggleJoinCommunity } =
@@ -89,6 +90,29 @@ export const CommunityPage = () => {
     );
   }
 
+  const toggleTask = async (taskId, nextCompleted) => {
+    console.log("toggleTask", taskId, nextCompleted);
+
+    setSyllabus((prev) => {
+      console.log("before", prev);
+      const updated = prev.map((task) =>
+        task.taskId === taskId ? { ...task, completed: nextCompleted } : task,
+      );
+      console.log("after", updated);
+      return updated;
+    });
+
+    try {
+      await updateCommunityTask(Number(id), taskId, nextCompleted);
+    } catch (e) {
+      setSyllabus((prev) =>
+        prev.map((task) =>
+          task.id === taskId ? { ...task, completed: !nextCompleted } : task,
+        ),
+      );
+    }
+  };
+
   return (
     <PageContainer>
       <Navbar />
@@ -148,7 +172,7 @@ export const CommunityPage = () => {
               )))}
 
         {active === "Syllabus" && syllabus.length > 0 && (
-          <TaskItem title={syllabus[0].title} />
+          <TaskList syllabus={syllabus} onToggle={toggleTask} />
         )}
       </div>
 
