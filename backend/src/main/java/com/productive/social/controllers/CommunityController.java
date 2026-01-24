@@ -20,11 +20,39 @@ public class CommunityController {
     private final CommunityService communityService;
 
 
-    // GET all communities with joined status
+    // =============================
+    // 1️⃣ CURRENT USER (default)
+    // =============================
     @GetMapping
     public ResponseEntity<List<CommunityResponse>> getAllCommunities() {
-        return ResponseEntity.ok(communityService.getAllCommunitiesForUser());
+        return ResponseEntity.ok(
+                communityService.getAllCommunitiesForCurrentUser()
+        );
     }
+
+    // =============================
+    // 2️⃣ CURRENT USER (/me)
+    // =============================
+    @GetMapping("/me")
+    public ResponseEntity<List<CommunityResponse>> getMyCommunities() {
+        return ResponseEntity.ok(
+                communityService.getCommunitiesForCurrentUser()
+        );
+    }
+
+    // =============================
+    // 3️⃣ SPECIFIC USER
+    // =============================
+    @GetMapping("/user/{userName}")
+    public ResponseEntity<List<CommunityResponse>> getCommunitiesForUser(
+            @PathVariable String userName) {
+    	System.out.print("Entered Controller");
+
+        return ResponseEntity.ok(
+                communityService.getCommunitiesForUsername(userName)
+        );
+    }
+
 
 
     // GET community details

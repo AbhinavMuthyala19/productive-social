@@ -1,5 +1,13 @@
 package com.productive.social.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.productive.social.dao.CommunityDAO;
 import com.productive.social.dto.community.CommunityDetailResponse;
 import com.productive.social.dto.community.CommunityResponse;
@@ -8,27 +16,17 @@ import com.productive.social.dto.community.JoinCommunityResponse;
 import com.productive.social.entity.Community;
 import com.productive.social.entity.User;
 import com.productive.social.entity.UserCommunity;
-import com.productive.social.enums.CommunityStatus;
+import com.productive.social.enums.CommunityFetchType;
 import com.productive.social.enums.MembershipStatus;
-import com.productive.social.exceptions.UnauthorizedException;
-import com.productive.social.exceptions.community.CommunityNotFoundException;
 import com.productive.social.exceptions.InternalServerException;
+import com.productive.social.exceptions.NotFoundException;
+import com.productive.social.exceptions.community.CommunityNotFoundException;
 import com.productive.social.repository.CommunityRepository;
 import com.productive.social.repository.UserCommunityRepository;
 import com.productive.social.repository.UserRepository;
-import com.productive.social.enums.MembershipStatus;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -42,42 +40,108 @@ public class CommunityService {
     private final CommunityDAO communityDAO;
     private final StreakService streakService;
 
-    /** -----------------------------------------
-     *  Get All Communities with Joined Status
-     * ----------------------------------------- */
-    public List<CommunityResponse> getAllCommunitiesForUser() {
+ // =====================================================
+    // 1️⃣ /communities
+    // Gets ALL communities in DB
+    // =====================================================
+    public List<CommunityResponse> getAllCommunitiesForCurrentUser() {
 
         Long userId = authService.getCurrentUser().getId();
 
-        log.info("Fetching communities for user. userId={}", userId);
+        return buildCommunityResponse(
+                userId,
+                CommunityFetchType.ALL
+        );
+    }
+
+    // =====================================================
+    // 2️⃣ /communities/me
+    // Gets ONLY joined communities
+    // =====================================================
+    public List<CommunityResponse> getCommunitiesForCurrentUser() {
+
+        Long userId = authService.getCurrentUser().getId();
+
+        return buildCommunityResponse(
+                userId,
+                CommunityFetchType.JOINED_ONLY
+        );
+    }
+
+    // =====================================================
+    // 3️⃣ /communities/{username}
+    // Gets ONLY joined communities of target user
+    // =====================================================
+    public List<CommunityResponse> getCommunitiesForUsername(String userName) {
+    	System.out.print("Entered Service");
+
+        Long userId = userRepository.findByUsername(userName)
+                .orElseThrow(() ->
+                        new NotFoundException("User not found")
+                )
+                .getId();
+
+        return buildCommunityResponse(
+                userId,
+                CommunityFetchType.JOINED_ONLY
+        );
+    }
+
+    // =====================================================
+    //  CORE GENERIC IMPLEMENTATION
+    // =====================================================
+    private List<CommunityResponse> buildCommunityResponse(
+            Long userId,
+            CommunityFetchType fetchType
+    ) {
+
+        log.info(
+                "Fetching communities. userId={}, fetchType={}",
+                userId,
+                fetchType
+        );
 
         try {
 
-            // -------------------------
-            // 1️⃣ Fetch all communities
-            // -------------------------
-            List<Community> communities = communityDAO.getAllCommunities();
+            // ---------------------------------
+            // 1️⃣ Fetch communities from DAO
+            // ---------------------------------
+            List<Community> communities;
 
-            log.debug("Total communities loaded={}", communities.size());
+            if (fetchType == CommunityFetchType.ALL) {
 
-            // -------------------------
-            // 2️⃣ Fetch user memberships
-            // -------------------------
-            List<UserCommunity> memberships =
-                    userCommunityRepository.findByUser_IdAndStatus(
-                            userId,
-                            MembershipStatus.ACTIVE
-                    );
+                communities = communityDAO.getAllCommunities();
+
+            } else {
+
+                communities =
+                        communityDAO.getCommunitiesJoinedByUser(userId);
+            }
 
             log.debug(
-                    "Active community memberships found. userId={}, count={}",
+                    "Communities loaded. count={}",
+                    communities.size()
+            );
+
+            // ---------------------------------
+            // 2️⃣ Fetch memberships
+            // ---------------------------------
+            List<UserCommunity> memberships =
+                    userCommunityRepository
+                            .findByUser_IdAndStatus(
+                                    userId,
+                                    MembershipStatus.ACTIVE
+                            );
+
+            log.debug(
+                    "Active memberships found. userId={}, count={}",
                     userId,
                     memberships.size()
             );
 
-            // -------------------------
-            // 3️⃣ Build community → streak map
-            // -------------------------
+            // ---------------------------------
+            // 3️⃣ Build streak map
+            // ---------------------------------
             Map<Long, Integer> communityStreakMap =
                     memberships.stream()
                             .filter(uc -> uc.getCommunity() != null)
@@ -85,8 +149,10 @@ public class CommunityService {
                                     uc -> uc.getCommunity().getId(),
                                     uc -> {
                                         try {
-                                            return streakService.calculateEffectiveStreak(uc);
+                                            return streakService
+                                                    .calculateEffectiveStreak(uc);
                                         } catch (Exception e) {
+
                                             log.error(
                                                     "Failed to calculate streak. userId={}, communityId={}",
                                                     userId,
@@ -98,22 +164,30 @@ public class CommunityService {
                                     }
                             ));
 
-            // -------------------------
+            // ---------------------------------
             // 4️⃣ Build response
-            // -------------------------
+            // ---------------------------------
             List<CommunityResponse> response =
                     communities.stream()
                             .map(c -> {
 
-                                boolean joined =
-                                        userCommunityRepository
-                                                .existsByUserIdAndCommunityId(userId, c.getId());
+                            	boolean joined =
+                            	        memberships.stream()
+                            	                .anyMatch(uc ->
+                            	                        uc.getCommunity().getId().equals(c.getId())
+                            	                );
+
 
                                 int memberCount =
-                                        communityDAO.getMemberCount(c.getId());
+                                        communityDAO
+                                                .getMemberCount(c.getId());
 
                                 int streak =
-                                        communityStreakMap.getOrDefault(c.getId(), 0);
+                                        communityStreakMap
+                                                .getOrDefault(
+                                                        c.getId(),
+                                                        0
+                                                );
 
                                 return CommunityResponse.builder()
                                         .id(c.getId())
@@ -127,8 +201,7 @@ public class CommunityService {
                             .toList();
 
             log.info(
-                    "Communities response built successfully. userId={}, count={}",
-                    userId,
+                    "Communities response built successfully. count={}",
                     response.size()
             );
 
@@ -137,8 +210,9 @@ public class CommunityService {
         } catch (Exception e) {
 
             log.error(
-                    "Failed to load communities for user. userId={}",
+                    "Failed to load communities. userId={}, fetchType={}",
                     userId,
+                    fetchType,
                     e
             );
 
