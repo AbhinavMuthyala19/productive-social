@@ -175,7 +175,8 @@ public class PostService {
                 streak = streakService.calculateEffectiveStreak(membership);
             }
 
-            post.getUser().setStreak(streak);
+            // post.getUser().setStreak(streak);
+            post.getCommunity().setStreak(streak);
         }
 
         return feed;
@@ -239,7 +240,8 @@ public class PostService {
                         streakService.calculateEffectiveStreak(membership);
             }
 
-            post.getUser().setStreak(streak);
+//            post.getUser().setStreak(streak);
+            post.getCommunity().setStreak(streak);
         }
 
         return feed;
@@ -349,7 +351,8 @@ public class PostService {
                                 .calculateEffectiveStreak(membership);
             }
 
-            post.getUser().setStreak(streak);
+//            post.getUser().setStreak(streak);
+            post.getCommunity().setStreak(streak);
         }
 
         return feed;
