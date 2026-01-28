@@ -35,7 +35,7 @@ export const PostHeader = ({
               label={community.name}
             />
           )}
-          {displayStreakBadge && (
+          {displayStreakBadge && streak > 0 && (
             <Badge variant="streak-badge" label={streak} icon={fireicon} />
           )}
         </div>

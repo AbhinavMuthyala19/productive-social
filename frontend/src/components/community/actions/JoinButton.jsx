@@ -1,4 +1,4 @@
-import { Button } from "../ui/Button";
+import { Button } from "../../ui/Button";
 import "./JoinButton.css";
 
 export const JoinButton = ({ joined, onClick, className }) => {

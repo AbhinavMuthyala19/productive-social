@@ -8,6 +8,10 @@
     border-radius: var(--radius-md);
 }
 
+.task-details{
+    width: 100%;
+}
+
 .task-notes-link {
     display: flex;
     gap: 5px;

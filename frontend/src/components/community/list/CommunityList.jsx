@@ -1,5 +1,5 @@
-import { CommunityCard } from "./CommunityCard";
-import { CommunityCardSkeleton } from "./CommunityCardSkeleton";
+import { CommunityCard } from "../cards/CommunityCard";
+import { CommunityCardSkeleton } from "../cards/CommunityCardSkeleton";
 import "./CommunityList.css";
 
 export const CommunityList = ({
@@ -18,7 +18,7 @@ export const CommunityList = ({
             <CommunityCardSkeleton key={i} view={view} />
           ))
         : communities.map((c) => (
-            <CommunityCard
+            <CommunityCard 
               key={c.id}
               id={c.id}
               name={c.name}

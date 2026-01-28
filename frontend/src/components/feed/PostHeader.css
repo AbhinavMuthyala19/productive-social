@@ -15,7 +15,6 @@
 .post-user-details {
     display: flex;
     align-items: center;
-    padding-top: 10px;
     gap: 10px;
 }
 

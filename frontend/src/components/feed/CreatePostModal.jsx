@@ -9,6 +9,7 @@ import { Button } from "../ui/Button";
 import attachmentIcon from "../../assets/icons/attachment.svg";
 import { createPost } from "../../lib/api";
 import { AttachmentsModal } from "./AttachmentsModal";
+import { toast } from "sonner";
 
 export const CreatePostModal = ({
   isOpen,
@@ -67,9 +68,11 @@ export const CreatePostModal = ({
     try {
       const res = await createPost(formData);
       onPostCreated(res.data);
+      toast.success("Post created!")
       handleClose();
     } catch (err) {
       console.error("Create post failed:", err);
+      toast.error(err.response?.data?.message || "Failed to create post")
     }
   };
 

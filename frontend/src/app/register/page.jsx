@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { usePasswordToggle } from "../../hooks/usePasswordToggle";
 import { AuthContext } from "../../context/AuthContext";
 import { RegisterForm } from "../../components/auth/RegisterForm";
+import { toast } from "sonner"
 
 export const Register = () => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ export const Register = () => {
     e.preventDefault();
 
     if (form.password !== form.confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match")
       return;
     }
 
@@ -53,11 +54,11 @@ export const Register = () => {
       };
 
       await register(body);
-      alert("Registration Successful!");
+      toast.success("Registration successful!")
       navigate("/login", {replace : true});
     } catch (error) {
-      console.error("REGISTER ERROR:", err.response?.data);
-      alert("Registration failed.");
+      console.error("REGISTER ERROR:", error.response?.data);
+      toast.error(error.response?.data?.message || "Registration failed...")
     }
   };
 

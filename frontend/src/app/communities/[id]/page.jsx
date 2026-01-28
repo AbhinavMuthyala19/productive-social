@@ -4,29 +4,17 @@ import { CommunityContext } from "../../../context/CommunityContext";
 import { useParams, useSearchParams } from "react-router-dom";
 import { PageContainer } from "../../../components/layout/PageContainer";
 import { Navbar } from "../../../components/layout/Navbar";
-import { PageHeader } from "../../../components/layout/PageHeader";
-import { Tooltip } from "../../../components/ui/Tooltip";
-import { LogOut } from "lucide-react";
-import { NewPostButton } from "../../../components/feed/NewPostButton";
-import { Tabs } from "../../../components/ui/Tabs";
-import { PostCardSkeleton } from "../../../components/feed/PotCardSkeleton";
-import { PostCard } from "../../../components/feed/PostCard";
 import { CreatePostModal } from "../../../components/feed/CreatePostModal";
-import { CommunityBanner } from "../../../components/community/CommunityBanner";
-import { CommunityHeader } from "../../../components/community/CommunityHeader";
 import "../Communities.css";
-import { getCommunitySyllabus, updateCommunityTask } from "../../../lib/api";
-import { JoinButton } from "../../../components/community/JoinButton";
-import { TaskList } from "../../../components/community/TaskList";
-import { CommunityLeaveModal } from "../../../components/community/CommunityLeaveModal";
+import { CommunityLeaveModal } from "../../../components/community/actions/CommunityLeaveModal";
 import { useLeaveCommunity } from "../../../hooks/useLeaveCommunity";
+import { CommunityHeaderSection } from "./components/CommunityHeaderSection";
+import { CommunityFeed } from "./components/CommunityFeed";
+import { CommunitySyllabus } from "./components/CommunitySyllabus";
 
 export const CommunityPage = () => {
-  
-
   const { communities, loading, fetchCommunities, toggleJoinCommunity } =
     useContext(CommunityContext);
-
   const {
     posts,
     loading: postsLoading,
@@ -36,8 +24,6 @@ export const CommunityPage = () => {
   } = useContext(PostContext);
   const leaveModal = useLeaveCommunity(toggleJoinCommunity);
   const [showCreatePost, setShowCreatePost] = useState(false);
-  const [syllabus, setSyllabus] = useState([]);
-  const [loadingSyllabus, setLoadingSyllabus] = useState(false);
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const tabFromUrl = searchParams.get("tab") || "Feed";
@@ -52,32 +38,10 @@ export const CommunityPage = () => {
   );
 
   useEffect(() => {
-    if (communities.length === 0 && !loading) {
-      fetchCommunities();
-    }
-  }, [communities.length, loading]);
-
-  useEffect(() => {
     if (active === "Feed") {
       fetchCommunityPosts(id);
     }
-
-    if (active === "Syllabus" && syllabus.length === 0) {
-      fetchCommunitySyllabus();
-    }
-  }, [active, id]);
-
-  const fetchCommunitySyllabus = async () => {
-    try {
-      setLoadingSyllabus(true);
-      const res = await getCommunitySyllabus(id);
-      setSyllabus(res.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoadingSyllabus(false);
-    }
-  };
+  }, [active, id, fetchCommunityPosts]);
 
   const handelTabChange = (tab) => {
     setActive(tab);
@@ -93,97 +57,35 @@ export const CommunityPage = () => {
     );
   }
 
-  const toggleTask = async (taskId, nextCompleted) => {
-    console.log("toggleTask", taskId, nextCompleted);
-
-    setSyllabus((prev) => {
-      console.log("before", prev);
-      const updated = prev.map((task) =>
-        task.taskId === taskId ? { ...task, completed: nextCompleted } : task,
-      );
-      console.log("after", updated);
-      return updated;
-    });
-
-    try {
-      await updateCommunityTask(Number(id), taskId, nextCompleted);
-    } catch (e) {
-      setSyllabus((prev) =>
-        prev.map((task) =>
-          task.id === taskId ? { ...task, completed: !nextCompleted } : task,
-        ),
-      );
-    }
-  };
-
   return (
     <PageContainer>
       <Navbar />
 
-      <PageHeader className="community-page-header">
-        <div className="first-row">
-          {communityJoined && (
-            <Tooltip label={"leave"}>
-              <LogOut
-                size={30}
-                className="leave-icon"
-                onClick={() => leaveModal.open(community)}
-              />
-            </Tooltip>
-          )}
-        </div>
-
-        <div className="second-row">
-          <CommunityBanner streak={community.streak} id={id} view="list" />
-          <CommunityHeader
-            name={community.name}
-            description={community.description}
-            members={community.memberCount}
-            streak={community.streak}
-            view="list"
-          />
-
-          <div className="join-button">
-            {communityJoined ? (
-              <NewPostButton onClick={() => setShowCreatePost(true)} />
-            ) : (
-              <JoinButton
-                joined={false}
-                onClick={() => toggleJoinCommunity(community.id)}
-              />
-            )}
-          </div>
-        </div>
-
-        <div className="community-tabs">
-          <Tabs tabs={tabs} active={active} onChange={handelTabChange} />
-        </div>
-      </PageHeader>
+      <CommunityHeaderSection
+        community={community}
+        communityJoined={communityJoined}
+        onLeave={() => leaveModal.open(community)}
+        onNewPost={() => setShowCreatePost(true)}
+        onJoin={() => toggleJoinCommunity(community.id)}
+        tabs={tabs}
+        activeTab={active}
+        onTabChange={handelTabChange}
+      />
 
       <div className="main">
-        {active === "Feed" &&
-          (postsLoading.community
-            ? Array.from({ length: 3 }).map((_, i) => (
-                <PostCardSkeleton key={i} />
-              ))
-            : communityPosts.map((post) => (
-                <PostCard
-                  key={post.postId}
-                  post={post}
-                  onCommentAdded={() => handleCommentAdded(post.postId)}
-                  displayStreakBadge={true}
-                />
-              )))}
+        {active === "Feed" && (
+          <CommunityFeed
+            posts={communityPosts}
+            loading={postsLoading.community}
+            onCommentAdded={handleCommentAdded}
+          />
+        )}
 
-        {active === "Syllabus" && syllabus.length > 0 && (
-          <>
-            {!communityJoined && <div>Join community to track progress</div>}
-            <TaskList
-              syllabus={syllabus}
-              onToggle={toggleTask}
-              disabled={!communityJoined}
-            />
-          </>
+        {active === "Syllabus" && (
+          <CommunitySyllabus
+            communityId={Number(id)}
+            joined={communityJoined}
+          />
         )}
       </div>
 

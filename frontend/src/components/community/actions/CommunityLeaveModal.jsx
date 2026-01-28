@@ -1,7 +1,7 @@
-import { Modal } from "../ui/Modal";
+import { Modal } from "../../ui/Modal";
 import { X } from "lucide-react";
 import "./CommunityLeaveModal.css";
-import { Button } from "../ui/Button";
+import { Button } from "../../ui/Button";
 
 export const CommunityLeaveModal = ({ isOpen, onClose, onClick }) => {
   return (

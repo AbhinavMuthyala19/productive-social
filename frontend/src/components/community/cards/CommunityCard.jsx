@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { Card } from "../ui/Card";
-import { CommunityBanner } from "./CommunityBanner";
-import { CommunityHeader } from "./CommunityHeader";
 import "./CommunityCard.css";
-import { JoinButton } from "./JoinButton";
+import { Card } from "../../ui/Card";
+import { CommunityBanner } from "../header/CommunityBanner";
+import { CommunityHeader } from "../header/CommunityHeader";
+import { JoinButton } from "../actions/JoinButton";
 
 export const CommunityCard = ({
   id,

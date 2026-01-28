@@ -1,8 +1,8 @@
 import { TrendingUp, UsersRound } from "lucide-react";
-import { Badge } from "../ui/Badge";
+import { Badge } from "../../ui/Badge";
 import "./CommunityHeader.css";
-import "../ui/Badge.css";
-import fireIcon from "../../assets/icons/fire.svg";
+import "../../ui/Badge.css";
+import fireIcon from "../../../assets/icons/fire.svg";
 
 export const CommunityHeader = ({
   name,

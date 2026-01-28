@@ -1,8 +1,8 @@
 
-import { Card } from "../ui/Card";
+import { Card } from "../../ui/Card";
 import "./TaskItem.css";
-import { Checkbox } from "../ui/Checkbox";
-import notesIcon from "../../assets/icons/notes.svg";
+import { Checkbox } from "../../ui/Checkbox";
+import notesIcon from "../../../assets/icons/notes.svg";
 
 
 export const TaskItem = ({ title, taskId, completed, onToggle, disabled }) => {

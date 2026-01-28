@@ -3,4 +3,5 @@
   min-width: 320px;
   height: auto;
   border-radius: var(--radius-lg);
+  padding: 10px;
 }

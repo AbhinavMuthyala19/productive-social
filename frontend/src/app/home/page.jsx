@@ -9,6 +9,7 @@ import { PostContext } from "../../context/PostContext";
 import { PostCardSkeleton } from "../../components/feed/PotCardSkeleton";
 import { CommunityContext } from "../../context/CommunityContext";
 import { CreatePostModal } from "../../components/feed/CreatePostModal";
+import { useLocation } from "react-router-dom";
 
 export const Home = () => {
   const { posts, loading, fetchPosts, handleCommentAdded, addPost } =
@@ -16,12 +17,13 @@ export const Home = () => {
 
   const { communities } = useContext(CommunityContext);
   const [showCreatePost, setShowCreatePost] = useState(false);
+  const location = useLocation()
 
   useEffect(() => {
-    if (posts.length === 0) {
+    if (location.pathname === '/' && !loading.global) {
       fetchPosts();
     }
-  }, []);
+  }, [location.pathname]);
   
   const joinedCommunitiesMap = new Map(
     communities.filter((c) => c.joined).map((c) => [c.id, c]),

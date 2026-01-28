@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { usePasswordToggle } from "../../hooks/usePasswordToggle";
 import { AuthContext } from "../../context/AuthContext";
 import { LoginForm } from "../../components/auth/LoginForm";
+import { toast } from "sonner";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -35,9 +36,8 @@ export const Login = () => {
     e.preventDefault();
     try {
       await login(form.identifier, form.password, timezone);
-      alert("Login successful!");
     } catch (error) {
-      alert("Incorrect email or password");
+      toast.error("Incorrect email or password");
     }
   };
   return (

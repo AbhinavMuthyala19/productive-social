@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import {
   getCommunityPosts,
   getGlobalPosts,
@@ -32,19 +38,19 @@ export const PostProvider = ({ children }) => {
     }
   }, [user, authLoading]);
 
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     try {
       setLoading((l) => ({ ...l, global: true }));
       const res = await getGlobalPosts();
-      mergePosts(res.data); // 🔥 NOT setPosts
+      mergePosts(res.data);
     } catch (e) {
       setError(e);
     } finally {
       setLoading((l) => ({ ...l, global: false }));
     }
-  };
+  }, []);
 
-  const fetchCommunityPosts = async (communityId) => {
+  const fetchCommunityPosts = useCallback(async (communityId) => {
     try {
       setLoading((l) => ({ ...l, community: true }));
       const res = await getCommunityPosts(communityId);
@@ -52,25 +58,23 @@ export const PostProvider = ({ children }) => {
     } finally {
       setLoading((l) => ({ ...l, community: false }));
     }
-  };
+  }, []);
 
-  const fetchUserPosts = async (username) => {
+  const fetchUserPosts = useCallback(async (username) => {
     try {
       setLoading((l) => ({ ...l, user: true }));
-
       const res = username
         ? await getUserPostsByUserName(username)
         : await getUserPosts();
-
       mergePosts(res.data);
     } finally {
       setLoading((l) => ({ ...l, user: false }));
     }
-  };
+  }, []);
 
-  const addPost = (post) => {
+  const addPost = useCallback((post) => {
     setPosts((prev) => [post, ...prev]);
-  };
+  }, []);
 
   const updatePost = (postId, updater) => {
     setPosts((prev) => prev.map((p) => (p.postId === postId ? updater(p) : p)));
@@ -102,12 +106,12 @@ export const PostProvider = ({ children }) => {
     }
   };
 
-  const handleCommentAdded = (postId) => {
+  const handleCommentAdded = useCallback((postId) => {
     updatePost(postId, (p) => ({
       ...p,
       commentsCount: p.commentsCount + 1,
     }));
-  };
+  }, []);
 
   const mergePosts = (newPosts) => {
     setPosts((prev) => {

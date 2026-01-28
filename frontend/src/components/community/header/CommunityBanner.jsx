@@ -1,6 +1,6 @@
 import { Flame } from "lucide-react";
-import robotIcon from "../../assets/icons/robot.svg";
-import { Badge } from "../ui/Badge";
+import robotIcon from "../../../assets/icons/robot.svg";
+import { Badge } from "../../ui/Badge";
 import "./CommunityBanner.css";
 
 export const CommunityBanner = ({ streak, id, view }) => {

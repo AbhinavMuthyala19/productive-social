@@ -15,10 +15,10 @@ import { PostContext } from "../../../context/PostContext";
 import { PostCardSkeleton } from "../../../components/feed/PotCardSkeleton";
 import { PostCard } from "../../../components/feed/PostCard";
 import { useParams, useSearchParams } from "react-router-dom";
-import { CommunityList } from "../../../components/community/CommunityList";
+import { CommunityList } from "../../../components/community/list/CommunityList";
 import { useLeaveCommunity } from "../../../hooks/useLeaveCommunity";
 import { CommunityContext } from "../../../context/CommunityContext";
-import { CommunityLeaveModal } from "../../../components/community/CommunityLeaveModal";
+import { CommunityLeaveModal } from "../../../components/community/actions/CommunityLeaveModal";
 import { AuthContext } from "../../../context/AuthContext";
 
 export const Profile = () => {
@@ -71,6 +71,7 @@ export const Profile = () => {
         : await getUserProfile();
 
       setUserProfile(res.data);
+      console.log(res.data)
     } catch (error) {
       console.log(error);
     } finally {

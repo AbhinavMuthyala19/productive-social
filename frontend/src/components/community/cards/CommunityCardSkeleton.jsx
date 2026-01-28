@@ -1,8 +1,8 @@
-import { Card } from "../ui/Card";
-import { Skeleton } from "../ui/Skeleton";
 import "./CommunityCard.css";
-import "./CommunityHeader.css";
-import "./CommunityBanner.css";
+import "../header/CommunityHeader.css";
+import "../header/CommunityBanner.css";
+import { Card } from "../../ui/Card";
+import { Skeleton } from "../../ui/Skeleton";
 
 export const CommunityCardSkeleton = ({ view }) => {
   return (

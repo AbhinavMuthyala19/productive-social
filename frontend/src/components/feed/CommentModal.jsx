@@ -4,16 +4,21 @@ import { Button } from "../ui/Button";
 import { Avatar } from "../ui/Avatar";
 import "./CommentModal.css";
 import closeIcon from "../../assets/icons/cross.svg";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getPostComments, postComments } from "../../lib/api";
+import { CommentItem } from "./CommentItem";
 
 export const CommentModal = ({ postId, onClose, isOpen, onCommentAdded }) => {
   const [comments, setComments] = useState([]);
+  const [replyTo, setReplyTo] = useState(null);
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(true);
+  const commentsTopRef = useRef(null);
 
   useEffect(() => {
-    if (isOpen) fetchComments();
+    if (isOpen) {
+      fetchComments();
+    }
   }, [isOpen]);
 
   const fetchComments = async () => {
@@ -21,7 +26,7 @@ export const CommentModal = ({ postId, onClose, isOpen, onCommentAdded }) => {
       setLoading(true);
       const res = await getPostComments(postId);
       setComments(res.data);
-      console.log(comments);
+      console.log(res.data);
     } finally {
       setLoading(false);
     }
@@ -32,16 +37,40 @@ export const CommentModal = ({ postId, onClose, isOpen, onCommentAdded }) => {
     if (!comment.trim()) return;
 
     try {
-      const res = await postComments(postId, comment);
+      const res = await postComments({
+        postId,
+        content: comment,
+        parentCommentId: replyTo,
+      });
 
-      setComments((prev) => [res.data, ...prev]);
+      setComments((prev) =>
+        replyTo ? addReply(prev, replyTo, res.data) : [res.data, ...prev],
+      );
+      commentsTopRef.current?.scrollIntoView({
+        behavior: "smooth",
+      });
+
       setComment("");
+      setReplyTo(null);
 
       // 🔑 tell feed to increment commentsCount
       onCommentAdded?.(postId);
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const addReply = (comments, parentId, reply) => {
+    return comments.map((c) =>
+      c.id === parentId
+        ? { ...c, replies: [reply, ...(c.replies || [])] }
+        : {
+            ...c,
+            replies: c.replies
+              ? addReply(c.replies, parentId, reply)
+              : c.replies,
+          },
+    );
   };
 
   return (
@@ -52,17 +81,20 @@ export const CommentModal = ({ postId, onClose, isOpen, onCommentAdded }) => {
       </div>
 
       <div className="comments-list">
+        <div ref={commentsTopRef} />
+
         {loading ? (
           <p>Loading...</p>
         ) : (
           comments.map((c) => (
-            <div key={c.id} className="comment-item">
-              <p className="name">
-                <Avatar alt={c.username} />
-                {c.name} <span>{c.username}</span>
-              </p>
-              <p className="text">{c.content}</p>
-            </div>
+            <CommentItem
+              key={c.id}
+              comment={c}
+              onReply={(comment) => {
+                setReplyTo(comment.id);
+                setComment(`@${comment.username}`);
+              }}
+            />
           ))
         )}
       </div>

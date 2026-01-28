@@ -3,28 +3,36 @@ import { Navbar } from "../../components/layout/Navbar";
 import { useContext, useEffect, useState } from "react";
 import { CommunityContext } from "../../context/CommunityContext";
 import { PageHeader } from "../../components/layout/PageHeader";
-import { CommunityViewToggle } from "../../components/community/CommunityViewToggle";
-import { CommunityList } from "../../components/community/CommunityList";
-import { CommunityLeaveModal } from "../../components/community/CommunityLeaveModal";
+
 import { useLeaveCommunity } from "../../hooks/useLeaveCommunity";
+import { CommunityList } from "../../components/community/list/CommunityList";
+import { CommunityLeaveModal } from "../../components/community/actions/CommunityLeaveModal";
+import { CommunityViewToggle } from "../../components/community/list/CommunityViewToggle";
+import { useLocation } from "react-router-dom";
 
 export const Communities = () => {
-  const { communities, loading, toggleJoinCommunity } =
+  const { communities, loading, fetchCommunities, toggleJoinCommunity } =
     useContext(CommunityContext);
   const leaveModal = useLeaveCommunity(toggleJoinCommunity);
   const [view, setView] = useState(
     () => localStorage.getItem("communityView") || "grid",
   );
+  const location = useLocation();
 
   useEffect(() => {
     localStorage.setItem("communityView", view);
   }, [view]);
 
+  useEffect(() => {
+    if (location.pathname === "/communities" && !loading) {
+      fetchCommunities();
+    }
+  }, [location.pathname, loading, fetchCommunities]);
+
   // 🔑 called when user clicks "Leave"
   const handleLeaveClick = (community) => {
-    leaveModal.open(community)
+    leaveModal.open(community);
   };
-
 
   return (
     <PageContainer>

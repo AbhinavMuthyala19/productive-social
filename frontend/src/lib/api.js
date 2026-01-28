@@ -104,8 +104,8 @@ export const likePosts = (postId) => api.post(`/posts/${postId}/like`);
 
 export const unlikePosts = (postId) => api.delete(`/posts/${postId}/like`);
 
-export const postComments = (postId, content) =>
-  api.post("/comments", { postId, content });
+export const postComments = (comment) =>
+  api.post("/comments", comment);
 
 export const getPostComments = (postId) => api.get(`/comments/post/${postId}`);
 
