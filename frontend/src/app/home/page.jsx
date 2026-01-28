@@ -4,36 +4,32 @@ import { PostCard } from "../../components/feed/PostCard";
 import { NewPostButton } from "../../components/feed/NewPostButton";
 import { PageHeader } from "../../components/layout/PageHeader";
 import "../../App.css";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { PostContext } from "../../context/PostContext";
 import { PostCardSkeleton } from "../../components/feed/PotCardSkeleton";
 import { CommunityContext } from "../../context/CommunityContext";
 import { CreatePostModal } from "../../components/feed/CreatePostModal";
-import { useLocation } from "react-router-dom";
 
 export const Home = () => {
-  const { posts, loading, fetchPosts, handleCommentAdded, addPost } =
+  const { posts, loading, handleCommentAdded, addPost } =
     useContext(PostContext);
 
   const { communities } = useContext(CommunityContext);
   const [showCreatePost, setShowCreatePost] = useState(false);
-  const location = useLocation()
 
-  useEffect(() => {
-    if (location.pathname === '/' && !loading.global) {
-      fetchPosts();
-    }
-  }, [location.pathname]);
-  
-  const joinedCommunitiesMap = new Map(
-    communities.filter((c) => c.joined).map((c) => [c.id, c]),
+  const joinedCommunitiesMap = useMemo(() => {
+    return new Map(communities.filter((c) => c.joined).map((c) => [c.id, c]));
+  }, [communities]);
+
+  const joinedPosts = useMemo(
+    () => posts.filter((post) => joinedCommunitiesMap.has(post.community.id)),
+    [posts, joinedCommunitiesMap],
   );
 
-  const joinedPosts = posts.filter((post) =>
-    joinedCommunitiesMap.has(post.community.id),
+  const joinedCommunityOptions = useMemo(
+    () => Array.from(joinedCommunitiesMap.values()),
+    [joinedCommunitiesMap],
   );
-
-  const joinedCommunityOptions = Array.from(joinedCommunitiesMap.values());
 
   return (
     <PageContainer>

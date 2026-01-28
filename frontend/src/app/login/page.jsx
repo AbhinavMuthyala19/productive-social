@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { usePasswordToggle } from "../../hooks/usePasswordToggle";
 import { AuthContext } from "../../context/AuthContext";
 import { LoginForm } from "../../components/auth/LoginForm";
@@ -10,7 +10,11 @@ export const Login = () => {
   const { login, user, loading } = useContext(AuthContext);
   const passwordToggle = usePasswordToggle();
   const location = useLocation();
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const timezone = useMemo(
+  () => Intl.DateTimeFormat().resolvedOptions().timeZone,
+  []
+);
+
 
   const [form, setForm] = useState({
     identifier: "",
@@ -24,7 +28,7 @@ export const Login = () => {
     if (!loading && user) {
       navigate(from, { replace : true });
     }
-  }, [user, loading]);
+  }, [user, loading, navigate, from]);
 
   if (loading) return null; // wait until AuthContext finishes
 

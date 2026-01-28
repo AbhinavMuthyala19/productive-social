@@ -8,26 +8,18 @@ import { useLeaveCommunity } from "../../hooks/useLeaveCommunity";
 import { CommunityList } from "../../components/community/list/CommunityList";
 import { CommunityLeaveModal } from "../../components/community/actions/CommunityLeaveModal";
 import { CommunityViewToggle } from "../../components/community/list/CommunityViewToggle";
-import { useLocation } from "react-router-dom";
 
 export const Communities = () => {
-  const { communities, loading, fetchCommunities, toggleJoinCommunity } =
+  const { communities, loading, toggleJoinCommunity } =
     useContext(CommunityContext);
   const leaveModal = useLeaveCommunity(toggleJoinCommunity);
   const [view, setView] = useState(
     () => localStorage.getItem("communityView") || "grid",
   );
-  const location = useLocation();
 
   useEffect(() => {
     localStorage.setItem("communityView", view);
   }, [view]);
-
-  useEffect(() => {
-    if (location.pathname === "/communities" && !loading) {
-      fetchCommunities();
-    }
-  }, [location.pathname, loading, fetchCommunities]);
 
   // 🔑 called when user clicks "Leave"
   const handleLeaveClick = (community) => {

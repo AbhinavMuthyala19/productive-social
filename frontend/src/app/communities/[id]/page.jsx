@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { PostContext } from "../../../context/PostContext";
 import { CommunityContext } from "../../../context/CommunityContext";
 import { useParams, useSearchParams } from "react-router-dom";
@@ -13,7 +13,7 @@ import { CommunityFeed } from "./components/CommunityFeed";
 import { CommunitySyllabus } from "./components/CommunitySyllabus";
 
 export const CommunityPage = () => {
-  const { communities, loading, fetchCommunities, toggleJoinCommunity } =
+  const { communities, loading, toggleJoinCommunity } =
     useContext(CommunityContext);
   const {
     posts,
@@ -33,17 +33,18 @@ export const CommunityPage = () => {
   const community = communities.find((c) => c.id === Number(id));
   const communityJoined = community?.joined;
 
-  const communityPosts = posts.filter(
-    (post) => post.community.id === Number(id),
+  const communityPosts = useMemo(
+    () => posts.filter((post) => post.community.id === Number(id)),
+    [posts, id],
   );
 
   useEffect(() => {
-    if (active === "Feed") {
+    if (active === "Feed" && communityPosts.length === 0) {
       fetchCommunityPosts(id);
     }
-  }, [active, id, fetchCommunityPosts]);
+  }, [active, id, fetchCommunityPosts, communityPosts.length]);
 
-  const handelTabChange = (tab) => {
+  const handleTabChange = (tab) => {
     setActive(tab);
     setSearchParams({ tab }, { replace: true });
   };
@@ -69,7 +70,7 @@ export const CommunityPage = () => {
         onJoin={() => toggleJoinCommunity(community.id)}
         tabs={tabs}
         activeTab={active}
-        onTabChange={handelTabChange}
+        onTabChange={handleTabChange}
       />
 
       <div className="main">

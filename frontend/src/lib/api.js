@@ -27,7 +27,9 @@ api.interceptors.response.use(
     }
 
     // Normalize URL (handles axios removing slashes)
-    const url = original.url.replace(api.defaults.baseURL, "");
+    const url = original.url.startsWith("http")
+      ? original.url.replace(api.defaults.baseURL, "")
+      : original.url;
 
     // 🚫 NEVER refresh auth endpoints
     if (
@@ -95,17 +97,16 @@ export const getGlobalPosts = () => api.get("/posts/feed/global");
 export const getCommunityPosts = (communityId) =>
   api.get(`/posts/feed/community/${communityId}`);
 
-export const getUserPosts = () => api.get("posts/feed/me");
+export const getUserPosts = () => api.get("/posts/feed/me");
 
 export const getUserPostsByUserName = (username) =>
-  api.get(`/posts/feed/${username}`)
+  api.get(`/posts/feed/${username}`);
 
 export const likePosts = (postId) => api.post(`/posts/${postId}/like`);
 
 export const unlikePosts = (postId) => api.delete(`/posts/${postId}/like`);
 
-export const postComments = (comment) =>
-  api.post("/comments", comment);
+export const postComments = (comment) => api.post("/comments", comment);
 
 export const getPostComments = (postId) => api.get(`/comments/post/${postId}`);
 
@@ -115,18 +116,16 @@ export const getCommunitySyllabus = (communityId) =>
   api.get(`/communities/${communityId}/tasks`);
 
 export const updateCommunityTask = (communityId, taskId, completed) =>
-  api.post(`/communities/${communityId}/tasks/update`, {taskId, completed})
+  api.post(`/communities/${communityId}/tasks/update`, { taskId, completed });
 
-export const getUserProfile = () =>
-  api.get("/profile/me")
+export const getUserProfile = () => api.get("/profile/me");
 
 export const getUserProfileByUserName = (username) =>
-  api.get(`/profile/${username}`)
+  api.get(`/profile/${username}`);
 
-export const getUserCommunities = () =>
-  api.get("/communities/me")
+export const getUserCommunities = () => api.get("/communities/me");
 
 export const getUserCommunitiesByUserName = (username) =>
-  api.get(`/communities/user/${username}`)
+  api.get(`/communities/user/${username}`);
 
 export default api;

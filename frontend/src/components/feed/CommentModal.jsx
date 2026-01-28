@@ -92,7 +92,7 @@ export const CommentModal = ({ postId, onClose, isOpen, onCommentAdded }) => {
               comment={c}
               onReply={(comment) => {
                 setReplyTo(comment.id);
-                setComment(`@${comment.username}`);
+                setComment(`@${comment.username} `);
               }}
             />
           ))

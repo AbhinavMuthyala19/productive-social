@@ -1,4 +1,11 @@
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { getCommunities } from "../lib/api";
 import { AuthContext } from "./AuthContext";
 import { joinCommunity, leaveCommunity } from "../lib/api";
@@ -11,18 +18,7 @@ export const CommunityProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (authLoading) return;
-
-    if (!user) {
-      setCommunities([]);
-      return;
-    }
-    fetchCommunities();
-  }, [user, authLoading]);
-
   const fetchCommunities = useCallback(async () => {
-    if (communities.length > 0) return;
     try {
       setLoading(true);
       setError(null);
@@ -43,17 +39,18 @@ export const CommunityProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [communities.length]);
+  }, []);
 
   const toggleJoinCommunity = useCallback(
     async (communityId) => {
-      setCommunities((prev) => {
-        const community = prev.find((c) => c.id === communityId);
-        if (!community) return prev;
+      const community = communities.find((c) => c.id === communityId);
+      if (!community) return;
 
-        const nextJoined = !community.joined;
+      const nextJoined = !community.joined;
 
-        return prev.map((c) =>
+      // 1️⃣ Optimistic UI update
+      setCommunities((prev) =>
+        prev.map((c) =>
           c.id === communityId
             ? {
                 ...c,
@@ -61,34 +58,56 @@ export const CommunityProvider = ({ children }) => {
                 memberCount: c.memberCount + (nextJoined ? 1 : -1),
               }
             : c,
-        );
-      });
+        ),
+      );
 
+      // 2️⃣ Correct API call
       try {
-        const community = communities.find((c) => c.id === communityId);
-        if (!community) return;
-
-        community.joined
-          ? await leaveCommunity(communityId)
-          : await joinCommunity(communityId);
-      } catch (error) {
-        console.error(error);
-        fetchCommunities(); // fallback resync
+        if (nextJoined) {
+          await joinCommunity(communityId);
+        } else {
+          await leaveCommunity(communityId);
+        }
+      } catch {
+        // rollback
+        setCommunities((prev) =>
+          prev.map((c) =>
+            c.id === communityId
+              ? {
+                  ...c,
+                  joined: !nextJoined,
+                  memberCount: c.memberCount + (nextJoined ? -1 : 1),
+                }
+              : c,
+          ),
+        );
       }
     },
-    [communities, fetchCommunities],
+    [communities],
+  );
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user) {
+      setCommunities([]);
+      return;
+    }
+    fetchCommunities();
+  }, [user, authLoading, fetchCommunities]);
+
+  const value = useMemo(
+    () => ({
+      communities,
+      loading,
+      error,
+      fetchCommunities,
+      toggleJoinCommunity,
+    }),
+    [communities, loading, error, fetchCommunities, toggleJoinCommunity],
   );
 
   return (
-    <CommunityContext.Provider
-      value={{
-        communities,
-        loading,
-        error,
-        fetchCommunities,
-        toggleJoinCommunity,
-      }}
-    >
+    <CommunityContext.Provider value={value}>
       {children}
     </CommunityContext.Provider>
   );

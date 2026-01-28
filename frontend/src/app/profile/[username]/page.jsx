@@ -1,10 +1,7 @@
 import { PageContainer } from "../../../components/layout/PageContainer";
 import { Navbar } from "../../../components/layout/Navbar";
-import { PageHeader } from "../../../components/layout/PageHeader";
-import { ProfileHeader } from "../../../components/profile/ProfileHeader";
 import "../Profile.css";
-import { ProfileTabs } from "../../../components/profile/ProfileTabs";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import {
   getUserCommunities,
   getUserCommunitiesByUserName,
@@ -12,14 +9,14 @@ import {
   getUserProfileByUserName,
 } from "../../../lib/api";
 import { PostContext } from "../../../context/PostContext";
-import { PostCardSkeleton } from "../../../components/feed/PotCardSkeleton";
-import { PostCard } from "../../../components/feed/PostCard";
 import { useParams, useSearchParams } from "react-router-dom";
-import { CommunityList } from "../../../components/community/list/CommunityList";
 import { useLeaveCommunity } from "../../../hooks/useLeaveCommunity";
 import { CommunityContext } from "../../../context/CommunityContext";
 import { CommunityLeaveModal } from "../../../components/community/actions/CommunityLeaveModal";
 import { AuthContext } from "../../../context/AuthContext";
+import { ProfileHeaderSection } from "./components/ProfileHeaderSection";
+import { ProfileFeed } from "./components/ProfileFeed";
+import { ProfileCommunities } from "./components/ProfileCommunities";
 
 export const Profile = () => {
   const { toggleJoinCommunity } = useContext(CommunityContext);
@@ -32,56 +29,40 @@ export const Profile = () => {
   const { user: loggedInUser } = useContext(AuthContext);
   const leaveModal = useLeaveCommunity(toggleJoinCommunity);
   const [userProfile, setUserProfile] = useState(null);
-
   const [userCommunities, setUserCommunities] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [communitiesLoading, setCommunitiesLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const tabFromUrl = searchParams.get("tab") || "Feed";
   const [active, setActive] = useState(tabFromUrl);
   const tabs = ["Feed", "Communities"];
   const { username } = useParams();
 
-  const communityPosts = posts.filter(
-    (post) => post.user.username === userProfile?.username,
+  const profilePosts = useMemo(
+    () => posts.filter((post) => post.user.username === userProfile?.username),
+    [posts, userProfile?.username],
   );
 
   const isOwnProfile = !username || loggedInUser?.username === username;
 
-  useEffect(() => {
-    fetchUserProfile();
-  }, [username]);
-
-  useEffect(() => {
-    if (active === "Feed") {
-      fetchUserPosts(username);
-    }
-  }, [active, username]);
-
-  useEffect(() => {
-    if (active === "Communities" && userProfile?.id) {
-      fetchUserCommunities();
-    }
-  }, [active, userProfile?.id]);
-
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = useCallback(async () => {
     try {
-      setLoading(true);
+      setProfileLoading(true);
       const res = username
         ? await getUserProfileByUserName(username)
         : await getUserProfile();
 
       setUserProfile(res.data);
-      console.log(res.data)
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(false);
+      setProfileLoading(false);
     }
-  };
+  }, [username]);
 
-  const fetchUserCommunities = async () => {
+  const fetchUserCommunities = useCallback(async () => {
     try {
-      setLoading(true);
+      setCommunitiesLoading(true);
       const res = username
         ? await getUserCommunitiesByUserName(username)
         : await getUserCommunities();
@@ -90,9 +71,24 @@ export const Profile = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(false);
+      setCommunitiesLoading(false);
     }
-  };
+  }, [username]);
+  useEffect(() => {
+    fetchUserProfile();
+  }, [username, fetchUserProfile]);
+
+  useEffect(() => {
+    if (active === "Feed" && profilePosts.length === 0) {
+      fetchUserPosts(username);
+    }
+  }, [active, username, fetchUserPosts, profilePosts.length]);
+
+  useEffect(() => {
+    if (active === "Communities" && userProfile?.id) {
+      fetchUserCommunities();
+    }
+  }, [active, userProfile?.id]);
 
   const handleLeaveClick = (community) => {
     leaveModal.open(community);
@@ -109,47 +105,31 @@ export const Profile = () => {
   return (
     <PageContainer>
       <Navbar />
-      <PageHeader className={"profile-page-header"}>
-        <ProfileHeader
-          name={userProfile?.name}
-          username={userProfile?.username}
-          bio={userProfile?.bio}
-          streak={userProfile?.stats?.streak}
-          longestStreak={userProfile?.stats?.longestStreak}
-          posts={userProfile?.stats?.posts}
-          communities={userProfile?.stats?.communities}
-        />
-
-        <ProfileTabs
-          active={active}
+      {userProfile && (
+        <ProfileHeaderSection
+          userProfile={userProfile}
+          activeTab={active}
           setActive={setActive}
           tabs={tabs}
           setSearchParams={setSearchParams}
         />
-      </PageHeader>
+      )}
       <div className="main">
-        {active === "Feed" &&
-          (postLoading.user
-            ? Array.from({ length: 3 }).map((_, i) => (
-                <PostCardSkeleton key={i} />
-              ))
-            : communityPosts.map((post) => (
-                <PostCard
-                  key={post.postId}
-                  post={post}
-                  onCommentAdded={() => handleCommentAdded(post.postId)}
-                  displayCommunityBadge
-                  userNameClickable={false}
-                />
-              )))}
+        {active === "Feed" && (
+          <ProfileFeed
+            posts={profilePosts}
+            loading={postLoading.user}
+            onCommentAdded={handleCommentAdded}
+          />
+        )}
 
         {active === "Communities" && (
-          <CommunityList
+          <ProfileCommunities
             communities={userCommunities}
-            view={"list"}
-            loading={loading}
-            onLeave={isOwnProfile ? handleLeaveClick : undefined}
-            onJoin={isOwnProfile ? toggleJoinCommunity : undefined}
+            loading={communitiesLoading}
+            isOwnProfile={isOwnProfile}
+            onLeave={handleLeaveClick}
+            onJoin={toggleJoinCommunity}
           />
         )}
       </div>

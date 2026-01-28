@@ -7,12 +7,6 @@ export const CommunitySyllabus = ({ communityId, joined }) => {
   const [syllabus, setSyllabus] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (syllabus.length === 0) {
-      fetchSyllabus();
-    }
-  }, [communityId]);
-
   const fetchSyllabus = async () => {
     try {
       setLoading(true);
@@ -23,7 +17,12 @@ export const CommunitySyllabus = ({ communityId, joined }) => {
     }
   };
 
+  useEffect(() => {
+    fetchSyllabus();
+  }, [communityId]);
+
   const toggleTask = async (taskId, nextCompleted) => {
+    if (!joined) return;
     setSyllabus((prev) =>
       prev.map((task) =>
         task.taskId === taskId ? { ...task, completed: nextCompleted } : task,

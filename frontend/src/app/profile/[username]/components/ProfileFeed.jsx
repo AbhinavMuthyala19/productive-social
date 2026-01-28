@@ -1,14 +1,16 @@
 import { PostCard } from "../../../../components/feed/PostCard";
 import { PostCardSkeleton } from "../../../../components/feed/PotCardSkeleton";
+import "../../Profile.css";
 
-export const CommunityFeed = ({ posts, loading, onCommentAdded }) => {
+export const ProfileFeed = ({ posts, loading, onCommentAdded }) => {
   if (loading) {
     return Array.from({ length: 3 }).map((_, i) => (
-      <PostCardSkeleton key={i} />
+      <PostCardSkeleton key={`profile-feed-skeleton-${i}`} />
     ));
   }
+
   if (!loading && posts.length === 0) {
-    return <div>No posts yet</div>;
+    return <div className="empty-feed">No posts yet</div>;
   }
 
   return posts.map((post) => (
@@ -16,7 +18,8 @@ export const CommunityFeed = ({ posts, loading, onCommentAdded }) => {
       key={post.postId}
       post={post}
       onCommentAdded={() => onCommentAdded(post.postId)}
-      displayStreakBadge={true}
+      displayCommunityBadge
+      userNameClickable={false}
     />
   ));
 };
