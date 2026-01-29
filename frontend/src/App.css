@@ -7,27 +7,3 @@
   padding: 0 20px 20px 20px;
 }
 
-/* Login Button */
-.auth-button {
-  background-color: var(--color-purple);
-  color: white;
-  font-weight: 600;
-  width: 100%;
-
-}
-
-.auth-button:hover {
-  background-color: var(--hover-purple)
-}
-
-.auth-input {
-  background-color: var(--gray-100);
-  border: none;
-  width: 400px;
-  height: 60px;
-  margin: 5px;
-}
-
-.auth-input:focus {
-  border-color: var(--color-blue);
-}

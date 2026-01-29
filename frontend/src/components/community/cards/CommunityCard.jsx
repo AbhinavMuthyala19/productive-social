@@ -22,7 +22,7 @@ export const CommunityCard = ({
 
   return (
     <Card
-      className={`community-card ${view === "list" ? "list" : ""} ${className}`}
+      className={`community-card ${view === "list" ? "list" : ""} ${className ?? ""}`}
       onClick={clickable ? () => navigate(`/communities/${id}`) : undefined}
     >
       <CommunityBanner streak={streak} id={id} view={view} />
@@ -38,7 +38,6 @@ export const CommunityCard = ({
       <div className={`community-card-footer ${view === "list" ? "list" : ""}`}>
         {(onJoin || onLeave) && (
           <JoinButton
-            id={id}
             joined={joined}
             onClick={(e) => {
               e.stopPropagation();

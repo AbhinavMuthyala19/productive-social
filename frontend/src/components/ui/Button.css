@@ -38,3 +38,16 @@
   color: black;
   font-weight: 600;
 }
+
+.transparent-button{
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-500);
+    font-size: 14px;
+    gap: 5px;
+    width: 25px;
+    height: 25px;
+    -webkit-tap-highlight-color: transparent;
+}

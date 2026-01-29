@@ -4,7 +4,6 @@ import "./PostHeader.css";
 import "./PostBody.css";
 import "./PostFooter.css";
 import { Card } from "../ui/Card";
-import { Button } from "../ui/Button";
 
 export const PostCardSkeleton = () => {
   return (

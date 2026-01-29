@@ -23,6 +23,7 @@ export const CreatePostModal = ({
   const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
   const [notes, setNotes] = useState([]);
+  const [posting, setPosting] = useState(false);
   const [showAttachmentsModal, setShowAttachmentsModal] = useState(false);
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export const CreatePostModal = ({
     setTitle("");
     setContent("");
     setImages([]);
+    setNotes([]);
   };
 
   const handleClose = () => {
@@ -45,6 +47,8 @@ export const CreatePostModal = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (posting) return;
 
     const formData = new FormData();
 
@@ -66,13 +70,16 @@ export const CreatePostModal = ({
     });
 
     try {
+      setPosting(true);
       const res = await createPost(formData);
       onPostCreated(res.data);
-      toast.success("Post created!")
+      toast.success("Post created!");
       handleClose();
     } catch (err) {
       console.error("Create post failed:", err);
-      toast.error(err.response?.data?.message || "Failed to create post")
+      toast.error(err.response?.data?.message || "Failed to create post");
+    } finally {
+      setPosting(false);
     }
   };
 
@@ -85,7 +92,9 @@ export const CreatePostModal = ({
     >
       <div className="create-post-header">
         <h3>Create Post</h3>
-        <img onClick={handleClose} src={closeIcon} alt="close" />
+        <Button variant={"transparent-button"} onClick={handleClose}>
+          <img src={closeIcon} alt="close" />
+        </Button>
       </div>
 
       <div className="create-post-form">
@@ -148,7 +157,11 @@ export const CreatePostModal = ({
             )}
           </div>
 
-          <Button type="submit" className={"create-post-submit-button"}>
+          <Button
+            type="submit"
+            className={"create-post-submit-button"}
+            disabled={posting}
+          >
             Publish
           </Button>
         </form>

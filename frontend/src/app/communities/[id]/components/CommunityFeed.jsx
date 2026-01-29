@@ -1,7 +1,9 @@
 import { PostCard } from "../../../../components/feed/PostCard";
-import { PostCardSkeleton } from "../../../../components/feed/PotCardSkeleton";
+import { PostCardSkeleton } from "../../../../components/feed/PostCardSkeleton";
 
-export const CommunityFeed = ({ posts, loading, onCommentAdded }) => {
+export const CommunityFeed = ({ posts, loading, onToggleLike, onCommentAdded}) => {
+
+  
   if (loading) {
     return Array.from({ length: 3 }).map((_, i) => (
       <PostCardSkeleton key={i} />
@@ -16,6 +18,7 @@ export const CommunityFeed = ({ posts, loading, onCommentAdded }) => {
       key={post.postId}
       post={post}
       onCommentAdded={() => onCommentAdded(post.postId)}
+      onToggleLike={onToggleLike}
       displayStreakBadge={true}
     />
   ));

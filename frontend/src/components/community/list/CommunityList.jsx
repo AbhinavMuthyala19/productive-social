@@ -6,8 +6,8 @@ export const CommunityList = ({
   communities,
   loading,
   view,
-  onJoin,
-  onLeave,
+  onJoinCommunity,
+  onRequestLeaveCommunity,
 }) => {
   const containerClass = view === "grid" ? "community-grid" : "community-list";
 
@@ -17,8 +17,8 @@ export const CommunityList = ({
         ? Array.from({ length: 6 }).map((_, i) => (
             <CommunityCardSkeleton key={i} view={view} />
           ))
-        : communities.map((c) => (
-            <CommunityCard 
+        : communities?.map((c) => (
+            <CommunityCard
               key={c.id}
               id={c.id}
               name={c.name}
@@ -27,8 +27,12 @@ export const CommunityList = ({
               joined={c.joined}
               streak={c.streak}
               view={view}
-              onJoin={onJoin ? () => onJoin(c.id): undefined} 
-              onLeave={onLeave ? () => onLeave(c) : undefined} 
+              onJoin={onJoinCommunity ? () => onJoinCommunity(c.id) : undefined}
+              onLeave={
+                onRequestLeaveCommunity
+                  ? () => onRequestLeaveCommunity(c)
+                  : undefined
+              }
             />
           ))}
     </div>

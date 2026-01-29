@@ -2,8 +2,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { usePasswordToggle } from "../../hooks/usePasswordToggle";
 import { AuthContext } from "../../context/AuthContext";
-import { LoginForm } from "../../components/auth/LoginForm";
 import { toast } from "sonner";
+import { LoginPage } from "../../components/auth/LoginPage";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ export const Login = () => {
     }
   };
   return (
-    <LoginForm
+    <LoginPage
       form={form}
       onSubmit={handleLogin}
       onChange={handleChange}

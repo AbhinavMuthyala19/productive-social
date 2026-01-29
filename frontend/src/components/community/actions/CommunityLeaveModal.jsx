@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import "./CommunityLeaveModal.css";
 import { Button } from "../../ui/Button";
 
-export const CommunityLeaveModal = ({ isOpen, onClose, onClick }) => {
+export const CommunityLeaveModal = ({ isOpen, onClose, onConfirm }) => {
   return (
     <Modal
       className="community-leave-modal"
@@ -13,7 +13,9 @@ export const CommunityLeaveModal = ({ isOpen, onClose, onClick }) => {
     >
       <div className="community-leave-header">
         <h3>Warning</h3>
-        <X className="close-icon" onClick={onClose} size={20} />
+        <Button variant={"transparent-button"} onClick={onClose}>
+        <X className="close-icon" size={20} />
+        </Button>
       </div>
       <div className="leave-warning-message">
         <p>
@@ -25,7 +27,7 @@ export const CommunityLeaveModal = ({ isOpen, onClose, onClick }) => {
         <Button
           variant={"leave-button"}
           onClick={() => {
-            onClick();
+            onConfirm();
             onClose();
           }}
         >

@@ -2,8 +2,8 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { usePasswordToggle } from "../../hooks/usePasswordToggle";
 import { AuthContext } from "../../context/AuthContext";
-import { RegisterForm } from "../../components/auth/RegisterForm";
 import { toast } from "sonner";
+import { RegisterPage } from "../../components/auth/RegisterPage";
 
 export const Register = () => {
   const navigate = useNavigate();
@@ -66,7 +66,7 @@ export const Register = () => {
   };
 
   return (
-    <RegisterForm
+    <RegisterPage
       form={form}
       onSubmit={handleRegister}
       onChange={handleChange}

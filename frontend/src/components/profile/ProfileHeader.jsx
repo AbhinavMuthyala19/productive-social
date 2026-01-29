@@ -2,7 +2,15 @@ import { Avatar } from "../ui/Avatar";
 import { Badge } from "../ui/Badge";
 import "./ProfileHeader.css";
 
-export const ProfileHeader = ({name, username, bio, streak, longestStreak, posts, communities}) => {
+export const ProfileHeader = ({
+  name,
+  username,
+  bio,
+  streak,
+  longestStreak,
+  posts,
+  communities,
+}) => {
   return (
     <div className="profile-header">
       <Avatar alt={name} size={70} />
@@ -11,18 +19,28 @@ export const ProfileHeader = ({name, username, bio, streak, longestStreak, posts
           <h2>{name}</h2>
           <p>@{username}</p>
         </div>
-        <div className="user-bio">
+        {bio && (
+          <div className="user-bio">
             <p>{bio}</p>
-        </div>
+          </div>
+        )}
         <div className="profile-stats">
-          <Badge variant={"blue-badge"} label={`posts - ${posts}`} />
-          <Badge variant={"purple-badge"} label={`communities - ${communities}`} />
+          <Badge variant={"blue-badge"} label={`${posts} posts`} />
+          <Badge
+            variant={"purple-badge"}
+            label={`${communities} communities`}
+          />
 
-          <Badge variant={"streak-badge"} label={`current streak - ${streak}`} />
-          <Badge variant={"pink-badge"} label={`longest streak - ${longestStreak}`} />
+          <Badge
+            variant={"streak-badge"}
+            label={`current streak - ${streak}`}
+          />
+          <Badge
+            variant={"pink-badge"}
+            label={`longest streak - ${longestStreak}`}
+          />
         </div>
       </div>
-      
     </div>
   );
 };

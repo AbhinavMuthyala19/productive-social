@@ -1,8 +1,10 @@
 import { PostCard } from "../../../../components/feed/PostCard";
-import { PostCardSkeleton } from "../../../../components/feed/PotCardSkeleton";
+import { PostCardSkeleton } from "../../../../components/feed/PostCardSkeleton";
 import "../../Profile.css";
 
-export const ProfileFeed = ({ posts, loading, onCommentAdded }) => {
+
+export const ProfileFeed = ({ posts, loading, onCommentAdded, onToggleLike }) => {
+  
   if (loading) {
     return Array.from({ length: 3 }).map((_, i) => (
       <PostCardSkeleton key={`profile-feed-skeleton-${i}`} />
@@ -18,6 +20,7 @@ export const ProfileFeed = ({ posts, loading, onCommentAdded }) => {
       key={post.postId}
       post={post}
       onCommentAdded={() => onCommentAdded(post.postId)}
+      onToggleLike={onToggleLike}
       displayCommunityBadge
       userNameClickable={false}
     />

@@ -4,7 +4,7 @@ import { Button } from "../ui/Button";
 import { Avatar } from "../ui/Avatar";
 import "./CommentModal.css";
 import closeIcon from "../../assets/icons/cross.svg";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getPostComments, postComments } from "../../lib/api";
 import { CommentItem } from "./CommentItem";
 
@@ -12,31 +12,31 @@ export const CommentModal = ({ postId, onClose, isOpen, onCommentAdded }) => {
   const [comments, setComments] = useState([]);
   const [replyTo, setReplyTo] = useState(null);
   const [comment, setComment] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [posting, setPosting] = useState(false)
   const commentsTopRef = useRef(null);
 
-  useEffect(() => {
-    if (isOpen) {
-      fetchComments();
-    }
-  }, [isOpen]);
-
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     try {
       setLoading(true);
       const res = await getPostComments(postId);
       setComments(res.data);
-      console.log(res.data);
     } finally {
       setLoading(false);
     }
-  };
+  }, [postId]);
+
+  useEffect(() => {
+    if (isOpen) fetchComments();
+  }, [isOpen, fetchComments]);
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    if (!comment.trim()) return;
+    if (!comment.trim() || posting) return;
 
     try {
+      setPosting(true);
+
       const res = await postComments({
         postId,
         content: comment,
@@ -57,6 +57,8 @@ export const CommentModal = ({ postId, onClose, isOpen, onCommentAdded }) => {
       onCommentAdded?.(postId);
     } catch (err) {
       console.error(err);
+    }finally{
+      setPosting(false)
     }
   };
 
@@ -77,7 +79,9 @@ export const CommentModal = ({ postId, onClose, isOpen, onCommentAdded }) => {
     <Modal className="comment-modal" isOpen={isOpen} onClose={onClose}>
       <div className="comment-header">
         <h3>Comments</h3>
-        <img onClick={onClose} src={closeIcon} alt="close" />
+        <Button variant={"transparent-button"} onClick={onClose}>
+          <img src={closeIcon} alt="close" />
+        </Button>
       </div>
 
       <div className="comments-list">
@@ -112,7 +116,7 @@ export const CommentModal = ({ postId, onClose, isOpen, onCommentAdded }) => {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
-          <Button type="submit" variant="comment-button">
+          <Button type="submit" variant="comment-button" disabled={posting}>
             Post
           </Button>
         </form>

@@ -21,6 +21,7 @@ export const CommunityPage = () => {
     fetchCommunityPosts,
     handleCommentAdded,
     addPost,
+    toggleLike
   } = useContext(PostContext);
   const leaveModal = useLeaveCommunity(toggleJoinCommunity);
   const [showCreatePost, setShowCreatePost] = useState(false);
@@ -79,6 +80,7 @@ export const CommunityPage = () => {
             posts={communityPosts}
             loading={postsLoading.community}
             onCommentAdded={handleCommentAdded}
+            onToggleLike={toggleLike}
           />
         )}
 
@@ -101,7 +103,7 @@ export const CommunityPage = () => {
       <CommunityLeaveModal
         isOpen={leaveModal.isOpen}
         onClose={leaveModal.close}
-        onClick={leaveModal.confirm}
+        onConfirm={leaveModal.confirm}
       />
     </PageContainer>
   );

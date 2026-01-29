@@ -1,12 +1,13 @@
 import { Button } from "../../components/ui/Button";
+import googleIcon from "../../assets/icons/googleiconsvg.svg"
 import "./GoogleSignButton.css";
 
-export const GoogleSignButton = ({ type }) => {
+export const GoogleSignButton = ({ isLogin }) => {
   return (
     <div className="button-container">
       <Button className="sso-button">
-        <img src="src\assets\icons\googleiconsvg.svg" alt="" />
-        {type === "login" ? "Sign in with Google" : "Sign up with Google"}
+        <img src={googleIcon} alt="Google icon" />
+        {isLogin ? "Sign in with Google" : "Sign up with Google"}
       </Button>
     </div>
   );

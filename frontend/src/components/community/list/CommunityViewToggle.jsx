@@ -1,21 +1,26 @@
 import { Grid, List } from "lucide-react";
 import "./CommunityViewToggle.css";
+import { Button } from "../../ui/Button";
 
 export const CommunityViewToggle = ({ view, setView }) => {
   return (
-    <div className="card-view">
-      <Grid
-        size={20}
-        style={{ cursor: "pointer" }}
+    <div className="card-view" role="group" aria-label="View toggle">
+      <Button
+        variant="transparent-button"
+        aria-pressed={view === "grid"}
+        aria-label="Grid View"
         onClick={() => setView("grid")}
-        color={view === "grid" ? "#2563eb" : "#111113"}
-      />
-      <List
-        size={20}
-        style={{ cursor: "pointer" }}
+      >
+        <Grid size={20} color={view === "grid" ? "#2563eb" : "#111113"} />
+      </Button>
+      <Button
+        variant={"transparent-button"}
+        aria-pressed={view === "list"}
+        aria-label="List View"
         onClick={() => setView("list")}
-        color={view === "list" ? "#2563eb" : "#111113"}
-      />
+      >
+        <List size={20} color={view === "list" ? "#2563eb" : "#111113"} />
+      </Button>
     </div>
   );
 };

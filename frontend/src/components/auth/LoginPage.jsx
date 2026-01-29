@@ -11,9 +11,9 @@ import { OrDivider } from "./OrDivider";
 import { AuthFooterSwitch } from "./AuthFooterSwitch";
 import loginHeader from "../../assets/loginheader.svg";
 import { Button } from "../ui/Button";
-import "../../App.css";
+import "./Auth.css";
 
-export const LoginForm = ({ form, onSubmit, onChange, passwordToggle }) => {
+export const LoginPage = ({ form, onSubmit, onChange, passwordToggle }) => {
   return (
     <AuthLayout
       left={<AuthLeftPanel imageSrc={loginHeader} />}
@@ -24,7 +24,7 @@ export const LoginForm = ({ form, onSubmit, onChange, passwordToggle }) => {
 
             <AuthTitle title="Login" />
 
-            <GoogleSignButton type={"login"} />
+            <GoogleSignButton isLogin={true} />
 
             <OrDivider />
 

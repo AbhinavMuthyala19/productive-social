@@ -25,6 +25,7 @@ export const Profile = () => {
     fetchUserPosts,
     loading: postLoading,
     handleCommentAdded,
+    toggleLike
   } = useContext(PostContext);
   const { user: loggedInUser } = useContext(AuthContext);
   const leaveModal = useLeaveCommunity(toggleJoinCommunity);
@@ -120,6 +121,7 @@ export const Profile = () => {
             posts={profilePosts}
             loading={postLoading.user}
             onCommentAdded={handleCommentAdded}
+            onToggleLike={toggleLike}
           />
         )}
 
@@ -137,7 +139,7 @@ export const Profile = () => {
       <CommunityLeaveModal
         isOpen={leaveModal.isOpen}
         onClose={leaveModal.close}
-        onClick={confirmLeave}
+        onConfirm={confirmLeave}
       />
     </PageContainer>
   );

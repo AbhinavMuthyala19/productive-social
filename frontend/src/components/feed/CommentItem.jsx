@@ -1,10 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Avatar } from "../ui/Avatar";
 import { Button } from "../ui/Button";
 import "./CommentItem.css";
 
 export const CommentItem = ({ comment, onReply }) => {
-  const navigate = useNavigate();
   const renderWithMentions = (text) => {
     const parts = text.split(/(@\w+)/g);
 
@@ -12,9 +11,9 @@ export const CommentItem = ({ comment, onReply }) => {
       if (part.startsWith("@")) {
         const username = part.substring(1);
         return (
-          <a key={index} href={`/profile/${username}`} className="mention">
+          <Link key={index} to={`/profile/${username}`} className="mention">
             {part}
-          </a>
+          </Link>
         );
       }
       return part;
@@ -27,9 +26,12 @@ export const CommentItem = ({ comment, onReply }) => {
         <div className="comment">
           <div className="name">
             <Avatar alt={comment.username} />
-            <p onClick={() => navigate(`/profile/${comment.username}`)}>
+            <Link
+              to={`/profile/${comment.username}`}
+              className="comment-username"
+            >
               {comment.username}
-            </p>
+            </Link>
           </div>
 
           <p className="comment-text">{renderWithMentions(comment.content)}</p>

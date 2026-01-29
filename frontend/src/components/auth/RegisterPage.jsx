@@ -10,9 +10,9 @@ import { OrDivider } from "./OrDivider";
 import loginHeader from "../../assets/loginheader.svg";
 import AuthActionsRow from "./AuthActionsRow";
 import { Button } from "../ui/Button";
-import "../../App.css";
+import "./Auth.css";
 
-export const RegisterForm = ({
+export const RegisterPage = ({
   form,
   onSubmit,
   onChange,
@@ -29,7 +29,7 @@ export const RegisterForm = ({
 
             <AuthTitle title="Register" />
 
-            <GoogleSignButton />
+            <GoogleSignButton isLogin={false}/>
 
             <OrDivider />
 

@@ -3,22 +3,26 @@ import robotIcon from "../../../assets/icons/robot.svg";
 import { Badge } from "../../ui/Badge";
 import "./CommunityBanner.css";
 
-export const CommunityBanner = ({ streak, id, view }) => {
-  const CATEGORY_COLORS = {
-    1: "#2563eb",
-    2: "#22c55e",
-    3: "#9333ea",
-    4: "#f97316",
-    5: "#ef4444",
-    6: "#14b8a6",
-  };
-  const bannerColor = CATEGORY_COLORS[id];
+export const CommunityBanner = ({ id, streak, view }) => {
+  const COLORS = [
+    "#2563eb", // blue
+    "#22c55e", // green
+    "#9333ea", // purple
+    "#f97316", // orange
+    "#ef4444", // red
+    "#14b8a6", // teal
+  ];
+
+  const bannerColor = COLORS[id % COLORS.length];
+  const style = { backgroundColor: bannerColor };
+
   return view === "grid" ? (
-    <div style={{ backgroundColor: bannerColor }} className="community-banner">
+    <div style={style} className="community-banner">
       <img
         className="community-banner-icon"
         src={robotIcon}
-        alt="banner-icon"
+        alt=""
+        aria-hidden="true"
       />
       {streak > 0 && (
         <Badge
@@ -36,7 +40,8 @@ export const CommunityBanner = ({ streak, id, view }) => {
       <img
         className="community-banner-icon"
         src={robotIcon}
-        alt="banner-icon"
+        alt=""
+        aria-hidden="true"
       />
     </div>
   );

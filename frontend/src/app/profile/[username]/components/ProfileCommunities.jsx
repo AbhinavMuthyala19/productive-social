@@ -12,8 +12,8 @@ export const ProfileCommunities = ({
       communities={communities}
       view={"list"}
       loading={loading}
-      onLeave={isOwnProfile ? onLeave : undefined}
-      onJoin={isOwnProfile ? onJoin : undefined}
+      onRequestLeaveCommunity={isOwnProfile ? onLeave : undefined}
+      onJoinCommunity={isOwnProfile ? onJoin : undefined}
     />
   );
 };

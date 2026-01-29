@@ -8,15 +8,16 @@ export const Button = ({
   className,
   disabled = false,
   style,
+  ...rest
 }) => {
   return (
     <button
-      className={`btn ${variant} ${className}`}
+      className={`btn ${variant ?? ""} ${className ?? ""}`}
       onClick={onClick}
       type={type}
-      variant={variant}
       disabled={disabled}
       style={style}
+      {...rest}
     >
       {children}
     </button>

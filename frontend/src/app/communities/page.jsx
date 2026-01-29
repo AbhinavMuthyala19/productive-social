@@ -42,8 +42,8 @@ export const Communities = () => {
           communities={communities}
           loading={loading}
           view={view}
-          onLeave={handleLeaveClick}
-          onJoin={toggleJoinCommunity}
+          onRequestLeaveCommunity={handleLeaveClick}
+          onJoinCommunity={toggleJoinCommunity}
         />
       </div>
 
@@ -51,7 +51,7 @@ export const Communities = () => {
       <CommunityLeaveModal
         isOpen={leaveModal.isOpen}
         onClose={leaveModal.close}
-        onClick={leaveModal.confirm}
+        onConfirm={leaveModal.confirm}
       />
     </PageContainer>
   );

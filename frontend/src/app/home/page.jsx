@@ -6,12 +6,12 @@ import { PageHeader } from "../../components/layout/PageHeader";
 import "../../App.css";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { PostContext } from "../../context/PostContext";
-import { PostCardSkeleton } from "../../components/feed/PotCardSkeleton";
+import { PostCardSkeleton } from "../../components/feed/PostCardSkeleton";
 import { CommunityContext } from "../../context/CommunityContext";
 import { CreatePostModal } from "../../components/feed/CreatePostModal";
 
 export const Home = () => {
-  const { posts, loading, handleCommentAdded, addPost } =
+  const { posts, loading, handleCommentAdded, addPost, toggleLike } =
     useContext(PostContext);
 
   const { communities } = useContext(CommunityContext);
@@ -52,6 +52,7 @@ export const Home = () => {
               key={post.postId}
               post={post}
               onCommentAdded={() => handleCommentAdded(post.postId)}
+              onToggleLike={toggleLike}
               displayCommunityBadge
               displayStreakBadge={true}
             />

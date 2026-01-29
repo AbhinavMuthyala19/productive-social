@@ -14,30 +14,25 @@ export const Navbar = () => {
 
   const handleLogout = async () => {
     await logout();
-    navigate("/login", {replace : true});
+    navigate("/login", { replace: true });
   };
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (
-        profileOptionsClick &&
-        cardRef.current &&
-        !cardRef.current.contains(e.target)
-      ) {
+      if (cardRef.current && !cardRef.current.contains(e.target)) {
         setProfileOptionsClick(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [profileOptionsClick]);
+  if (!user) return null;
 
   return (
     <div className="sidebar">
-      <div className="sidebar-logo">
+      <div className="sidebar-logo" onClick={() => navigate("/")}>
         <h1>Procial</h1>
         <p>Chai peelo fraanss...</p>
       </div>
@@ -89,7 +84,14 @@ export const Navbar = () => {
 
         <div className={`profile-options ${profileOptionsClick ? "open" : ""}`}>
           <Card variant="options-card">
-            <p onClick={handleLogout}>Logout</p>
+            <p
+              onClick={(e) => {
+                e.stopPropagation();
+                handleLogout();
+              }}
+            >
+              Logout
+            </p>
           </Card>
         </div>
       </div>

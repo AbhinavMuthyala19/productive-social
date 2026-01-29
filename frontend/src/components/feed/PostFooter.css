@@ -14,20 +14,9 @@
     cursor: pointer;
 }
 
-.left,
-.right {
+.likes-comments,
+.share {
     display: flex;
     gap: 30px;
-
 }
 
-.likes,
-.comments {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    color: var(--gray-500);
-    font-size: 14px;
-    gap: 5px;
-    width: 40px;
-}
