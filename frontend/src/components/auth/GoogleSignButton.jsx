@@ -1,6 +1,7 @@
 import { Button } from "../../components/ui/Button";
 import googleIcon from "../../assets/icons/googleiconsvg.svg"
 import "./GoogleSignButton.css";
+import "./Auth.css"
 
 export const GoogleSignButton = ({ isLogin }) => {
   return (

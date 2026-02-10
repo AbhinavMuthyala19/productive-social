@@ -12,11 +12,35 @@
 }
 
 .community-banner-list {
-    margin: 20px;
+    margin-left: 10px;
     border-radius: var(--radius-lg);
 }
 
 .community-banner-icon {
     width: 50px;
     margin: 20px;
+}
+
+@media(max-width:1000px) {
+    .community-banner-icon {
+        width: 40px;
+    }
+}
+@media(max-width:860px) {
+    .community-banner-list{
+        border-radius: var(--radius-md);
+    }
+    .community-banner-icon {
+        width: 35px;
+        margin: 10px;
+    }
+}
+@media(max-width:500px) {
+    .community-banner-list{
+        display: none;
+    }
+    .community-banner-icon {
+        width: 35px;
+        margin: 10px;
+    }
 }

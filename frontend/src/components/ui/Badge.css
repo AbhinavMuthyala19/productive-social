@@ -5,7 +5,6 @@
   align-items: center;
   gap: 4px;
   padding: 4px 10px;
-  font-size: 12px;
   border-radius: var(--radius-md);
   font-weight: 600;
   margin: 5px;
@@ -16,38 +15,62 @@
 
 .transparent-badge {
   background-color: transparent;
+  font-size: 12px;
   color: var(--gray-500);
   padding: 0;
 }
 
 .white-badge {
   background-color: white;
+  font-size: 12px;
   color: var(--gray-900);
   margin: 20px;
 }
 
 .purple-badge {
   background: rgba(124, 58, 237, 0.15);
+  font-size: 12px;
   color: var(--color-purple);
 }
 
 .blue-badge {
   background: rgba(58, 106, 237, 0.15);
+  font-size: 12px;
   color: var(--color-blue);
   width: auto;
 }
 
+.aqua-badge{
+  background-color: #7FFFD4;
+  font-size: 12px;
+  color: 	#008080;
+}
+
 .pink-badge {
   background: #ffbfdf;
+  font-size: 12px;
   color: #DE3163;
   width: auto;
 }
+
 .streak-badge {
   background-color: #fae8d0;
   color: #e28e4a;
+  font-size: 12px;
   padding: 2px 10px;
 }
 
 .streak-badge img {
   width: 16px;
+}
+
+@media(max-width:767px) {
+
+  .streak-badge img {
+    width: 12px;
+  }
+
+  .blue-badge .aqua-badge .streak-badge .pink-badge{
+    font-size: 10px;
+  }
 }

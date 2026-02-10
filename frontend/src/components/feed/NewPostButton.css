@@ -15,3 +15,37 @@
 .plus-icon {
   width: 25px;
 }
+
+@media(max-width:1000px) {
+  .create-post{
+    width: 120px;
+    font-size: 12px;
+  }
+  .plus-icon{
+    width: 18px;
+  }
+  
+}
+@media(max-width:860px) {
+  .create-post{
+    width: 100px;
+    font-size: 10px;
+    height: 40px;
+  }
+  .plus-icon{
+    width: 13px;
+  }
+  
+}
+/* @media(max-width:500px) {
+  .create-post{
+    width: 80px;
+    font-size: 8px;
+    height: 25px;
+    border-radius: 3px
+  }
+  .plus-icon{
+    width: 8px;
+  }
+  
+} */

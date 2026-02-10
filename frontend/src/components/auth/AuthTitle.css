@@ -12,3 +12,11 @@
     font-weight: 500;
 
 }
+
+@media(max-width:480px) {
+    .auth-title h1 {
+        font-size: 20px;
+        text-align: center;
+    }
+
+}

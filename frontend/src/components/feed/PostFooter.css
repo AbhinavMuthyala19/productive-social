@@ -20,3 +20,15 @@
     gap: 30px;
 }
 
+@media(max-width:767px) {
+    .post-footer-icon {
+        width: 20px;
+        cursor: pointer;
+    }
+
+    .likes-comments,
+    .share {
+        display: flex;
+        gap: 20px;
+    }
+}

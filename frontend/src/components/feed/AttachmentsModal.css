@@ -68,3 +68,14 @@
     width: 20px;
     cursor: pointer;
 }
+
+@media(max-width:1000px){
+    .attachment-modal{
+        width: 60%;
+    }
+}
+@media(max-width:767px){
+    .attachment-modal{
+        width: 80%;
+    }
+}

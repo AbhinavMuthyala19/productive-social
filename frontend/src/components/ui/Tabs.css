@@ -35,3 +35,8 @@
   background: var(--color-blue);
   border-radius: 2px;
 }
+@media(max-width:600px){
+  .tab-item{
+    font-size: 13px;
+  }
+}

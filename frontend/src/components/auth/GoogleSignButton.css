@@ -2,7 +2,7 @@
   display: flex;
   gap: 20px;
   align-items: center;
-  width: 400px;
+  width: 100%;
   height: 60px;
   background-color: transparent;
   color: var(--gray-700);
@@ -24,4 +24,15 @@
 .button-container img {
   position: absolute;
   left: 20px;
+}
+
+@media(max-width:480px){
+  .sso-button {
+    width: 100%;
+    height: 48px;
+    padding-left: 48px;
+    font-size: 14px;
+    gap: 12px;
+  }
+
 }

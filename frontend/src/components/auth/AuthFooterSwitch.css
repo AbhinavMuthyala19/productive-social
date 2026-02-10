@@ -22,3 +22,12 @@
 .auth-footer a:hover {
     color: var(--hover-blue);
 }
+
+@media(max-width:480px){
+    .auth-footer {
+    min-width: unset;
+    width: 100%;
+    font-size: 14px;
+    text-align: center;
+  }
+}

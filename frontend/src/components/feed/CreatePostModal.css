@@ -73,3 +73,14 @@ label {
     color: green;
     text-align: center;
 }
+
+@media(max-width:1000px){
+    .create-post-modal{
+        width: 70%;
+    }
+}
+@media(max-width:767px){
+    .create-post-modal{
+        width: 90%;
+    }
+}

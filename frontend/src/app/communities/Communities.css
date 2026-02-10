@@ -5,6 +5,7 @@
     flex-direction: column;
     align-items: flex-start;
     position: sticky;
+    padding: 5px;
 }
 
 .first-row{
@@ -45,3 +46,10 @@
     font-weight: 500;
     color: orangered;
 }
+
+@media(max-width:767px){
+    .second-row{
+        margin: 0;
+    }
+}
+

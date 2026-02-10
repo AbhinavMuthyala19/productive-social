@@ -6,7 +6,7 @@
   background: #ffffff;
   border-right: 1px solid #e6e6e6;
   padding: 15px;
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -29,6 +29,7 @@
 .sidebar-logo h1 {
   font-size: 28px;
   font-weight: bold;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .sidebar-logo p {
@@ -41,7 +42,9 @@
   flex-direction: column;
   gap: 10px;
   overflow-y: auto;
+  flex: 1;
 }
+
 
 .nav-item {
   display: flex;
@@ -148,20 +151,94 @@
   border-radius: var(--radius-sm);
 }
 
+
 /* =========================
-   Mobile Sidebar Behavior
+   Mobile: Icon-only nav
    ========================= */
 @media (max-width: 767px) {
   .sidebar {
-    width: 280px;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    z-index: 1000;
+    width: 100%;
+    position: sticky;
+    flex-direction: row;
+    height: 55px;
+    z-index: 50;
   }
 
-  /* When you later add a menu button,
-     just toggle this class */
-  .sidebar.open {
-    transform: translateX(0);
+  .sidebar-logo {
+    position: relative;
+    width: auto;
   }
+
+  .sidebar-logo h1 {
+    font-size: 16px;
+  }
+
+  /* Hide logo text */
+  .sidebar-logo p {
+    display: none;
+  }
+
+  .sidebar-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+    background: white;
+    box-shadow: var(--shadow-card);
+  }
+
+  .nav-item {
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 0;
+    /* 🔑 hides text nodes */
+    gap: 0;
+  }
+
+  .nav-item.active {
+    background: transparent;
+    color: var(--color-blue);
+    font-weight: 600;
+  }
+
+  .nav-item.active:hover {
+    background-color: transparent;
+  }
+
+  .nav-item:hover {
+    background-color: var(--gray-100);
+  }
+
+  .nav-item svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Profile section cleanup */
+  .profile-details,
+  .profile-more-icon {
+    display: none;
+  }
+
+  .profile-card {
+    width: 100px;
+    justify-content: flex-end;
+    margin-top: 0;
+    margin-left: auto;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .profile-options {
+    top: 30px;
+  }
+
+  .options-card {
+    font-size: 10px;
+    padding: 0;
+  }
+
 }

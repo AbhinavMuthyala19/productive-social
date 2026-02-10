@@ -27,7 +27,7 @@ export const ProfileHeader = ({
         <div className="profile-stats">
           <Badge variant={"blue-badge"} label={`${posts} posts`} />
           <Badge
-            variant={"purple-badge"}
+            variant={"aqua-badge"}
             label={`${communities} communities`}
           />
 

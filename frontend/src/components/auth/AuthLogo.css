@@ -4,3 +4,9 @@
     justify-content: center;
     margin: 5px;
 }
+
+@media(max-width:480px){
+    .auth-logo img{
+        width: 80px;
+    }
+}

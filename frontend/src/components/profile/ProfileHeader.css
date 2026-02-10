@@ -36,3 +36,26 @@
 .profile-stats{
     display: flex;
 }
+
+@media(max-width:767px){
+
+.user-name{
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+}
+.user-name h2{
+    font-size: 20px;
+}
+
+.user-name p{
+    font-size: 14px;
+}
+}
+
+@media(max-width:920px){
+    .profile-stats{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+}

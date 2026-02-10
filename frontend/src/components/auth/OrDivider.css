@@ -11,3 +11,13 @@
     font-weight: 500;
     color: var(--gray-500);
 }
+
+@media(max-width:480px) {
+    .or-divider {
+        min-width: unset;
+        width: 100%;
+        font-size: 12px;
+        text-align: center;
+    }
+
+}

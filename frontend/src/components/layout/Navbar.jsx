@@ -32,8 +32,13 @@ export const Navbar = () => {
 
   return (
     <div className="sidebar">
-      <div className="sidebar-logo" onClick={() => navigate("/")}>
-        <h1>Procial</h1>
+      <div className="sidebar-logo">
+        <NavLink
+          to="/"
+        >
+          <h1>Procial</h1>
+        </NavLink>
+        
         <p>Chai peelo fraanss...</p>
       </div>
       <nav className="sidebar-nav">
@@ -73,7 +78,7 @@ export const Navbar = () => {
           setProfileOptionsClick((v) => !v);
         }}
       >
-        <Avatar alt={user.name} size={50} />
+        <Avatar className={"nav-avatar"} alt={user.name} size={50} />
 
         <div className="profile-details">
           <p className="profile-name">{user.name}</p>

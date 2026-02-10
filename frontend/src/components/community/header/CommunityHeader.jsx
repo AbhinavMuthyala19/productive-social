@@ -18,7 +18,7 @@ export const CommunityHeader = ({
         <Badge
           variant="transparent-badge"
           label={members}
-          icon={<UsersRound size={14} />}
+          icon={<UsersRound className="community-stats-icon" size={14} />}
         />
         {/* <Badge
           variant="transparent-badge"
