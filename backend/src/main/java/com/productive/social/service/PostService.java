@@ -16,21 +16,26 @@ import com.productive.social.dao.StreakDAO;
 import com.productive.social.dto.posts.PostCreateRequest;
 import com.productive.social.dto.posts.PostResponse;
 import com.productive.social.entity.Community;
+import com.productive.social.entity.Notes;
 import com.productive.social.entity.Post;
 import com.productive.social.entity.PostImage;
 import com.productive.social.entity.PostLike;
+import com.productive.social.entity.Task;
 import com.productive.social.entity.User;
 import com.productive.social.entity.UserCommunity;
 import com.productive.social.enums.ActivityType;
 import com.productive.social.enums.MembershipStatus;
 import com.productive.social.exceptions.NotFoundException;
 import com.productive.social.exceptions.community.CommunityNotFoundException;
+import com.productive.social.exceptions.notes.NotesLinkingException;
 import com.productive.social.exceptions.posts.PostCreationException;
 import com.productive.social.exceptions.posts.PostImageUploadException;
+import com.productive.social.exceptions.tasks.TaskNotFoundException;
 import com.productive.social.repository.CommunityRepository;
 import com.productive.social.repository.PostImageRepository;
 import com.productive.social.repository.PostLikeRepository;
 import com.productive.social.repository.PostRepository;
+import com.productive.social.repository.TaskRepository;
 import com.productive.social.repository.UserCommunityRepository;
 import com.productive.social.repository.UserRepository;
 
@@ -52,11 +57,15 @@ public class PostService {
     private final StreakDAO streakDAO;
     private final UserCommunityRepository userCommunityRepository;
     private final UserRepository userRepository;
+    private final NotesService notesService;
+    private final PostNotesService postNotesService;
+    private final TaskNotesService taskNotesService;
+    private final TaskRepository taskRepository;
 
     // -------------------------
     // CREATE POST
     // -------------------------
-    public PostResponse createPost(PostCreateRequest request, List<MultipartFile> images) {
+    public PostResponse createPost(PostCreateRequest request, List<MultipartFile> images, List<MultipartFile> notesFiles) {
         try {
             User user = authService.getCurrentUser();
 
@@ -80,6 +89,47 @@ public class PostService {
                     throw new PostImageUploadException("Failed to upload images");
                 }
             }
+            
+         // Validate Task if provided
+            Task task = null;
+
+            if (request.getTaskId() != null) {
+                task = taskRepository.findById(request.getTaskId())
+                        .orElseThrow(() ->
+                                new TaskNotFoundException("Task not found with id: " + request.getTaskId())
+                        );
+            }
+            
+         // -------------------------
+         // SAVE NOTES (Optional)
+         // -------------------------
+         if (notesFiles != null && !notesFiles.isEmpty()) {
+
+             for (MultipartFile file : notesFiles) {
+
+                 try {
+                     Notes savedNotes = notesService.uploadNotesFromPost(file);
+
+                     // Link to Post
+                     postNotesService.linkNotesToPost(
+                             post.getId(),
+                             savedNotes.getId()
+                     );
+
+                     // Link to Task (only if validated above)
+                     if (task != null) {
+                         taskNotesService.linkNotesToTask(
+                                 task.getId(),
+                                 savedNotes.getId()
+                         );
+                     }
+
+                 } catch (Exception e) {
+                     log.error("Failed to upload/link notes for postId={}", post.getId(), e);
+                     throw new NotesLinkingException("Failed to upload notes");
+                 }
+             }
+         }
             
          // -------------------------
          // STREAK ACTIVITY

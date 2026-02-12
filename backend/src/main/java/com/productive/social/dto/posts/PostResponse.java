@@ -18,6 +18,8 @@ public class PostResponse {
     private String content;
     private String title;
     private List<PostImageDTO> images;
+    
+    private List<PostNotesDTO> notes;
 
     private long likesCount;
     private long commentsCount;

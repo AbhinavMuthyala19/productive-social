@@ -25,9 +25,11 @@ public class PostController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PostResponse> createPost(
             @RequestPart("data") PostCreateRequest request,
-            @RequestPart(value = "images", required = false) List<MultipartFile> images
+            @RequestPart(value = "images", required = false) List<MultipartFile> images,
+            @RequestPart(value = "notes", required = false) List<MultipartFile> notes
     ) throws Exception {
-        PostResponse response = postService.createPost(request, images);
+
+        PostResponse response = postService.createPost(request, images, notes);
         return ResponseEntity.ok(response);
     }
 

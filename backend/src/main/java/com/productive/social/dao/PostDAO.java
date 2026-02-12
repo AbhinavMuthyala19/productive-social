@@ -2,6 +2,7 @@ package com.productive.social.dao;
 
 import com.productive.social.dto.posts.PostCommunityDTO;
 import com.productive.social.dto.posts.PostImageDTO;
+import com.productive.social.dto.posts.PostNotesDTO;
 import com.productive.social.dto.posts.PostResponse;
 import com.productive.social.dto.posts.PostUserDTO;
 import com.productive.social.entity.Post;
@@ -90,6 +91,8 @@ public class PostDAO {
 
         // Fetch images
         Map<Long, List<PostImageDTO>> imagesMap = fetchImagesForPosts(postIds);
+        
+        Map<Long, List<PostNotesDTO>> notesMap = fetchNotesForPosts(postIds);
 
         // Fetch like counts
         Map<Long, Long> likeCounts = fetchLikeCounts(postIds);
@@ -121,7 +124,7 @@ public class PostDAO {
                         .title(post.getTitle())
                         .content(post.getContent())
                         .images(imagesMap.getOrDefault(post.getId(), List.of()))
-
+                        .notes(notesMap.getOrDefault(post.getId(), List.of()))
                         .likesCount(likeCounts.getOrDefault(post.getId(), 0L))
                         .commentsCount(commentCounts.getOrDefault(post.getId(), 0L))
                         .likedByCurrentUser(likedByUser.contains(post.getId()))
@@ -243,5 +246,34 @@ public class PostDAO {
 
         List<PostResponse> feed = buildFeedResponse(posts, currentUser);
          return feed;
+    }
+    
+    
+    private Map<Long, List<PostNotesDTO>> fetchNotesForPosts(List<Long> postIds) {
+
+        List<Object[]> rows = entityManager.createQuery("""
+                SELECT pn.postId, n.id, n.originalFileName, n.fileSize
+                FROM PostNotes pn, Notes n
+                WHERE pn.notesId = n.id
+                AND pn.postId IN :ids
+                """, Object[].class)
+                .setParameter("ids", postIds)
+                .getResultList();
+
+        Map<Long, List<PostNotesDTO>> map = new HashMap<>();
+
+        for (Object[] row : rows) {
+
+            Long postId = (Long) row[0];
+
+            map.computeIfAbsent(postId, k -> new ArrayList<>())
+                    .add(PostNotesDTO.builder()
+                            .id((Long) row[1])
+                            .originalFileName((String) row[2])
+                            .fileSize((Long) row[3])
+                            .build());
+        }
+
+        return map;
     }
 }

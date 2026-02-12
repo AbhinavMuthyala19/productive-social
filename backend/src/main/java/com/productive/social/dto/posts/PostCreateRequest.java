@@ -13,4 +13,5 @@ public class PostCreateRequest {
     // but we keep this DTO simple and clean
 
     private Long noteAttachmentId; // future use
+    private Long taskId; // nullable
 }
