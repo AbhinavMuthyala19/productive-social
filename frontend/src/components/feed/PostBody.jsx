@@ -14,7 +14,7 @@ export const PostBody = ({ title, content, images = [], notes }) => {
               <img
                 key={image.id || image.imageUrl}
                 className="post-image"
-                src={`${import.meta.env.VITE_API_URL}${image.imageUrl}`}
+                src={`${import.meta.env.VITE_API_URL}/${image.imageUrl}`}
                 alt="Post media"
               />
             ))}

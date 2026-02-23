@@ -50,7 +50,7 @@ public class NotesService {
             // 1. Store file
             // -------------------------
             FileStorageService.StoredFileData fileData =
-                    fileStorageService.storeFile(file, userId);
+                    fileStorageService.storeFile(file);
 
             // -------------------------
             // 2. Save Notes metadata
@@ -59,7 +59,7 @@ public class NotesService {
                     .userId(userId)
                     .originalFileName(fileData.originalName())
                     .storedFileName(fileData.storedName())
-                    .filePath(fileData.path())
+                    .filePath(extractUploadsRelativePath(fileData.path()))
                     .contentType(fileData.contentType())
                     .fileSize(fileData.size())
                     .visibility(NotesVisibility.PUBLIC)
@@ -102,13 +102,13 @@ public class NotesService {
         Long userId = currentUser.getId();
 
         FileStorageService.StoredFileData fileData =
-                fileStorageService.storeFile(file, userId);
+                fileStorageService.storeFile(file);
 
         Notes notes = Notes.builder()
                 .userId(userId)
                 .originalFileName(fileData.originalName())
                 .storedFileName(fileData.storedName())
-                .filePath(fileData.path())
+                .filePath(extractUploadsRelativePath(fileData.path()))
                 .contentType(fileData.contentType())
                 .fileSize(fileData.size())
                 .visibility(NotesVisibility.PUBLIC)
@@ -163,5 +163,16 @@ public class NotesService {
     public Notes getNotesEntityById(Long notesId) {
         return notesDao.findById(notesId)
                 .orElseThrow(() -> new NotesNotFoundException(notesId));
+    }
+    
+    private String extractUploadsRelativePath(String absolutePath) {
+
+        int index = absolutePath.indexOf("uploads");
+
+        if (index == -1) {
+            throw new IllegalStateException("Uploads folder not found in path");
+        }
+
+        return absolutePath.substring(index).replace("\\", "/");
     }
 }

@@ -1,58 +1,67 @@
 package com.productive.social.service;
 
 import com.productive.social.exceptions.notes.FileStorageException;
-import org.springframework.beans.factory.annotation.Value;
+import com.productive.social.storage.GenericFileStorageService;
+import com.productive.social.enums.UploadType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.*;
-import java.util.UUID;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
+@RequiredArgsConstructor
 public class FileStorageService {
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
+    private final GenericFileStorageService storageService;
+    private final AuthService authService;
 
-    public StoredFileData storeFile(MultipartFile file, Long userId) {
+    // ----------------------------------------------------
+    // STORE FILE (Notes)
+    // ----------------------------------------------------
+    public StoredFileData storeFile(MultipartFile file) {
+
+        Long userId = authService.getCurrentUser().getId();
 
         try {
-            String extension = getExtension(file.getOriginalFilename());
-            String storedFileName = UUID.randomUUID() + extension;
-
-            Path userDir = Paths.get(uploadDir, String.valueOf(userId));
-            Files.createDirectories(userDir);
-
-            Path target = userDir.resolve(storedFileName);
-            Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
-
-            return new StoredFileData(
-                    file.getOriginalFilename(),
-                    storedFileName,
-                    target.toString(),
-                    file.getContentType(),
-                    file.getSize()
+            var stored = storageService.store(
+                    file,
+                    userId,
+                    UploadType.NOTES
             );
 
-        } catch (IOException e) {
+            return new StoredFileData(
+                    stored.originalName(),
+                    stored.storedName(),
+                    stored.path(),
+                    stored.contentType(),
+                    stored.size()
+            );
+
+        } catch (Exception e) {
             throw new FileStorageException("Failed to store file");
         }
     }
 
+    // ----------------------------------------------------
+    // LOAD FILE
+    // ----------------------------------------------------
     public Path loadFile(String filePath) {
+
         Path path = Paths.get(filePath);
+
         if (!Files.exists(path)) {
             throw new FileStorageException("File not found");
         }
+
         return path;
     }
 
-    private String getExtension(String name) {
-        if (name == null || !name.contains(".")) return "";
-        return name.substring(name.lastIndexOf("."));
-    }
-
+    // ----------------------------------------------------
+    // DTO RECORD (unchanged contract)
+    // ----------------------------------------------------
     public record StoredFileData(
             String originalName,
             String storedName,
