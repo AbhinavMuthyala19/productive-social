@@ -10,4 +10,5 @@ public class NotesSummaryResponse {
     private Long id;
     private String originalFileName;
     private Long fileSize;
+    private String notesUrl;
 }

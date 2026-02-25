@@ -15,4 +15,5 @@ public class NotesResponse {
     private Long fileSize;
     private String visibility;
     private LocalDateTime createdAt;
+    private String notesUrl;
 }

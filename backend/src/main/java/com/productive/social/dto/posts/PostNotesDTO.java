@@ -10,4 +10,5 @@ public class PostNotesDTO {
     private Long id;
     private String originalFileName;
     private Long fileSize;
+    private String notesUrl;
 }

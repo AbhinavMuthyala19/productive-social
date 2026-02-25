@@ -133,6 +133,7 @@ public class NotesService {
                         .id(n.getId())
                         .originalFileName(n.getOriginalFileName())
                         .fileSize(n.getFileSize())
+                        .notesUrl(n.getFilePath())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -156,6 +157,7 @@ public class NotesService {
                 .fileSize(notes.getFileSize())
                 .visibility(notes.getVisibility().name())
                 .createdAt(notes.getCreatedAt())
+                .notesUrl(notes.getFilePath())
                 .build();
     }
     

@@ -252,7 +252,7 @@ public class PostDAO {
     private Map<Long, List<PostNotesDTO>> fetchNotesForPosts(List<Long> postIds) {
 
         List<Object[]> rows = entityManager.createQuery("""
-                SELECT pn.postId, n.id, n.originalFileName, n.fileSize
+                SELECT pn.postId, n.id, n.originalFileName, n.fileSize, n.filePath
                 FROM PostNotes pn, Notes n
                 WHERE pn.notesId = n.id
                 AND pn.postId IN :ids
@@ -271,6 +271,7 @@ public class PostDAO {
                             .id((Long) row[1])
                             .originalFileName((String) row[2])
                             .fileSize((Long) row[3])
+                            .notesUrl((String) row[4])
                             .build());
         }
 
