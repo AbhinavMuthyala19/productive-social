@@ -45,39 +45,47 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         var accessTokenOpt = CookieUtil.getCookieValue(request, CookieUtil.ACCESS_TOKEN_COOKIE);
         var refreshTokenOpt = CookieUtil.getCookieValue(request, CookieUtil.REFRESH_TOKEN_COOKIE);
 
-        // If either cookie missing → force unauthorized
         if (accessTokenOpt.isEmpty() || refreshTokenOpt.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         String jwt = accessTokenOpt.get();
-        String username;
+        String subject;
 
         try {
-            username = jwtUtil.extractUsername(jwt);
+            subject = jwtUtil.extractUsername(jwt); // now contains userId
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        // Authenticate only if user not already authenticated
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        // ✅ Parse userId from subject
+        Long userId;
+        try {
+            userId = Long.parseLong(subject);
+        } catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
-            var userDetails = customUserDetailsService.loadUserByUsername(username);
+        // Authenticate only if not already authenticated
+        if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+            var userDetails = customUserDetailsService.loadUserById(userId);
 
             if (jwtUtil.validateToken(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities());
 
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             } else {
-                // Token present but invalid/expired
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }

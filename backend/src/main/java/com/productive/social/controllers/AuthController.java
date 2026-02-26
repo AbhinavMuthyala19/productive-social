@@ -1,8 +1,16 @@
 package com.productive.social.controllers;
 
+import java.util.HashMap;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.productive.social.dto.auth.AuthResponse;
 import com.productive.social.dto.auth.LoginRequest;
-import com.productive.social.dto.auth.RefreshRequest;
 import com.productive.social.dto.auth.RegisterRequest;
 import com.productive.social.dto.auth.UserMeResponse;
 import com.productive.social.service.AuthService;
@@ -11,12 +19,6 @@ import com.productive.social.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-
-import java.util.HashMap;
-
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -30,10 +32,6 @@ public class AuthController {
         return ResponseEntity.ok(authService.register(request));
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-//        return ResponseEntity.ok(authService.login(request));
-//    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletResponse response) {
@@ -53,11 +51,6 @@ public class AuthController {
     }
 
 
-
-//    @PostMapping("/refresh")
-//    public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshRequest request) {
-//        return ResponseEntity.ok(authService.refresh(request.getRefreshToken()));
-//    }
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
@@ -85,10 +78,6 @@ public class AuthController {
     }
 
 
-//    @PostMapping("/logout")
-//    public ResponseEntity<String> logout(@RequestBody RefreshRequest request) {
-//        return ResponseEntity.ok(authService.logout(request.getRefreshToken()));
-//    }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {

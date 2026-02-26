@@ -93,7 +93,7 @@ public class AuthService {
                     new UsernamePasswordAuthenticationToken(request.getIdentifier(), request.getPassword())
             );
 
-            String accessToken = jwtUtil.generateToken(user.getEmail());
+            String accessToken = jwtUtil.generateToken(String.valueOf(user.getId()));
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
             
             if (request.getTimezone() != null &&
@@ -150,7 +150,7 @@ public class AuthService {
         try {
             RefreshToken token = refreshTokenService.validateRefreshToken(refreshToken);
 
-            String newAccessToken = jwtUtil.generateToken(token.getUser().getEmail());
+            String newAccessToken = jwtUtil.generateToken(String.valueOf(token.getUser().getId()));
 
             refreshTokenService.deleteToken(refreshToken);
             RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(token.getUser());

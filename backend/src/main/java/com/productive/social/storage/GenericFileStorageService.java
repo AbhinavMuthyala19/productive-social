@@ -1,19 +1,23 @@
 package com.productive.social.storage;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.productive.social.config.UploadConfigService;
 import com.productive.social.enums.UploadType;
 
 import java.nio.file.*;
 import java.util.UUID;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GenericFileStorageService {
 
     private final UploadPathResolver pathResolver;
+    private final UploadConfigService uploadConfigService;
 
     public StoredFileData store(
             MultipartFile file,
@@ -56,4 +60,26 @@ public class GenericFileStorageService {
             String contentType,
             Long size
     ) {}
+    
+    public void delete(String relativePath) {
+
+        try {
+            if (relativePath == null || relativePath.isBlank()) {
+                return;
+            }
+
+            // Convert "uploads/3/profile-pictures/file.png"
+            // → absolute path using base path
+            String basePath = uploadConfigService.getUploadBasePath();
+
+            Path fullPath = Paths.get(basePath).resolve(relativePath);
+
+            Files.deleteIfExists(fullPath);
+
+            log.info("Deleted file: {}", fullPath);
+
+        } catch (Exception e) {
+            log.warn("Failed to delete file: {}", relativePath, e);
+        }
+    }
 }

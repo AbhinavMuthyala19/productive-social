@@ -25,8 +25,11 @@ import com.productive.social.entity.User;
 import com.productive.social.entity.UserCommunity;
 import com.productive.social.enums.ActivityType;
 import com.productive.social.enums.MembershipStatus;
+import com.productive.social.enums.UploadType;
 import com.productive.social.exceptions.NotFoundException;
 import com.productive.social.exceptions.community.CommunityNotFoundException;
+import com.productive.social.exceptions.files.FileSizeExceededException;
+import com.productive.social.exceptions.files.InvalidFileException;
 import com.productive.social.exceptions.notes.NotesLinkingException;
 import com.productive.social.exceptions.posts.PostCreationException;
 import com.productive.social.exceptions.posts.PostImageUploadException;
@@ -61,6 +64,7 @@ public class PostService {
     private final PostNotesService postNotesService;
     private final TaskNotesService taskNotesService;
     private final TaskRepository taskRepository;
+    private final FileValidationService fileValidationService;
 
     // -------------------------
     // CREATE POST
@@ -84,9 +88,12 @@ public class PostService {
             if (images != null && !images.isEmpty()) {
                 try {
                     savePostImages(post, images);
-                } catch (Exception e) {
-                	log.error("Failed to upload images for postId={}", post.getId(), e);
-                    throw new PostImageUploadException("Failed to upload images");
+                } catch (InvalidFileException | FileSizeExceededException e) {
+                    log.warn("Post image validation failed. postId={}, error={}", post.getId(), e.getMessage());
+                    throw e;
+                } catch (PostImageUploadException e) {
+                    log.error("Failed to upload images for postId={}", post.getId(), e);
+                    throw e;
                 }
             }
             
@@ -156,17 +163,35 @@ public class PostService {
     }
 
 
-    private void savePostImages(Post post, List<MultipartFile> images) throws IOException {
-        for (MultipartFile file : images) {
-            if (!file.isEmpty()) {
-                String savedPath = imageStorageService.store(file);
+    private void savePostImages(Post post, List<MultipartFile> images) {
 
+        for (MultipartFile file : images) {
+
+            if (file == null || file.isEmpty()) {
+                continue;
+            }
+
+            try {
+                // 1️⃣ Validate image (10MB limit example)
+                fileValidationService.validateImage(file, 10);
+
+                // 2️⃣ Store file
+                String savedPath = imageStorageService.store(file,UploadType.POST_IMAGE);
+
+                // 3️⃣ Save DB record
                 PostImage postImage = PostImage.builder()
                         .post(post)
                         .imageUrl(savedPath)
                         .build();
 
                 postImageRepository.save(postImage);
+
+            } catch (InvalidFileException | FileSizeExceededException e) {
+                throw e;
+
+            } catch (Exception e) {
+                log.error("Image storage failed for postId={}", post.getId(), e);
+                throw new PostImageUploadException("Failed to store post image");
             }
         }
     }

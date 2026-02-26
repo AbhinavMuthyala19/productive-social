@@ -17,7 +17,7 @@ public class FileSystemImageStorageService implements ImageStorageService {
     private final AuthService authService;
 
     @Override
-    public String store(MultipartFile file) {
+    public String store(MultipartFile file, UploadType type) {
 
         Long userId = authService.getCurrentUser().getId();
 
@@ -26,7 +26,7 @@ public class FileSystemImageStorageService implements ImageStorageService {
             var stored = storageService.store(
                     file,
                     userId,
-                    UploadType.POST_IMAGE
+                    type
             );
 
             // Convert to relative path inside uploads
