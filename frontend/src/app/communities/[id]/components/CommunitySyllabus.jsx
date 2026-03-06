@@ -1,46 +1,19 @@
-import { useEffect, useState } from "react";
-import { getCommunitySyllabus, updateCommunityTask } from "../../../../lib/api";
+import { useContext, useEffect } from "react";
 import { TaskList } from "../../../../components/community/syllabus/TaskList";
 import "../../Communities.css";
+import { CommunityContext } from "../../../../context/CommunityContext";
 
 export const CommunitySyllabus = ({ communityId, joined }) => {
-  const [syllabus, setSyllabus] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { syllabusMap, syllabusLoading, fetchSyllabus, toggleTask } =
+    useContext(CommunityContext);
 
-  const fetchSyllabus = async () => {
-    try {
-      setLoading(true);
-      const res = await getCommunitySyllabus(communityId);
-      setSyllabus(res.data);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const syllabus = syllabusMap[communityId] || [];
+
+  console.log(syllabus)
 
   useEffect(() => {
-    fetchSyllabus();
+    fetchSyllabus(communityId);
   }, [communityId]);
-
-  const toggleTask = async (taskId, nextCompleted) => {
-    if (!joined) return;
-    setSyllabus((prev) =>
-      prev.map((task) =>
-        task.taskId === taskId ? { ...task, completed: nextCompleted } : task,
-      ),
-    );
-
-    try {
-      await updateCommunityTask(communityId, taskId, nextCompleted);
-    } catch {
-      setSyllabus((prev) =>
-        prev.map((task) =>
-          task.taskId === taskId
-            ? { ...task, completed: !nextCompleted }
-            : task,
-        ),
-      );
-    }
-  };
 
   return (
     <>
@@ -54,7 +27,7 @@ export const CommunitySyllabus = ({ communityId, joined }) => {
         syllabus={syllabus}
         onToggle={toggleTask}
         disabled={!joined}
-        loading={loading}
+        loading={syllabusLoading}
       />
     </>
   );

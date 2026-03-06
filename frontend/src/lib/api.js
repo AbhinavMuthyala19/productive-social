@@ -92,15 +92,15 @@ export const leaveCommunity = (communityId) =>
 export const getCommunity = (communityId) =>
   api.get(`/communities/${communityId}`);
 
-export const getGlobalPosts = () => api.get("/posts/feed/global");
+export const getGlobalPosts = (params) => api.get("/posts/feed/global", {params});
 
-export const getCommunityPosts = (communityId) =>
-  api.get(`/posts/feed/community/${communityId}`);
+export const getCommunityPosts = (communityId, params) =>
+  api.get(`/posts/feed/community/${communityId}`, {params});
 
-export const getUserPosts = () => api.get("/posts/feed/me");
+export const getUserPosts = (params) => api.get("/posts/feed/me", {params});
 
-export const getUserPostsByUserName = (username) =>
-  api.get(`/posts/feed/${username}`);
+export const getUserPostsByUserName = (username, params) =>
+  api.get(`/posts/feed/${username}`, {params});
 
 export const likePosts = (postId) => api.post(`/posts/${postId}/like`);
 

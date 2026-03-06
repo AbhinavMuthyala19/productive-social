@@ -3,18 +3,18 @@ import { PostHeader } from "./PostHeader";
 import { PostBody } from "./PostBody";
 import { PostFooter } from "./PostFooter";
 import { CommentModal } from "./CommentModal";
-import { useMemo, useState } from "react";
+import { forwardRef, useMemo, useState } from "react";
 import "./PostCard.css";
 import { TimeAgo } from "../../../utils/TimeAgo";
 
-export const PostCard = ({
+export const PostCard = forwardRef(({
   post,
   onCommentAdded,
   onToggleLike,
   displayCommunityBadge,
   displayStreakBadge,
   userNameClickable,
-}) => {
+}, ref) => {
   const [showComments, setShowComments] = useState(false);
 
   const createdAt = useMemo(
@@ -23,7 +23,7 @@ export const PostCard = ({
   )
 
   return (
-    <Card className="post-card">
+    <Card ref={ref} className="post-card">
       <PostHeader
         user={post.user}
         createdAt={createdAt}
@@ -38,6 +38,7 @@ export const PostCard = ({
         title={post.title}
         content={post.content}
         images={post.images}
+        notes={post.notes}
       />
       <PostFooter
         post={post}
@@ -53,4 +54,4 @@ export const PostCard = ({
       />
     </Card>
   );
-};
+});

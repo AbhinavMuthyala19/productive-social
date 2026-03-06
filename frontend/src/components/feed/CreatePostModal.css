@@ -1,5 +1,6 @@
 .create-post-modal {
     width: 50%;
+    height: auto;
     max-height: 900px;
 }
 

@@ -29,6 +29,18 @@ export const PostProvider = ({ children }) => {
   });
 
   const [error, setError] = useState(null);
+  const [page, setPage] = useState({
+    global: 0,
+    community: 0,
+    user: 0,
+  });
+
+  const [hasMore, setHasMore] = useState({
+    global: true,
+    community: true,
+    user: true,
+  });
+  const PAGE_SIZE = 10;
 
   const mergePosts = useCallback((newPosts) => {
     setPosts((prev) => {
@@ -36,12 +48,14 @@ export const PostProvider = ({ children }) => {
 
       newPosts.forEach((post) => {
         map.set(post.postId, {
-          ...map.get(post.postId),
+          ...(map.get(post.postId) || {}),
           ...post,
         });
       });
 
-      return Array.from(map.values());
+      return Array.from(map.values()).sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+      );
     });
   }, []);
 
@@ -49,44 +63,80 @@ export const PostProvider = ({ children }) => {
     setPosts((prev) => prev.map((p) => (p.postId === postId ? updater(p) : p)));
   }, []);
 
-  const fetchPosts = useCallback(async () => {
-    try {
-      setLoading((l) => ({ ...l, global: true }));
-      const res = await getGlobalPosts();
-      mergePosts(res.data);
-    } catch (e) {
-      setError(e);
-    } finally {
-      setLoading((l) => ({ ...l, global: false }));
-    }
-  }, [mergePosts]);
-
-  const fetchCommunityPosts = useCallback(
-    async (communityId) => {
+  const fetchFeed = useCallback(
+    async (type, apiCall, pageNumber = 0) => {
       try {
-        setLoading((l) => ({ ...l, community: true }));
-        const res = await getCommunityPosts(communityId);
-        mergePosts(res.data);
+        setLoading((l) => ({ ...l, [type]: true }));
+
+        const res = await apiCall({
+          page: pageNumber,
+          pageSize: PAGE_SIZE,
+        });
+
+        const data = res.data;
+        const posts = data.content ?? data ?? [];
+
+        mergePosts(posts);
+
+        setPage((p) => ({ ...p, [type]: pageNumber }));
+        setHasMore((h) => ({ ...h, [type]: posts.length === PAGE_SIZE}));
+      } catch (e) {
+        setError(e);
       } finally {
-        setLoading((l) => ({ ...l, community: false }));
+        setLoading((l) => ({ ...l, [type]: false }));
       }
     },
     [mergePosts],
   );
 
+  const fetchPosts = useCallback(
+    (pageNumber = 0) =>
+      fetchFeed("global", (params) => getGlobalPosts(params), pageNumber),
+    [fetchFeed],
+  );
+
+  const fetchCommunityPosts = useCallback(
+    (communityId, pageNumber = 0) =>
+      fetchFeed(
+        "community",
+        (params) => getCommunityPosts(communityId, params),
+        pageNumber,
+      ),
+    [fetchFeed],
+  );
+
   const fetchUserPosts = useCallback(
-    async (username) => {
-      try {
-        setLoading((l) => ({ ...l, user: true }));
-        const res = username
-          ? await getUserPostsByUserName(username)
-          : await getUserPosts();
-        mergePosts(res.data);
-      } finally {
-        setLoading((l) => ({ ...l, user: false }));
-      }
+    (username, pageNumber = 0) =>
+      fetchFeed(
+        "user",
+        (params) =>
+          username
+            ? getUserPostsByUserName(username, params)
+            : getUserPosts(params),
+        pageNumber,
+      ),
+    [fetchFeed],
+  );
+
+  const loadMoreGlobal = useCallback(() => {
+    if (loading.global || !hasMore.global) return;
+    fetchPosts(page.global + 1);
+  }, [loading.global, hasMore.global, page.global, fetchPosts]);
+
+  const loadMoreCommunity = useCallback(
+    (communityId) => {
+      if (loading.community || !hasMore.community) return;
+      fetchCommunityPosts(communityId, page.community + 1);
     },
-    [mergePosts],
+    [loading.community, hasMore.community, page.community, fetchCommunityPosts],
+  );
+
+  const loadMoreUser = useCallback(
+    (username) => {
+      if (loading.user || !hasMore.user) return;
+      fetchUserPosts(username, page.user + 1);
+    },
+    [loading.user, hasMore.user, page.user, fetchUserPosts],
   );
 
   const handleCommentAdded = useCallback(
@@ -179,6 +229,10 @@ export const PostProvider = ({ children }) => {
       addPost,
       toggleLike,
       handleCommentAdded,
+      loadMoreGlobal,
+      loadMoreCommunity,
+      loadMoreUser,
+      hasMore,
     }),
     [
       posts,
@@ -190,6 +244,10 @@ export const PostProvider = ({ children }) => {
       addPost,
       toggleLike,
       handleCommentAdded,
+      loadMoreGlobal,
+      loadMoreCommunity,
+      loadMoreUser,
+      hasMore,
     ],
   );
 

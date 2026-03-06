@@ -15,17 +15,19 @@ import { CommunityContext } from "../../../context/CommunityContext";
 import { CommunityLeaveModal } from "../../../components/community/actions/CommunityLeaveModal";
 import { AuthContext } from "../../../context/AuthContext";
 import { ProfileHeaderSection } from "./components/ProfileHeaderSection";
-import { ProfileFeed } from "./components/ProfileFeed";
 import { ProfileCommunities } from "./components/ProfileCommunities";
+import { Feed } from "../../../components/feed/Feed";
 
 export const Profile = () => {
   const { toggleJoinCommunity } = useContext(CommunityContext);
   const {
     posts,
     fetchUserPosts,
-    loading: postLoading,
+    loading: postsLoading,
     handleCommentAdded,
-    toggleLike
+    toggleLike,
+    hasMore,
+    loadMoreUser,
   } = useContext(PostContext);
   const { user: loggedInUser } = useContext(AuthContext);
   const leaveModal = useLeaveCommunity(toggleJoinCommunity);
@@ -36,7 +38,7 @@ export const Profile = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const tabFromUrl = searchParams.get("tab") || "Feed";
   const [active, setActive] = useState(tabFromUrl);
-  const tabs = ["Feed", "Communities"];
+  const tabs = ["Feed", "Notes", "Communities"];
   const { username } = useParams();
 
   const profilePosts = useMemo(
@@ -103,6 +105,7 @@ export const Profile = () => {
     );
   };
 
+  console.log(userProfile);
   return (
     <PageContainer>
       <Navbar />
@@ -117,11 +120,15 @@ export const Profile = () => {
       )}
       <div className="main">
         {active === "Feed" && (
-          <ProfileFeed
+          <Feed
             posts={profilePosts}
-            loading={postLoading.user}
+            loading={postsLoading.user}
+            hasMore={hasMore.user}
+            loadMore={() => loadMoreUser(username)}
             onCommentAdded={handleCommentAdded}
             onToggleLike={toggleLike}
+            displayCommunityBadge
+            userNameClickable={false}
           />
         )}
 

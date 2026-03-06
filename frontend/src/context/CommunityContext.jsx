@@ -6,7 +6,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { getCommunities } from "../lib/api";
+import { getCommunities, getCommunitySyllabus } from "../lib/api";
 import { AuthContext } from "./AuthContext";
 import { joinCommunity, leaveCommunity } from "../lib/api";
 
@@ -17,6 +17,8 @@ export const CommunityProvider = ({ children }) => {
   const [communities, setCommunities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [syllabusMap, setSyllabusMap] = useState({});
+  const [syllabusLoading, setSyllabusLoading] = useState(false);
 
   const fetchCommunities = useCallback(async () => {
     try {
@@ -86,6 +88,45 @@ export const CommunityProvider = ({ children }) => {
     [communities],
   );
 
+  const fetchSyllabus = useCallback(async (communityId) => {
+    try {
+      setSyllabusLoading(true);
+
+      const res = await getCommunitySyllabus(communityId);
+
+      setSyllabusMap((prev) => ({
+        ...prev,
+        [communityId]: res.data,
+      }));
+    } finally {
+      setSyllabusLoading(false);
+    }
+  }, []);
+
+  const toggleTask = useCallback(async (communityId, taskId, nextCompleted) => {
+    // optimistic update
+    setSyllabusMap((prev) => ({
+      ...prev,
+      [communityId]: prev[communityId]?.map((task) =>
+        task.taskId === taskId ? { ...task, completed: nextCompleted } : task,
+      ),
+    }));
+
+    try {
+      await updateCommunityTask(communityId, taskId, nextCompleted);
+    } catch {
+      // rollback
+      setSyllabusMap((prev) => ({
+        ...prev,
+        [communityId]: prev[communityId]?.map((task) =>
+          task.taskId === taskId
+            ? { ...task, completed: !nextCompleted }
+            : task,
+        ),
+      }));
+    }
+  }, []);
+
   useEffect(() => {
     if (authLoading) return;
     if (!user) {
@@ -102,8 +143,22 @@ export const CommunityProvider = ({ children }) => {
       error,
       fetchCommunities,
       toggleJoinCommunity,
+      syllabusMap,
+      syllabusLoading,
+      fetchSyllabus,
+      toggleTask,
     }),
-    [communities, loading, error, fetchCommunities, toggleJoinCommunity],
+    [
+      communities,
+      loading,
+      error,
+      fetchCommunities,
+      toggleJoinCommunity,
+      syllabusMap,
+      syllabusLoading,
+      fetchSyllabus,
+      toggleTask,
+    ],
   );
 
   return (

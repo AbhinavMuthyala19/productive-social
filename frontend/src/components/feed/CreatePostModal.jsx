@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Modal } from "../ui/Modal";
 import { Select } from "../ui/Select";
 import closeIcon from "../../assets/icons/cross.svg";
@@ -10,6 +10,7 @@ import attachmentIcon from "../../assets/icons/attachment.svg";
 import { createPost } from "../../lib/api";
 import { AttachmentsModal } from "./AttachmentsModal";
 import { toast } from "sonner";
+import { CommunityContext } from "../../context/CommunityContext";
 
 export const CreatePostModal = ({
   isOpen,
@@ -18,13 +19,16 @@ export const CreatePostModal = ({
   onPostCreated,
   defaultCommunityId,
 }) => {
+  const { syllabusMap, fetchSyllabus } = useContext(CommunityContext);
   const [communityId, setCommunityId] = useState(defaultCommunityId || "");
+  const [taskId, setTaskId] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
   const [notes, setNotes] = useState([]);
   const [posting, setPosting] = useState(false);
   const [showAttachmentsModal, setShowAttachmentsModal] = useState(false);
+  const syllabusOptions = syllabusMap[communityId] || [];
 
   useEffect(() => {
     if (defaultCommunityId) {
@@ -32,8 +36,15 @@ export const CreatePostModal = ({
     }
   }, [defaultCommunityId, isOpen]);
 
+  useEffect(() => {
+    if (communityId) {
+      fetchSyllabus(communityId);
+    }
+  }, [communityId, fetchSyllabus]);
+
   const resetForm = () => {
     setCommunityId(defaultCommunityId || "");
+    setTaskId("")
     setTitle("");
     setContent("");
     setImages([]);
@@ -54,6 +65,7 @@ export const CreatePostModal = ({
 
     const postData = {
       communityId: Number(communityId),
+      taskId: Number(taskId),
       title,
       content,
     };
@@ -69,10 +81,15 @@ export const CreatePostModal = ({
       formData.append("images", file);
     });
 
+    notes.forEach((file) => {
+      formData.append("notes", file);
+    });
+
     try {
       setPosting(true);
       const res = await createPost(formData);
       onPostCreated(res.data);
+      console.log(res.data);
       toast.success("Post created!");
       handleClose();
     } catch (err) {
@@ -114,6 +131,22 @@ export const CreatePostModal = ({
               getOptionLabel={(c) => c.name}
               getOptionValue={(c) => c.id}
               disabled={!!defaultCommunityId}
+            />
+          </div>
+          <div className="create-post-syllabus-input">
+            <label htmlFor="topic">
+              Syllabus
+            </label>
+            <Select
+              id={"topic"}
+              className="create-post-select"
+              placeholder="Select a Topic"
+              options={syllabusOptions}
+              value={taskId}
+              onChange={(e) => setTaskId(e.target.value)}
+              getOptionLabel={(task) => task.title}
+              getOptionValue={(task) => task.taskId}
+              disabled={!communityId}
             />
           </div>
 

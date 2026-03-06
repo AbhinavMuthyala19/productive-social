@@ -34,16 +34,34 @@
   border-radius: var(--radius-sm);
 }
 
-
 .notes-link-text {
   font-weight: 500;
   font-size: 14px;
+}
+.post-notes-link-button{
+  width: 100%;
+
+}
+.notes-button {
+  display: flex;
+  align-items: center;
+  background-color: #eff6ff;
+  color: var(--color-blue);
+  box-shadow: 0 0 0 0.5px var(--color-blue);
+  gap: 10px;
+  margin: 0;
+  height: 30px;
+  width: 100%;
+  padding-left: 10px;
+}
+
+.notes-button:hover {
+  background-color: #e4f0ff;
 }
 
 .notes-button img {
   width: 16px;
 }
-
 
 /* Tablet */
 @media (max-width: 1023px) {

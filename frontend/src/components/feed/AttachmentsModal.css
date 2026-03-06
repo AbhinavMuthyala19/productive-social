@@ -15,7 +15,7 @@
     justify-content: center;
     align-items: center;
     overflow-y: auto;
-    padding: 10px;
+    padding: 20px;
 
 }
 
@@ -44,13 +44,22 @@
 .image-preview {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 10px;
+    padding: 10px 0;
 }
 
 .image-preview img {
     border: 1px solid var(--color-blue);
     width: auto;
     height: 150px;
+}
+
+.file-preview{
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-blue);
+    padding: 20px;
+    width: auto;
+    height: 70px;
 }
 
 .preview-wrapper {

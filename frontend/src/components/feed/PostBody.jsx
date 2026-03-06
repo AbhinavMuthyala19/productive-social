@@ -1,8 +1,11 @@
 import { Button } from "../ui/Button";
 import "./PostBody.css";
 import notesIcon from "../../assets/icons/notes.svg";
+import { NotesViewModal } from "./NotesViewModal";
+import { useState } from "react";
 
 export const PostBody = ({ title, content, images = [], notes }) => {
+  const [showNotesModal, setShowNotesModal] = useState(false);
   return (
     <>
       <div className="post-body">
@@ -19,13 +22,22 @@ export const PostBody = ({ title, content, images = [], notes }) => {
               />
             ))}
         </div>
-        {notes && (
-          <Button variant="notes-button">
+        {notes && notes.length >= 1 ?(
+          <Button
+            variant="notes-button"
+            onClick={() => setShowNotesModal(true)}
+          >
             <img src={notesIcon} alt="Notes" />
-              Notes attached
+            {`Notes attached (${notes.length})`}
           </Button>
-        )}
+        ) : null}
       </div>
+
+      <NotesViewModal
+        notes={notes}
+        isOpen={showNotesModal}
+        onClose={() => setShowNotesModal(false)}
+      />
     </>
   );
 };

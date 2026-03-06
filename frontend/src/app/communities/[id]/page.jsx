@@ -9,8 +9,8 @@ import "../Communities.css";
 import { CommunityLeaveModal } from "../../../components/community/actions/CommunityLeaveModal";
 import { useLeaveCommunity } from "../../../hooks/useLeaveCommunity";
 import { CommunityHeaderSection } from "./components/CommunityHeaderSection";
-import { CommunityFeed } from "./components/CommunityFeed";
 import { CommunitySyllabus } from "./components/CommunitySyllabus";
+import { Feed } from "../../../components/feed/Feed";
 
 export const CommunityPage = () => {
   const { communities, loading, toggleJoinCommunity } =
@@ -21,7 +21,9 @@ export const CommunityPage = () => {
     fetchCommunityPosts,
     handleCommentAdded,
     addPost,
-    toggleLike
+    toggleLike,
+    hasMore,
+    loadMoreCommunity,
   } = useContext(PostContext);
   const leaveModal = useLeaveCommunity(toggleJoinCommunity);
   const [showCreatePost, setShowCreatePost] = useState(false);
@@ -30,12 +32,12 @@ export const CommunityPage = () => {
   const tabFromUrl = searchParams.get("tab") || "Feed";
   const [active, setActive] = useState(tabFromUrl);
 
-  const tabs = ["Feed", "Syllabus", "Notes"];
+  const tabs = ["Feed", "Syllabus"];
   const community = communities.find((c) => c.id === Number(id));
   const communityJoined = community?.joined;
 
   const communityPosts = useMemo(
-    () => posts.filter((post) => post.community.id === Number(id)),
+    () => (posts || []).filter((post) => post.community.id === Number(id)),
     [posts, id],
   );
 
@@ -76,9 +78,12 @@ export const CommunityPage = () => {
 
       <div className="main">
         {active === "Feed" && (
-          <CommunityFeed
+          <Feed
             posts={communityPosts}
             loading={postsLoading.community}
+            displayStreakBadge = {true}
+            hasMore={hasMore.community}
+            loadMore={() => loadMoreCommunity(id)}
             onCommentAdded={handleCommentAdded}
             onToggleLike={toggleLike}
           />
