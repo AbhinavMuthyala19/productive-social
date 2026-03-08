@@ -52,4 +52,7 @@ public class User {
     public void updateTimestamp() {
         this.updatedAt = LocalDateTime.now();
     }
+    
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean emailVerified;
 }

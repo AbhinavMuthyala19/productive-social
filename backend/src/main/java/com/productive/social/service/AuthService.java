@@ -10,6 +10,7 @@ import com.productive.social.exceptions.BadRequestException;
 import com.productive.social.exceptions.InternalServerException;
 import com.productive.social.exceptions.UnauthorizedException;
 import com.productive.social.logging.NoisyLogLimiter;
+import com.productive.social.notification.event.UserVerificationEmailEvent;
 import com.productive.social.repository.UserCommunityRepository;
 import com.productive.social.repository.UserRepository;
 import com.productive.social.security.CustomUserDetails;
@@ -17,6 +18,7 @@ import com.productive.social.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,25 +37,28 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     public final RefreshTokenService refreshTokenService;
     public final UserCommunityRepository userCommunityRepository;
+    private final ApplicationEventPublisher eventPublisher;
+    private final OtpService otpService;
+    private final PasswordResetService passwordResetService;
 
     // -------------------------
     // REGISTER
     // -------------------------
     public String register(RegisterRequest request) {
         try {
-            // 1. Check if email already exists
+            // 1️⃣ Check if email already exists
             if (userRepository.existsByEmail(request.getEmail())) {
-            	log.warn("Registration failed - email already exists {}", request.getEmail());
+                log.warn("Registration failed - email already exists {}", request.getEmail());
                 throw new BadRequestException("Email already exists");
             }
 
-            // 2. Check if username already exists
+            // 2️⃣ Check if username already exists
             if (userRepository.existsByUsername(request.getUsername())) {
-            	log.warn("Registration failed - username already exists {}", request.getUsername());
+                log.warn("Registration failed - username already exists {}", request.getUsername());
                 throw new BadRequestException("Username already exists");
             }
 
-            // 3. Create new user with encrypted password
+            // 3️⃣ Create new user with encrypted password
             User user = User.builder()
                     .username(request.getUsername())
                     .name(request.getName())
@@ -61,19 +66,31 @@ public class AuthService {
                     .password(passwordEncoder.encode(request.getPassword()))
                     .timezone(request.getTimezone())
                     .build();
-            
 
-            // 4. Save user
+            // 4️⃣ Save user
             userRepository.save(user);
-            
+
             log.info("User registered successfully. userId={}", user.getId());
-            return "User registered successfully!";
-        }
-        catch (BadRequestException e) {
+
+            // 5️⃣ Generate OTP for verification
+            String otp = otpService.generateVerificationOtp(user.getId());
+
+            // 6️⃣ Publish event to send verification email
+            eventPublisher.publishEvent(
+                    new UserVerificationEmailEvent(
+                            user.getEmail(),
+                            user.getName(),
+                            otp
+                    )
+            );
+
+            // 7️⃣ Return response
+            return "User registered successfully. Verification email sent.";
+
+        } catch (BadRequestException e) {
             throw e;
-        }
-        catch (Exception e) {
-        	log.error("Unexpected error during registration", e);
+        } catch (Exception e) {
+            log.error("Unexpected error during registration", e);
             throw new InternalServerException("Failed to register user");
         }
     }
@@ -221,5 +238,50 @@ public class AuthService {
                 .joinedCommunitiesCount(joinedCommunitiesCount)
                 .createdAt(user.getCreatedAt())
                 .build();
+    }
+    
+    public void sendVerificationEmail(String email, String name, String otp) {
+
+        UserVerificationEmailEvent event =
+                new UserVerificationEmailEvent(email, name, otp);
+
+        eventPublisher.publishEvent(event);
+    }
+    
+    public String verifyOtp(Long userId, String otp) {
+        otpService.verifyOtp(userId, otp);
+        return "Email verified successfully";
+    }
+    
+    public String forgotPassword(String email) {
+
+        passwordResetService.requestPasswordReset(email);
+
+        return "Password reset email sent.";
+    }
+    
+    public String resetPassword(String token, String newPassword) {
+
+        passwordResetService.resetPassword(token, newPassword);
+
+        return "Password reset successful.";
+    }
+    
+    public String resendVerificationOtp(String email) {
+
+        String otp = otpService.resendVerificationOtp(email);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+
+        eventPublisher.publishEvent(
+                new UserVerificationEmailEvent(
+                        user.getEmail(),
+                        user.getName(),
+                        otp
+                )
+        );
+
+        return "Verification OTP resent successfully.";
     }
 }

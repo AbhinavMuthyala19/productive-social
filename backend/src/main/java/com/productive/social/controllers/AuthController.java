@@ -7,12 +7,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.productive.social.dto.auth.AuthResponse;
 import com.productive.social.dto.auth.LoginRequest;
 import com.productive.social.dto.auth.RegisterRequest;
+import com.productive.social.dto.auth.ResendOtpRequest;
+import com.productive.social.dto.auth.ResetPasswordRequest;
 import com.productive.social.dto.auth.UserMeResponse;
+import com.productive.social.dto.auth.VerifyOtpRequest;
 import com.productive.social.service.AuthService;
 import com.productive.social.util.CookieUtil;
 
@@ -31,6 +35,13 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
+    
+    @PostMapping("/verify-email")
+    public ResponseEntity<String> verifyEmail(@RequestBody VerifyOtpRequest request) {
+        return ResponseEntity.ok(
+                authService.verifyOtp(request.getUserId(), request.getOtp())
+        );
+    }
 
 
     @PostMapping("/login")
@@ -47,6 +58,23 @@ public class AuthController {
                 new HashMap<>() {{
                         put("message", "Login successful");
                 }}
+        );
+    }
+    
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
+        return ResponseEntity.ok(authService.forgotPassword(email));
+    }
+    
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(
+            @RequestBody ResetPasswordRequest request) {
+
+        return ResponseEntity.ok(
+                authService.resetPassword(
+                        request.getToken(),
+                        request.getNewPassword()
+                )
         );
     }
 
@@ -108,7 +136,16 @@ public class AuthController {
     public ResponseEntity<UserMeResponse> me() {
         return ResponseEntity.ok(authService.getCurrentUserProfile());
     }
+    
+    
 
+    @PostMapping("/resend-verification")
+    public ResponseEntity<String> resendOtp(@RequestBody ResendOtpRequest request) {
+
+        return ResponseEntity.ok(
+                authService.resendVerificationOtp(request.getEmail())
+        );
+    }
 
 
 }
