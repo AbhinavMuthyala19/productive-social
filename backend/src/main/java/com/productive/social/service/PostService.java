@@ -26,6 +26,7 @@ import com.productive.social.entity.UserCommunity;
 import com.productive.social.enums.ActivityType;
 import com.productive.social.enums.MembershipStatus;
 import com.productive.social.enums.UploadType;
+import com.productive.social.exceptions.InternalServerException;
 import com.productive.social.exceptions.NotFoundException;
 import com.productive.social.exceptions.community.CommunityNotFoundException;
 import com.productive.social.exceptions.files.FileSizeExceededException;
@@ -69,6 +70,7 @@ public class PostService {
     // -------------------------
     // CREATE POST
     // -------------------------
+    @Transactional
     public PostResponse createPost(PostCreateRequest request, List<MultipartFile> images, List<MultipartFile> notesFiles) {
         try {
             User user = authService.getCurrentUser();
@@ -163,6 +165,7 @@ public class PostService {
     }
 
 
+    @Transactional
     private void savePostImages(Post post, List<MultipartFile> images) {
 
         for (MultipartFile file : images) {
@@ -442,31 +445,62 @@ public class PostService {
     // -------------------------
     // LIKE / UNLIKE
     // -------------------------
+    @Transactional
     public void likePost(Long postId) {
-        User user = authService.getCurrentUser();
 
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundException("Post not found"));
+        try {
 
-        if (!postLikeRepository.existsByPostAndUser(post, user)) {
-            PostLike like = PostLike.builder()
-                    .post(post)
-                    .user(user)
-                    .build();
+            User user = authService.getCurrentUser();
 
-            postLikeRepository.save(like);
-            log.info("Post liked. userId={}, postId={}", user.getId(), postId);
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> {
+                        log.warn("Like post failed - post not found. postId={}", postId);
+                        return new NotFoundException("Post not found");
+                    });
+
+            if (!postLikeRepository.existsByPostAndUser(post, user)) {
+
+                PostLike like = PostLike.builder()
+                        .post(post)
+                        .user(user)
+                        .build();
+
+                postLikeRepository.save(like);
+
+                log.info("Post liked successfully. userId={}, postId={}", user.getId(), postId);
+            }
+
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("Unexpected error while liking post. postId={}", postId, e);
+            throw new InternalServerException("Failed to like post");
         }
     }
 
+
     @Transactional
     public void unlikePost(Long postId) {
-        User user = authService.getCurrentUser();
 
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundException("Post not found"));
+        try {
 
-        postLikeRepository.deleteByPostAndUser(post, user);
-        log.info("Post unliked. userId={}, postId={}", user.getId(), postId);
+            User user = authService.getCurrentUser();
+
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> {
+                        log.warn("Unlike post failed - post not found. postId={}", postId);
+                        return new NotFoundException("Post not found");
+                    });
+
+            postLikeRepository.deleteByPostAndUser(post, user);
+
+            log.info("Post unliked successfully. userId={}, postId={}", user.getId(), postId);
+
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("Unexpected error while unliking post. postId={}", postId, e);
+            throw new InternalServerException("Failed to unlike post");
+        }
     }
 }

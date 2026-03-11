@@ -1,6 +1,7 @@
 package com.productive.social.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.productive.social.dao.profile.ProfileDAO;
@@ -101,7 +102,7 @@ public class ProfileService {
         }
     }
     
-    
+    @Transactional
     public UserProfileResponse updateMyProfile(UserProfileUpdateRequest request) {
 
         User currentUser = authService.getCurrentUser();
@@ -148,6 +149,7 @@ public class ProfileService {
         }
     }
     
+    @Transactional
     public UserProfileResponse updateProfilePicture(MultipartFile file) {
 
         User currentUser = authService.getCurrentUser();

@@ -22,6 +22,7 @@ public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
+    @Transactional
     public RefreshToken createRefreshToken(User user) {
         try {
             RefreshToken token = RefreshToken.builder()

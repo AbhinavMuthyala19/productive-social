@@ -25,6 +25,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -44,6 +45,7 @@ public class AuthService {
     // -------------------------
     // REGISTER
     // -------------------------
+    @Transactional
     public String register(RegisterRequest request) {
         try {
             // 1️⃣ Check if email already exists
@@ -187,6 +189,7 @@ public class AuthService {
     // -------------------------
     // LOGOUT
     // -------------------------
+    @Transactional
     public String logout(String refreshToken) {
         try {
             refreshTokenService.deleteToken(refreshToken);
@@ -248,11 +251,13 @@ public class AuthService {
         eventPublisher.publishEvent(event);
     }
     
+    @Transactional
     public String verifyOtp(Long userId, String otp) {
         otpService.verifyOtp(userId, otp);
         return "Email verified successfully";
     }
     
+    @Transactional
     public String forgotPassword(String email) {
 
         passwordResetService.requestPasswordReset(email);
@@ -260,6 +265,7 @@ public class AuthService {
         return "Password reset email sent.";
     }
     
+    @Transactional
     public String resetPassword(String token, String newPassword) {
 
         passwordResetService.resetPassword(token, newPassword);
@@ -267,6 +273,7 @@ public class AuthService {
         return "Password reset successful.";
     }
     
+    @Transactional
     public String resendVerificationOtp(String email) {
 
         String otp = otpService.resendVerificationOtp(email);

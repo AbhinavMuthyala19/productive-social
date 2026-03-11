@@ -36,30 +36,46 @@ public class StreakService {
     ) {
 
         try {
+
             UserCommunity membership = streakDAO
                     .findMembership(user.getId(), community.getId())
-                    .orElseThrow(() ->
-                            new InvalidCommunityMembershipException(
-                                    "User is not part of community"));
+                    .orElseThrow(() -> {
+                        log.warn(
+                                "Streak rejected - user not member. userId={}, communityId={}",
+                                user.getId(),
+                                community.getId()
+                        );
+                        return new InvalidCommunityMembershipException(
+                                "User is not part of community");
+                    });
 
             if (!membership.getStatus().name().equals("ACTIVE")) {
+
+                log.warn(
+                        "Streak rejected - membership not active. userId={}, communityId={}, status={}",
+                        user.getId(),
+                        community.getId(),
+                        membership.getStatus()
+                );
+
                 throw new InvalidCommunityMembershipException(
                         "User has left this community");
             }
 
-            LocalDate today =
-                    TimeUtil.todayForUser(user.getTimezone());
+            LocalDate today = TimeUtil.todayForUser(user.getTimezone());
 
             log.debug(
-                    "Recording activity. userId={}, communityId={}, date={}",
+                    "Recording activity. userId={}, communityId={}, activityType={}, date={}",
                     user.getId(),
                     community.getId(),
+                    activityType,
                     today
             );
 
             // -------------------------
             // 1. INSERT ACTIVITY LOG
             // -------------------------
+
             activityLogRepository.save(
                     UserActivityLog.builder()
                             .user(user)
@@ -70,22 +86,39 @@ public class StreakService {
                             .build()
             );
 
+            log.debug(
+                    "Activity log inserted. userId={}, communityId={}, activityType={}",
+                    user.getId(),
+                    community.getId(),
+                    activityType
+            );
+
             // -------------------------
             // 2. UPDATE STREAK SNAPSHOT
             // -------------------------
+
             updateStreak(membership, today);
 
         } catch (InvalidCommunityMembershipException e) {
-            log.warn("Streak rejected: {}", e.getMessage());
+
+            log.warn(
+                    "Streak operation rejected. userId={}, communityId={}, reason={}",
+                    user.getId(),
+                    community.getId(),
+                    e.getMessage()
+            );
+
             throw e;
 
         } catch (Exception e) {
+
             log.error(
-                    "Failed to record streak activity. userId={}, communityId={}",
+                    "Unexpected error while recording streak activity. userId={}, communityId={}",
                     user.getId(),
                     community.getId(),
                     e
             );
+
             throw new StreakOperationException(
                     "Failed to record activity for streak", e);
         }
@@ -95,51 +128,82 @@ public class StreakService {
     // STREAK CORE LOGIC
     // ------------------------------------------------
 
+    @Transactional
     private void updateStreak(UserCommunity membership, LocalDate today) {
 
-        LocalDate lastDate = membership.getLastActivityDate();
+        try {
 
-        // First activity ever
-        if (lastDate == null) {
-            membership.setCurrentStreak(1);
-            membership.setLongestStreak(1);
+            LocalDate lastDate = membership.getLastActivityDate();
+
+            // First activity ever
+            if (lastDate == null) {
+
+                membership.setCurrentStreak(1);
+                membership.setLongestStreak(1);
+
+                log.debug("First streak activity recorded.");
+
+            }
+
+            // Same day — ignore
+            else if (lastDate.isEqual(today)) {
+
+                log.debug(
+                        "Duplicate same-day activity ignored. userId={}, communityId={}",
+                        membership.getUser().getId(),
+                        membership.getCommunity().getId()
+                );
+
+                return;
+            }
+
+            // Consecutive day
+            else if (lastDate.plusDays(1).isEqual(today)) {
+
+                membership.setCurrentStreak(
+                        membership.getCurrentStreak() + 1
+                );
+
+            }
+
+            // Broken streak
+            else {
+
+                membership.setCurrentStreak(1);
+
+            }
+
+            membership.setLastActivityDate(today);
+
+            membership.setLongestStreak(
+                    Math.max(
+                            membership.getLongestStreak(),
+                            membership.getCurrentStreak()
+                    )
+            );
+
+            userCommunityRepository.save(membership);
+
+            log.info(
+                    "Streak updated successfully. userId={}, communityId={}, current={}, longest={}",
+                    membership.getUser().getId(),
+                    membership.getCommunity().getId(),
+                    membership.getCurrentStreak(),
+                    membership.getLongestStreak()
+            );
+
+        } catch (Exception e) {
+
+            log.error(
+                    "Failed to update streak snapshot. userId={}, communityId={}",
+                    membership.getUser().getId(),
+                    membership.getCommunity().getId(),
+                    e
+            );
+
+            throw new StreakOperationException(
+                    "Failed to update streak snapshot", e);
         }
-
-        // Same day — ignore
-        else if (lastDate.isEqual(today)) {
-            log.debug("Duplicate same-day activity ignored");
-            return;
-        }
-
-        // Consecutive day
-        else if (lastDate.plusDays(1).isEqual(today)) {
-            membership.setCurrentStreak(
-                    membership.getCurrentStreak() + 1);
-        }
-
-        // Broken streak
-        else {
-            membership.setCurrentStreak(1);
-        }
-
-        membership.setLastActivityDate(today);
-
-        membership.setLongestStreak(
-                Math.max(
-                        membership.getLongestStreak(),
-                        membership.getCurrentStreak()
-                )
-        );
-
-        userCommunityRepository.save(membership);
-
-        log.info(
-                "Streak updated. userId={}, communityId={}, current={}, longest={}",
-                membership.getUser().getId(),
-                membership.getCommunity().getId(),
-                membership.getCurrentStreak(),
-                membership.getLongestStreak()
-        );
     }
 
     // ------------------------------------------------
