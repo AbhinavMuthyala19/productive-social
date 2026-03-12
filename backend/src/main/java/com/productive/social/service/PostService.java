@@ -26,6 +26,7 @@ import com.productive.social.entity.UserCommunity;
 import com.productive.social.enums.ActivityType;
 import com.productive.social.enums.MembershipStatus;
 import com.productive.social.enums.UploadType;
+import com.productive.social.exceptions.BadRequestException;
 import com.productive.social.exceptions.InternalServerException;
 import com.productive.social.exceptions.NotFoundException;
 import com.productive.social.exceptions.community.CommunityNotFoundException;
@@ -35,6 +36,7 @@ import com.productive.social.exceptions.notes.NotesLinkingException;
 import com.productive.social.exceptions.posts.PostCreationException;
 import com.productive.social.exceptions.posts.PostImageUploadException;
 import com.productive.social.exceptions.tasks.TaskNotFoundException;
+import com.productive.social.repository.CommentRepository;
 import com.productive.social.repository.CommunityRepository;
 import com.productive.social.repository.PostImageRepository;
 import com.productive.social.repository.PostLikeRepository;
@@ -66,6 +68,7 @@ public class PostService {
     private final TaskNotesService taskNotesService;
     private final TaskRepository taskRepository;
     private final FileValidationService fileValidationService;
+    private final CommentRepository commentRepository;
 
     // -------------------------
     // CREATE POST
@@ -501,6 +504,67 @@ public class PostService {
         } catch (Exception e) {
             log.error("Unexpected error while unliking post. postId={}", postId, e);
             throw new InternalServerException("Failed to unlike post");
+        }
+    }
+    
+    @Transactional
+    public void deletePost(Long postId) {
+
+        try {
+
+            User user = authService.getCurrentUser();
+
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> {
+                        log.warn("Delete failed - post not found. postId={}", postId);
+                        return new NotFoundException("Post not found");
+                    });
+
+            if (!post.getUser().getId().equals(user.getId())) {
+
+                log.warn("Delete denied - user not owner. userId={}, postId={}",
+                        user.getId(), postId);
+
+                throw new BadRequestException("You cannot delete this post");
+            }
+
+            log.debug("Deleting post resources. postId={}", postId);
+
+            // DELETE IMAGES
+            List<PostImage> images = postImageRepository.findByPost(post);
+
+            for (PostImage image : images) {
+
+                imageStorageService.delete(image.getImageUrl());
+
+            }
+
+            postImageRepository.deleteAll(images);
+
+            // DELETE LIKES
+            postLikeRepository.deleteByPost(post);
+
+            // DELETE COMMENTS
+            commentRepository.deleteByPost(post);
+
+            // DELETE POST-NOTES LINKS
+            postNotesService.deleteLinksByPost(postId);
+
+            // DELETE POST
+            postRepository.delete(post);
+
+            log.info("Post deleted successfully. userId={}, postId={}",
+                    user.getId(), postId);
+
+        }
+        catch (NotFoundException | BadRequestException e) {
+            throw e;
+        }
+        catch (Exception e) {
+
+            log.error("Unexpected error while deleting post. postId={}", postId, e);
+
+            throw new InternalServerException("Failed to delete post");
         }
     }
 }

@@ -6,4 +6,5 @@ import com.productive.social.enums.UploadType;
 
 public interface ImageStorageService {
     String store(MultipartFile file, UploadType type) ;
+    void delete(String path);
 }

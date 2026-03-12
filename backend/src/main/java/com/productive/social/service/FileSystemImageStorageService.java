@@ -48,4 +48,19 @@ public class FileSystemImageStorageService implements ImageStorageService {
 
         return absolutePath.substring(index).replace("\\", "/");
     }
+    
+    @Override
+    public void delete(String path) {
+
+        try {
+
+            storageService.delete(path);
+
+            log.debug("Image deleted successfully: {}", path);
+
+        } catch (Exception e) {
+
+            log.warn("Failed to delete image: {}", path, e);
+        }
+    }
 }

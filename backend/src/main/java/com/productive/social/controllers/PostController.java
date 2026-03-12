@@ -101,4 +101,12 @@ public class PostController {
         postService.unlikePost(postId);
         return ResponseEntity.ok().build();
     }
+    
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
+
+        postService.deletePost(postId);
+
+        return ResponseEntity.noContent().build();
+    }
 }

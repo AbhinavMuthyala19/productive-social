@@ -10,4 +10,6 @@ public interface PostNotesRepository extends JpaRepository<PostNotes, Long> {
     List<PostNotes> findByPostId(Long postId);
 
     List<PostNotes> findByNotesId(Long notesId);
+    
+    void deleteByPostId(Long postId);
 }
