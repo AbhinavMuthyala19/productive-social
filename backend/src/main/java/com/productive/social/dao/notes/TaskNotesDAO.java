@@ -1,5 +1,6 @@
 package com.productive.social.dao.notes;
 
+import com.productive.social.entity.Notes;
 import com.productive.social.entity.TaskNotes;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -18,12 +19,18 @@ public class TaskNotesDAO {
         return taskNotes;
     }
 
-    public List<Long> findNotesIdsByTaskId(Long taskId) {
+    public List<Notes> findNotesByTaskId(Long taskId) {
+
         return entityManager.createQuery(
-                        "SELECT tn.notesId FROM TaskNotes tn WHERE tn.taskId = :taskId",
-                        Long.class
-                )
-                .setParameter("taskId", taskId)
-                .getResultList();
+                """
+                SELECT n
+                FROM TaskNotes tn
+                JOIN Notes n ON tn.notesId = n.id
+                WHERE tn.taskId = :taskId
+                """,
+                Notes.class
+        )
+        .setParameter("taskId", taskId)
+        .getResultList();
     }
 }

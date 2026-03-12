@@ -1,5 +1,6 @@
 package com.productive.social.controllers;
 
+import com.productive.social.dto.notes.NotesSummaryResponse;
 import com.productive.social.entity.TaskNotes;
 import com.productive.social.service.TaskNotesService;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +27,11 @@ public class TaskNotesController {
     }
 
     @GetMapping("/{taskId}/notes")
-    public ResponseEntity<List<Long>> getNotesUnderTask(
+    public ResponseEntity<List<NotesSummaryResponse>> getNotesUnderTask(
             @PathVariable Long taskId
     ) {
         return ResponseEntity.ok(
-                taskNotesService.getNotesIdsByTask(taskId)
+                taskNotesService.getNotesUnderTask(taskId)
         );
     }
 }
