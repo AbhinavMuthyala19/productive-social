@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/notes/**").permitAll()
                         .anyRequest().authenticated()  // Everything else requires token
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
