@@ -11,6 +11,7 @@ import { createPost } from "../../lib/api";
 import { AttachmentsModal } from "./AttachmentsModal";
 import { toast } from "sonner";
 import { CommunityContext } from "../../context/CommunityContext";
+import { Loader } from "lucide-react";
 
 export const CreatePostModal = ({
   isOpen,
@@ -44,7 +45,7 @@ export const CreatePostModal = ({
 
   const resetForm = () => {
     setCommunityId(defaultCommunityId || "");
-    setTaskId("")
+    setTaskId("");
     setTitle("");
     setContent("");
     setImages([]);
@@ -65,7 +66,7 @@ export const CreatePostModal = ({
 
     const postData = {
       communityId: Number(communityId),
-      taskId: Number(taskId),
+      taskId: taskId ? Number(taskId) : null,
       title,
       content,
     };
@@ -134,9 +135,7 @@ export const CreatePostModal = ({
             />
           </div>
           <div className="create-post-syllabus-input">
-            <label htmlFor="topic">
-              Syllabus
-            </label>
+            <label htmlFor="topic">Syllabus</label>
             <Select
               id={"topic"}
               className="create-post-select"
@@ -195,7 +194,7 @@ export const CreatePostModal = ({
             className={"create-post-submit-button"}
             disabled={posting}
           >
-            Publish
+            {posting ? <Loader className="spinner-icon" size={24} /> : "Publish"}
           </Button>
         </form>
 

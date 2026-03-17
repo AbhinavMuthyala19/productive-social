@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Input } from "../ui/Input";
 import AuthActionsRow from "./AuthActionsRow";
 import { AuthLayout } from "./AuthLayout";
@@ -6,20 +5,18 @@ import { AuthLeftPanel } from "./AuthLeftPanel";
 import { AuthLogo } from "./AuthLogo";
 import { AuthRightPanel } from "./AuthRightPanel";
 import { AuthTitle } from "./AuthTitle";
-import { GoogleSignButton } from "./GoogleSignButton";
-import { OrDivider } from "./OrDivider";
-import { AuthFooterSwitch } from "./AuthFooterSwitch";
 import loginHeader from "../../assets/loginheader.svg";
 import { Button } from "../ui/Button";
 import "./Auth.css";
 import { Loader } from "lucide-react";
 
-export const LoginPage = ({
+export const ResetPasswordPage = ({
   form,
   onSubmit,
   onChange,
   authLoading,
   passwordToggle,
+  confirmPasswordToggle,
 }) => {
   return (
     <AuthLayout
@@ -29,55 +26,44 @@ export const LoginPage = ({
           <form onSubmit={onSubmit} className="auth-form">
             <AuthLogo />
 
-            <AuthTitle title="Login" />
-
-            <GoogleSignButton />
-
-            <OrDivider />
-
-            <Input
-              name="identifier"
-              className="auth-input"
-              placeholder="Email or username"
-              type="text"
-              value={form.identifier}
-              onChange={onChange}
-            />
+            <AuthTitle title="Reset your password" />
 
             <Input
               name="password"
               className="auth-input"
-              placeholder="Password"
+              placeholder="New Password"
               type={passwordToggle.type}
-              icon={passwordToggle.icon}
-              onClick={passwordToggle.toggle}
               value={form.password}
               onChange={onChange}
+              icon={passwordToggle.icon}
+              onClick={passwordToggle.toggle}
             />
-
-            <p className="forgot-password">
-              <Link to="/forgot-password">Forgot password</Link>
-            </p>
+            <Input
+              name="confirmPassword"
+              className="auth-input"
+              placeholder="Confirm new password"
+              type={confirmPasswordToggle.type}
+              value={form.confirmPassword}
+              onChange={onChange}
+              icon={confirmPasswordToggle.icon}
+              onClick={confirmPasswordToggle.toggle}
+            />
 
             <AuthActionsRow>
               <Button
                 type="submit"
                 className="auth-button"
-                disabled={authLoading}
+                disabled={
+                  authLoading || !form.password || !form.confirmPassword
+                }
               >
                 {authLoading ? (
                   <Loader className="spinner-icon" size={20} />
                 ) : (
-                  "Sign in"
+                  "Reset Password"
                 )}
               </Button>
             </AuthActionsRow>
-
-            <AuthFooterSwitch
-              text="Don't have an account?"
-              linkText="Sign up"
-              linkTo="/register"
-            />
           </form>
         </AuthRightPanel>
       }

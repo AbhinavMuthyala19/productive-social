@@ -6,9 +6,14 @@ import {
   useMemo,
   useState,
 } from "react";
-import { getCommunities, getCommunitySyllabus } from "../lib/api";
+import {
+  getCommunities,
+  getCommunitySyllabus,
+  updateCommunityTask,
+  joinCommunity,
+  leaveCommunity,
+} from "../lib/api";
 import { AuthContext } from "./AuthContext";
-import { joinCommunity, leaveCommunity } from "../lib/api";
 
 export const CommunityContext = createContext();
 

@@ -3,13 +3,11 @@ import { TaskList } from "../../../../components/community/syllabus/TaskList";
 import "../../Communities.css";
 import { CommunityContext } from "../../../../context/CommunityContext";
 
-export const CommunitySyllabus = ({ communityId, joined }) => {
+export const CommunitySyllabus = ({ communityId, joined, onViewNotes }) => {
   const { syllabusMap, syllabusLoading, fetchSyllabus, toggleTask } =
     useContext(CommunityContext);
 
   const syllabus = syllabusMap[communityId] || [];
-
-  console.log(syllabus)
 
   useEffect(() => {
     fetchSyllabus(communityId);
@@ -25,9 +23,10 @@ export const CommunitySyllabus = ({ communityId, joined }) => {
 
       <TaskList
         syllabus={syllabus}
-        onToggle={toggleTask}
+        onToggle={(taskId, next) => toggleTask(communityId, taskId, next)}
         disabled={!joined}
         loading={syllabusLoading}
+        onViewNotes={onViewNotes}
       />
     </>
   );

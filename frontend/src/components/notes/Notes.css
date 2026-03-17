@@ -1,0 +1,107 @@
+.post-notes-modal {
+    width: 80%;
+    height: auto;
+}
+
+.post-notes-header {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+}
+
+.post-notes-list {
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 5px;
+    /* extra space at bottom */
+}
+
+.notes-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+    padding: 10px;
+    box-shadow: var(--shadow-card);
+    border-radius: var(--radius-md);
+    color: var(--color-purple);
+    font-weight: 600;
+}
+
+.notes-item:hover {
+    box-shadow: var(--shadow-card-hover);
+}
+
+.notes-link {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+}
+
+.notes-link:hover {
+    text-decoration: underline;
+}
+
+.notes-download-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: 10px;
+    background: transparent;
+    color: green;
+}
+
+.notes-upload-modal{
+    width: 70%;
+    min-height: 400px;
+}
+
+.notes-upload-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+@media (max-width:767px) {
+    .post-notes-modal {
+        width: 95%;
+    }
+
+    .notes-link,
+    .notes-download-button {
+        font-size: 12px;
+    }
+}
+
+@media (max-width:530px) {
+    .post-notes-header {
+        font-size: 12px;
+    }
+
+    .post-notes-modal {
+        width: 100%;
+        padding: 5px;
+    }
+
+    .notes-item {
+        padding: 5px;
+    }
+
+    .notes-link {
+        font-size: 10px;
+    }
+
+    .download-icon {
+        width: 15px;
+    }
+
+    .post-notes-header {
+        padding: 10px;
+    }
+}

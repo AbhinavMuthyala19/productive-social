@@ -60,6 +60,9 @@ label {
 }
 
 .create-post-submit-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background: var(--color-blue);
     color: white;
 

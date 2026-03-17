@@ -1,11 +1,16 @@
-
 import { Card } from "../../ui/Card";
 import "./TaskItem.css";
 import { Checkbox } from "../../ui/Checkbox";
+import { Button } from "../../ui/Button";
 
-
-export const TaskItem = ({ title, taskId, completed, onToggle, disabled }) => {
-
+export const TaskItem = ({
+  title,
+  taskId,
+  completed,
+  onToggle,
+  onViewNotes,
+  disabled,
+}) => {
   return (
     <Card className="task-card">
       <Checkbox
@@ -16,12 +21,14 @@ export const TaskItem = ({ title, taskId, completed, onToggle, disabled }) => {
 
       <div className="task-details">
         <h3 className="task-title">{title}</h3>
-        {/* <span className="task-notes-link">
-          <img src={notesIcon} alt="notes" />
-          Notes linked
-        </span> */}
       </div>
 
+      <Button
+        className={"task-card-button"}
+        onClick={() => onViewNotes(taskId)}
+      >
+        View Notes
+      </Button>
     </Card>
   );
 };

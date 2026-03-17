@@ -34,8 +34,38 @@
     cursor: pointer;
 }
 
+.task-card-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    width: 150px;
+    height: 30px;
+    margin-right: 20px;
+    color: #2563EB;
+    background-color: #E8F1FF;
+
+}
+
+.task-card-button:hover{
+    background-color: #DBEAFE;
+}
+
+@media(max-width:880px){
+    .task-title{
+        font-size: 14px;
+    }
+    .task-card-button{
+        font-size: 12px;
+    }
+}
 @media(max-width:767px){
     .task-title{
         font-size: 12px;
+    }
+}
+@media(max-width:400px){
+    .task-card-button{
+        font-size: 10px;
     }
 }

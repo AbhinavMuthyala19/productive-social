@@ -9,14 +9,15 @@ import { Button } from "../ui/Button";
 export const AttachmentsModal = ({
   isOpen,
   onClose,
-  images,
+  images = [],
   setImages,
-  notes,
+  notes = [],
   setNotes,
+  allowedTabs = ["Images", "Notes"]
 }) => {
-  const [active, setActive] = useState("Images");
+  const [active, setActive] = useState(allowedTabs[0]);
   const [previews, setPreviews] = useState([]);
-  const attachmentTabs = ["Images", "Notes"];
+  const attachmentTabs = allowedTabs;
   const isImagesTab = active === "Images";
   const files = isImagesTab ? images : notes;
   const setFiles = isImagesTab ? setImages : setNotes;
@@ -28,7 +29,7 @@ export const AttachmentsModal = ({
   const inputId = `attachment-upload-${active.toLowerCase()}`;
 
   useEffect(() => {
-    if (isOpen) setActive("Images");
+    if (isOpen) setActive(attachmentTabs[0]);
   }, [isOpen]);
 
   useEffect(() => {

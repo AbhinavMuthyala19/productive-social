@@ -9,7 +9,7 @@ export const Register = () => {
   const navigate = useNavigate();
   const passwordToggle = usePasswordToggle();
   const confirmPasswordToggle = usePasswordToggle();
-  const { register, user, loading } = useContext(AuthContext);
+  const { register, user, loading, authLoading } = useContext(AuthContext);
   const location = useLocation();
   const timezone = useMemo(
     () => Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -57,8 +57,13 @@ export const Register = () => {
       };
 
       await register(body);
-      toast.success("Registration successful!");
-      navigate("/login", { replace: true });
+
+      toast.message("Verify your email");
+
+      navigate("/verify-email", {
+        replace: true,
+        state: { email: form.email },
+      });
     } catch (error) {
       console.error("REGISTER ERROR:", error.response?.data);
       toast.error(error.response?.data?.message || "Registration failed...");
@@ -72,6 +77,7 @@ export const Register = () => {
       onChange={handleChange}
       passwordToggle={passwordToggle}
       confirmPasswordToggle={confirmPasswordToggle}
+      authLoading={authLoading}
     />
   );
 };

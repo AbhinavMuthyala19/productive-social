@@ -15,7 +15,6 @@
   border-radius: var(--radius-sm);
   font-family: var(--font-primary);
   transition: border var(--fast), box-shadow var(--fast);
-  margin: 5px;
 }
 
 .input:focus {
@@ -33,15 +32,6 @@
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 
-}
-
-
-/* Search Input */
-.search-input {
-  border-radius: var(--radius-lg);
-  background-color: var(--gray-100);
-  padding-left: 40px;
-  /* for icon spacing */
 }
 
 /* Title Input (for Create Post) */

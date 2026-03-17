@@ -11,6 +11,7 @@ import loginHeader from "../../assets/loginheader.svg";
 import AuthActionsRow from "./AuthActionsRow";
 import { Button } from "../ui/Button";
 import "./Auth.css";
+import { Loader } from "lucide-react";
 
 export const RegisterPage = ({
   form,
@@ -18,6 +19,7 @@ export const RegisterPage = ({
   onChange,
   passwordToggle,
   confirmPasswordToggle,
+  authLoading,
 }) => {
   return (
     <AuthLayout
@@ -28,10 +30,6 @@ export const RegisterPage = ({
             <AuthLogo />
 
             <AuthTitle title="Register" />
-
-            <GoogleSignButton isLogin={false}/>
-
-            <OrDivider />
 
             <Input
               name="name"
@@ -82,8 +80,16 @@ export const RegisterPage = ({
             />
 
             <AuthActionsRow>
-              <Button type="submit" className="auth-button">
-                Sign up
+              <Button
+                type="submit"
+                className="auth-button"
+                disabled={authLoading}
+              >
+                {authLoading ? (
+                  <Loader className="spinner-icon" size={20} />
+                ) : (
+                  "Sign up"
+                )}
               </Button>
             </AuthActionsRow>
 

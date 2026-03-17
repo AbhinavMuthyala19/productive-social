@@ -19,24 +19,23 @@ api.interceptors.response.use(
   async (error) => {
     const original = error.config;
 
-    if (
-      window.location.pathname.startsWith("/login") ||
-      window.location.pathname.startsWith("/register")
-    ) {
-      return Promise.reject(error);
-    }
-
-    // Normalize URL (handles axios removing slashes)
     const url = original.url.startsWith("http")
       ? original.url.replace(api.defaults.baseURL, "")
       : original.url;
+
+    // ✅ skip refresh for auth/me
+    if (url.startsWith("/auth/me")) {
+      return Promise.reject(error);
+    }
 
     // 🚫 NEVER refresh auth endpoints
     if (
       url.startsWith("/auth/login") ||
       url.startsWith("/auth/logout") ||
-      url.startsWith("/auth/register") ||
-      url.startsWith("/auth/refresh")
+      url.startsWith("/auth/verify-email") ||
+      url.startsWith("/auth/forgot-password") ||
+      url.startsWith("/auth/reset-password") ||
+      url.startsWith("/auth/sso")
     ) {
       return Promise.reject(error);
     }
@@ -56,14 +55,14 @@ api.interceptors.response.use(
         await api.post("/auth/refresh");
 
         isRefreshing = false;
-
         resolveQueue();
 
         return api(original);
       } catch (refreshErr) {
         isRefreshing = false;
         queue = [];
-        window.location.replace("/login");
+
+        // ❌ REMOVE redirect
         return Promise.reject(refreshErr);
       }
     }
@@ -72,10 +71,25 @@ api.interceptors.response.use(
   },
 );
 
+export const registerUser = (data) => api.post("/auth/register", data);
+
+export const verifyUser = (email, otp) =>
+  api.post("/auth/verify-email", { email, otp });
+
+export const resendVerifyUser = (email) =>
+  api.post("/resend-verification", { email });
+
 export const loginUser = (identifier, password, timezone) =>
   api.post("/auth/login", { identifier, password, timezone });
 
-export const registerUser = (data) => api.post("/auth/register", data);
+export const googleLogin = (token) =>
+  api.post("/auth/sso", { token, authProvider: "GOOGLE" });
+
+export const forgotPassword = ({ email }) =>
+  api.post("/auth/forgot-password", null, { params: { email } });
+
+export const resetPassword = (token, newPassword) =>
+  api.post("/auth/reset-password", { token, newPassword });
 
 export const getUser = () => api.get("/auth/me");
 
@@ -92,15 +106,16 @@ export const leaveCommunity = (communityId) =>
 export const getCommunity = (communityId) =>
   api.get(`/communities/${communityId}`);
 
-export const getGlobalPosts = (params) => api.get("/posts/feed/global", {params});
+export const getGlobalPosts = (params) =>
+  api.get("/posts/feed/global", { params });
 
 export const getCommunityPosts = (communityId, params) =>
-  api.get(`/posts/feed/community/${communityId}`, {params});
+  api.get(`/posts/feed/community/${communityId}`, { params });
 
-export const getUserPosts = (params) => api.get("/posts/feed/me", {params});
+export const getUserPosts = (params) => api.get("/posts/feed/me", { params });
 
 export const getUserPostsByUserName = (username, params) =>
-  api.get(`/posts/feed/${username}`, {params});
+  api.get(`/posts/feed/${username}`, { params });
 
 export const likePosts = (postId) => api.post(`/posts/${postId}/like`);
 
@@ -127,5 +142,17 @@ export const getUserCommunities = () => api.get("/communities/me");
 
 export const getUserCommunitiesByUserName = (username) =>
   api.get(`/communities/user/${username}`);
+
+export const getNotesFromSyllabus = (taskId) =>
+  api.get(`/tasks/${taskId}/notes`);
+
+export const uploadNotes = (formData) => api.post("/notes", formData);
+
+export const downloadNotes = (notesId) => api.get(`/notes/${notesId}/download`);
+
+export const getUserNotes = () => api.get("/notes/me");
+
+export const getUserNotesByUserName = (username) =>
+  api.get(`/notes/${username}`);
 
 export default api;

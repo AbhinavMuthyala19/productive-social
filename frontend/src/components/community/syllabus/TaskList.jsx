@@ -1,8 +1,14 @@
 import { TaskItem } from "./TaskItem";
 import { TaskItemSkeleton } from "./TaskItemSkeleton";
-import "./TaskList.css"
+import "./TaskList.css";
 
-export const TaskList = ({ syllabus, onToggle, disabled, loading }) => {
+export const TaskList = ({
+  syllabus,
+  onToggle,
+  onViewNotes,
+  disabled,
+  loading,
+}) => {
   if (loading) {
     return (
       <div className="task-list">
@@ -23,6 +29,7 @@ export const TaskList = ({ syllabus, onToggle, disabled, loading }) => {
           completed={task.completed}
           onToggle={onToggle}
           disabled={disabled}
+          onViewNotes={onViewNotes}
         />
       ))}
     </div>

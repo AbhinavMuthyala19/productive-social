@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Input } from "../ui/Input";
 import AuthActionsRow from "./AuthActionsRow";
 import { AuthLayout } from "./AuthLayout";
@@ -6,78 +6,86 @@ import { AuthLeftPanel } from "./AuthLeftPanel";
 import { AuthLogo } from "./AuthLogo";
 import { AuthRightPanel } from "./AuthRightPanel";
 import { AuthTitle } from "./AuthTitle";
-import { GoogleSignButton } from "./GoogleSignButton";
-import { OrDivider } from "./OrDivider";
-import { AuthFooterSwitch } from "./AuthFooterSwitch";
 import loginHeader from "../../assets/loginheader.svg";
 import { Button } from "../ui/Button";
 import "./Auth.css";
 import { Loader } from "lucide-react";
 
-export const LoginPage = ({
-  form,
+export const VerifyEmailPage = ({
+  otp,
   onSubmit,
   onChange,
+  onResend,
   authLoading,
-  passwordToggle,
 }) => {
+
+  const [timer, setTimer] = useState(60);
+
+  useEffect(() => {
+    if (timer === 0) return;
+
+    const interval = setInterval(() => {
+      setTimer((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [timer]);
+
+  const handleResend = () => {
+    if (timer > 0) return;
+
+    onResend();
+    setTimer(60);
+  };
+
   return (
     <AuthLayout
       left={<AuthLeftPanel imageSrc={loginHeader} />}
       right={
         <AuthRightPanel>
           <form onSubmit={onSubmit} className="auth-form">
+
             <AuthLogo />
-
-            <AuthTitle title="Login" />
-
-            <GoogleSignButton />
-
-            <OrDivider />
+            <AuthTitle title="Verify Email" />
 
             <Input
-              name="identifier"
+              name="otp"
               className="auth-input"
-              placeholder="Email or username"
+              placeholder="Enter OTP from email"
               type="text"
-              value={form.identifier}
+              value={otp}
               onChange={onChange}
             />
-
-            <Input
-              name="password"
-              className="auth-input"
-              placeholder="Password"
-              type={passwordToggle.type}
-              icon={passwordToggle.icon}
-              onClick={passwordToggle.toggle}
-              value={form.password}
-              onChange={onChange}
-            />
-
-            <p className="forgot-password">
-              <Link to="/forgot-password">Forgot password</Link>
-            </p>
 
             <AuthActionsRow>
               <Button
                 type="submit"
                 className="auth-button"
-                disabled={authLoading}
+                disabled={authLoading || !otp.trim()}
               >
                 {authLoading ? (
                   <Loader className="spinner-icon" size={20} />
                 ) : (
-                  "Sign in"
+                  "Verify"
                 )}
               </Button>
             </AuthActionsRow>
 
-            <AuthFooterSwitch
-              text="Don't have an account?"
-              linkText="Sign up"
-              linkTo="/register"
-            />
+            {/* Timer + Resend */}
+            <div className="otp-resend">
+              {timer > 0 ? (
+                <span>Resend OTP in {timer}s</span>
+              ) : (
+                <Button
+                  type="button"
+                  className="resend-btn"
+                  onClick={handleResend}
+                >
+                  Resend OTP
+                </Button>
+              )}
+            </div>
+
           </form>
         </AuthRightPanel>
       }

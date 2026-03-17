@@ -11,6 +11,8 @@ import { useLeaveCommunity } from "../../../hooks/useLeaveCommunity";
 import { CommunityHeaderSection } from "./components/CommunityHeaderSection";
 import { CommunitySyllabus } from "./components/CommunitySyllabus";
 import { Feed } from "../../../components/feed/Feed";
+import { getNotesFromSyllabus } from "../../../lib/api";
+import { NotesViewModal } from "../../../components/notes/NotesViewModal";
 
 export const CommunityPage = () => {
   const { communities, loading, toggleJoinCommunity } =
@@ -27,6 +29,8 @@ export const CommunityPage = () => {
   } = useContext(PostContext);
   const leaveModal = useLeaveCommunity(toggleJoinCommunity);
   const [showCreatePost, setShowCreatePost] = useState(false);
+  const [notes, setNotes] = useState([]);
+  const [showNotesModal, setShowNotesModal] = useState(false);
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const tabFromUrl = searchParams.get("tab") || "Feed";
@@ -50,6 +54,18 @@ export const CommunityPage = () => {
   const handleTabChange = (tab) => {
     setActive(tab);
     setSearchParams({ tab }, { replace: true });
+  };
+
+  const handleViewNotes = async (taskId) => {
+    try {
+      const res = await getNotesFromSyllabus(taskId);
+      console.log(res)
+      setNotes(res.data);
+      console.log(res.data)
+      setShowNotesModal(true);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   if (loading || !community) {
@@ -81,7 +97,7 @@ export const CommunityPage = () => {
           <Feed
             posts={communityPosts}
             loading={postsLoading.community}
-            displayStreakBadge = {true}
+            displayStreakBadge={true}
             hasMore={hasMore.community}
             loadMore={() => loadMoreCommunity(id)}
             onCommentAdded={handleCommentAdded}
@@ -93,6 +109,7 @@ export const CommunityPage = () => {
           <CommunitySyllabus
             communityId={Number(id)}
             joined={communityJoined}
+            onViewNotes={handleViewNotes}
           />
         )}
       </div>
@@ -109,6 +126,12 @@ export const CommunityPage = () => {
         isOpen={leaveModal.isOpen}
         onClose={leaveModal.close}
         onConfirm={leaveModal.confirm}
+      />
+
+      <NotesViewModal
+        isOpen={showNotesModal}
+        onClose={() => setShowNotesModal(false)}
+        notes={notes}
       />
     </PageContainer>
   );

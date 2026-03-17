@@ -7,7 +7,7 @@ import { LoginPage } from "../../components/auth/LoginPage";
 
 export const Login = () => {
   const navigate = useNavigate();
-  const { login, user, loading } = useContext(AuthContext);
+  const { login, user, loading, authLoading } = useContext(AuthContext);
   const passwordToggle = usePasswordToggle();
   const location = useLocation();
   const timezone = useMemo(
@@ -50,6 +50,7 @@ export const Login = () => {
       onSubmit={handleLogin}
       onChange={handleChange}
       passwordToggle={passwordToggle}
+      authLoading={authLoading}
     />
   );
 };

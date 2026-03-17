@@ -9,6 +9,10 @@ import { Notes } from "./app/notes/page";
 import { Profile } from "./app/profile/[username]/page";
 import { ProtectedRoute } from "./components/layout/ProtectedRoute";
 import { Toaster } from "sonner";
+import { VerifyEmail } from "./app/verify-email/Page";
+import { ForgotPassword } from "./app/forgot-password/page";
+import { ResetPassword } from "./app/reset-password/page";
+
 
 function App() {
   return (
@@ -16,7 +20,10 @@ function App() {
       <Toaster richColors position="top-right" />
       <Routes>
         <Route path="/register" element={<Register />} />
+        <Route path="/verify-email" element={<VerifyEmail/>}/>
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Home />} />
           <Route path="/communities" element={<Communities />} />

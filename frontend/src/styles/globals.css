@@ -74,3 +74,13 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gray-300);
 }
+
+.spinner-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

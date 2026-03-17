@@ -1,7 +1,7 @@
 import { Button } from "../ui/Button";
 import "./PostBody.css";
 import notesIcon from "../../assets/icons/notes.svg";
-import { NotesViewModal } from "./NotesViewModal";
+import { NotesViewModal } from "../notes/NotesViewModal";
 import { useState } from "react";
 
 export const PostBody = ({ title, content, images = [], notes }) => {
