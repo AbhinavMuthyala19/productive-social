@@ -151,13 +151,21 @@ public class AuthController {
     }
     
     @PostMapping("/sso")
-    public ResponseEntity<AuthResponse> ssoLogin(
-            @RequestBody SsoLoginRequest request
+    public ResponseEntity<?> ssoLogin(
+            @RequestBody SsoLoginRequest request,  HttpServletResponse response
     ) {
 
-        AuthResponse response = authProviderService.authenticate(request);
+        AuthResponse authResult = authProviderService.authenticate(request);
+        
+     // Set cookies
+        response.addHeader("Set-Cookie", CookieUtil.createAccessTokenCookie(authResult.getAccessToken()));
+        response.addHeader("Set-Cookie", CookieUtil.createRefreshTokenCookie(authResult.getRefreshToken()));
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                new HashMap<>() {{
+                        put("message", "Login successful");
+                }}
+        );
     }
 
 
