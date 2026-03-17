@@ -9,6 +9,8 @@ import com.productive.social.entity.User;
 import com.productive.social.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,9 @@ public class PasswordResetService {
     private final ApplicationEventPublisher eventPublisher;
 
     private static final int RESET_TOKEN_EXPIRY_MINUTES = 30;
+    
+    @Value("${app.frontend.base-url}")
+    private String frontendBaseUrl;
 
     @Transactional
     public void requestPasswordReset(String email) {
@@ -52,7 +57,7 @@ public class PasswordResetService {
             tokenRepository.save(token);
 
             String resetLink =
-                    "http://localhost:5173/reset-password?token=" + rawToken;
+            	    frontendBaseUrl + "/reset-password?token=" + rawToken;
 
             eventPublisher.publishEvent(
                     new PasswordResetEmailEvent(
