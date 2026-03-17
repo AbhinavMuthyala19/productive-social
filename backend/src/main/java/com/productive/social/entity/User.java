@@ -26,8 +26,10 @@ public class User {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(nullable = false, length = 255)
-    private String password; // Hashed password
+
+    
+    @Column(length = 255)
+    private String password;
 
     private String profilePicture;
     

@@ -8,5 +8,6 @@ import lombok.Setter;
 public class VerifyOtpRequest {
 
     private Long userId;
+    private String email;
     private String otp;
 }

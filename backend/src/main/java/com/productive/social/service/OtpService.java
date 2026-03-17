@@ -67,35 +67,36 @@ public class OtpService {
     }
 
     @Transactional
-    public void verifyOtp(Long userId, String otp) {
+    public void verifyOtp(String email, String otp) {
 
         try {
 
-            User user = userRepository.findById(userId)
+            User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> {
-                        log.warn("OTP verification failed - user not found. userId={}", userId);
+                        log.warn("OTP verification failed - user not found. email={}", email);
                         return new BadRequestException("User not found");
                     });
+            
 
             EmailVerificationToken token = tokenRepository
                     .findTopByUserOrderByExpiresAtDesc(user)
                     .orElseThrow(() -> {
-                        log.warn("OTP verification failed - no OTP found. userId={}", userId);
+                        log.warn("OTP verification failed - no OTP found. email={}", email);
                         return new BadRequestException("No OTP found");
                     });
 
             if (token.isVerified()) {
-                log.warn("OTP verification failed - OTP already used. userId={}", userId);
+                log.warn("OTP verification failed - OTP already used. email={}", email);
                 throw new BadRequestException("OTP already used");
             }
 
             if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
-                log.warn("OTP verification failed - OTP expired. userId={}", userId);
+                log.warn("OTP verification failed - OTP expired. email={}", email);
                 throw new BadRequestException("OTP expired");
             }
 
             if (!passwordEncoder.matches(otp, token.getOtpHash())) {
-                log.warn("OTP verification failed - invalid OTP. userId={}", userId);
+                log.warn("OTP verification failed - invalid OTP. email={}", email);
                 throw new BadRequestException("Invalid OTP");
             }
 
@@ -105,12 +106,12 @@ public class OtpService {
             user.setEmailVerified(true);
             userRepository.save(user);
 
-            log.info("OTP verified successfully. userId={}", userId);
+            log.info("OTP verified successfully. email={}", email);
 
         } catch (BadRequestException e) {
             throw e;
         } catch (Exception e) {
-            log.error("Unexpected error during OTP verification. userId={}", userId, e);
+            log.error("Unexpected error during OTP verification. email={}", email, e);
             throw new InternalServerException("Failed to verify OTP");
         }
     }

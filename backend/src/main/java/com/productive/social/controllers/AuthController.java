@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.productive.social.authprovider.dto.SsoLoginRequest;
+import com.productive.social.authprovider.service.AuthProviderService;
 import com.productive.social.dto.auth.AuthResponse;
 import com.productive.social.dto.auth.LoginRequest;
 import com.productive.social.dto.auth.RegisterRequest;
@@ -30,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
     private final AuthService authService;
+    private final AuthProviderService authProviderService;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
@@ -39,7 +42,7 @@ public class AuthController {
     @PostMapping("/verify-email")
     public ResponseEntity<String> verifyEmail(@RequestBody VerifyOtpRequest request) {
         return ResponseEntity.ok(
-                authService.verifyOtp(request.getUserId(), request.getOtp())
+                authService.verifyOtp(request.getEmail(), request.getOtp())
         );
     }
 
@@ -145,6 +148,16 @@ public class AuthController {
         return ResponseEntity.ok(
                 authService.resendVerificationOtp(request.getEmail())
         );
+    }
+    
+    @PostMapping("/sso")
+    public ResponseEntity<AuthResponse> ssoLogin(
+            @RequestBody SsoLoginRequest request
+    ) {
+
+        AuthResponse response = authProviderService.authenticate(request);
+
+        return ResponseEntity.ok(response);
     }
 
 

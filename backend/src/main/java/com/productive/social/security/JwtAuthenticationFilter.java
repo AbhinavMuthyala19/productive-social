@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 path.equals("/auth/resend-verification") ||
                 path.equals("/auth/refresh") ||
                 path.equals("/auth/logout") ||
+                path.equals("/auth/sso") ||
                 path.startsWith("/uploads/")) {
             filterChain.doFilter(request, response);
             return;

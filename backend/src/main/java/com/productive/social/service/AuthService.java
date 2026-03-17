@@ -106,6 +106,10 @@ public class AuthService {
             User user = userRepository
                     .findByEmailOrUsername(request.getIdentifier(), request.getIdentifier())
                     .orElseThrow(() -> new UnauthorizedException("Invalid username/email or password"));
+            
+            if (user.getPassword() == null) {
+                throw new BadRequestException("This account uses SSO login");
+            }
 
             // 2. Authenticate credentials (may throw)
             authenticationManager.authenticate(
@@ -252,8 +256,8 @@ public class AuthService {
     }
     
     @Transactional
-    public String verifyOtp(Long userId, String otp) {
-        otpService.verifyOtp(userId, otp);
+    public String verifyOtp(String email, String otp) {
+        otpService.verifyOtp(email, otp);
         return "Email verified successfully";
     }
     
