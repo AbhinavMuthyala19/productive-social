@@ -8,29 +8,34 @@ import { Card } from "../ui/Card";
 export const PostCardSkeleton = () => {
   return (
     <Card className="post-card">
+      {/* HEADER */}
       <div className="post-header">
-        <Skeleton width="70px" height="70px" circle={true} />
+        <Skeleton variant="circle" width="40px" height="40px" />
+
         <div className="post-user-details">
-          <Skeleton width="100px" height="30px" />
-          <Skeleton width="100px" height="30px" />
+          <Skeleton variant="text" width="120px" height="14px" />
+          <Skeleton variant="text" width="80px" height="12px" />
         </div>
       </div>
+
+      {/* BODY */}
       <div className="post-body">
-        <Skeleton width="70%" height="20px" />
-        <Skeleton width="70%" height="20px" />
-        <Skeleton width="40%" height="200px" />
-        <Skeleton width="95%" height="30px" />
+        <Skeleton variant="text" width="60%" height="18px" />
+
+        <Skeleton variant="text" width="60%" />
+        <Skeleton variant="text" width="55%" />
+        <Skeleton variant="text" width="50%" />
       </div>
+
+      {/* FOOTER */}
       <div className="post-footer">
         <div className="left">
-          <Skeleton width="40px" height="40px" circle />
-          <Skeleton width="40px" height="40px" circle />
-
-          <Skeleton width="40px" height="40px" circle />
-          <Skeleton width="40px" height="40px" circle />
+          <Skeleton variant="circle" width="32px" height="32px" />
+          <Skeleton variant="circle" width="32px" height="32px" />
         </div>
+
         <div className="right">
-          <Skeleton width="40px" height="40px" circle />
+          <Skeleton variant="circle" width="32px" height="32px" />
         </div>
       </div>
     </Card>

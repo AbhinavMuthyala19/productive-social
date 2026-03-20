@@ -1,13 +1,13 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { FullPageSpinner } from "./FullPageSpinner";
 
 export const ProtectedRoute = () => {
-  const { user, loading } = useContext(AuthContext);
+  const { user, loading, initialized } = useContext(AuthContext);
   const location = useLocation();
 
-  if (loading) return <FullPageSpinner />;
+  if (!initialized || loading) return <FullPageSpinner />;
 
   if (!user) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;

@@ -85,7 +85,7 @@ export const Navbar = () => {
           <p className="profile-user-name">{`@${user.username}`}</p>
         </div>
 
-        <EllipsisVertical size={20} className="profile-more-icon" />
+        <EllipsisVertical size={20} className="profile-menu-icon" />
 
         <div className={`profile-options ${profileOptionsClick ? "open" : ""}`}>
           <Card variant="options-card">

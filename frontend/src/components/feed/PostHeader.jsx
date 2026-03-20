@@ -4,6 +4,9 @@ import "./PostHeader.css";
 import fireIcon from "../../assets/icons/fire.svg";
 import { useNavigate } from "react-router-dom";
 import { EllipsisVertical } from "lucide-react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Button } from "../ui/Button";
+import { AuthContext } from "../../context/AuthContext";
 
 export const PostHeader = ({
   user,
@@ -13,12 +16,30 @@ export const PostHeader = ({
   displayCommunityBadge = false,
   displayStreakBadge = false,
   userNameClickable = true,
+  onDelete,
   children,
 }) => {
   const navigate = useNavigate();
-
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  const { user: currentUser} = useContext(AuthContext);
+  const isOwner = currentUser?.id === user?.id
   const goToProfile = () => navigate(`/profile/${user.username}`);
-  const goToCommunity = () => navigate(`/communities/${community.id}`)
+  const goToCommunity = () => navigate(`/communities/${community.id}`);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   if (!user) return null;
 
@@ -48,7 +69,30 @@ export const PostHeader = ({
           )}
         </div>
       </div>
-      <EllipsisVertical className="menu-option" size={20} />
+      <div className="menu-wrapper" ref={menuRef}>
+        <EllipsisVertical
+          className="menu-option"
+          size={20}
+          onClick={(e) => {
+            e.stopPropagation(); // important
+            setMenuOpen((prev) => !prev);
+          }}
+        />
+
+        {menuOpen && (
+          <div className="post-menu">
+            {isOwner && <Button
+              className="post-menu-item delete"
+              onClick={() => {
+                onDelete?.();
+                setMenuOpen(false);
+              }}
+            >
+              Delete
+            </Button>}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

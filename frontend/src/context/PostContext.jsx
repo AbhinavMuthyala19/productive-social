@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import {
+  deletePostApi,
   getCommunityPosts,
   getGlobalPosts,
   getUserPosts,
@@ -16,6 +17,7 @@ import {
 } from "../lib/api";
 import { AuthContext } from "./AuthContext";
 import { toast } from "sonner";
+
 
 export const PostContext = createContext();
 
@@ -208,6 +210,24 @@ export const PostProvider = ({ children }) => {
     [likePost, unlikePost],
   );
 
+  const deletePost = useCallback(async (postId) => {
+  // optimistic update
+  setPosts((prev) => prev.filter((p) => p.postId !== postId));
+
+  try {
+    await deletePostApi(postId);
+    toast.success("Post deleted...")
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message ||
+        "Failed to delete post, try again later"
+    );
+
+    // rollback (optional advanced)
+    fetchPosts(); // simple fallback
+  }
+}, [fetchPosts]);
+
   useEffect(() => {
     if (authLoading) return;
 
@@ -227,6 +247,7 @@ export const PostProvider = ({ children }) => {
       fetchCommunityPosts,
       fetchUserPosts,
       addPost,
+      deletePost,
       toggleLike,
       handleCommentAdded,
       loadMoreGlobal,
@@ -242,6 +263,7 @@ export const PostProvider = ({ children }) => {
       fetchCommunityPosts,
       fetchUserPosts,
       addPost,
+      deletePost,
       toggleLike,
       handleCommentAdded,
       loadMoreGlobal,

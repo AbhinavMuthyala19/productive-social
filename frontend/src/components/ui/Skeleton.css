@@ -1,29 +1,30 @@
-@import "../../styles/variables.css";
-
 .skeleton {
-  background: var(--gray-200);
-  animation: pulse 1.5s infinite ease-in-out;
-  margin: 5px;
+  background: #e5e7eb;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Animation */
-@keyframes pulse {
-  0% {
-    opacity: 0.6;
-  }
+/* shimmer animation */
+.skeleton.shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  height: 100%;
+  width: 150%;
 
-  50% {
-    opacity: 1;
-  }
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
 
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
   100% {
-    opacity: 0.6;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .skeleton {
-    animation: none;
-    opacity: 0.8;
+    left: 150%;
   }
 }

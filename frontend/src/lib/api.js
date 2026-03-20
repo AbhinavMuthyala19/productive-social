@@ -19,14 +19,20 @@ api.interceptors.response.use(
   async (error) => {
     const original = error.config;
 
+    if (
+      window.location.pathname.startsWith("/login") ||
+      window.location.pathname.startsWith("/register") ||
+      window.location.pathname.startsWith("/verify-email") ||
+      window.location.pathname.startsWith("/forgot-password") ||
+      window.location.pathname.startsWith("/reset-password")
+    ) {
+      return Promise.reject(error);
+    }
+
+    // Normalize URL (handles axios removing slashes)
     const url = original.url.startsWith("http")
       ? original.url.replace(api.defaults.baseURL, "")
       : original.url;
-
-    // ✅ skip refresh for auth/me
-    if (url.startsWith("/auth/me")) {
-      return Promise.reject(error);
-    }
 
     // 🚫 NEVER refresh auth endpoints
     if (
@@ -34,7 +40,8 @@ api.interceptors.response.use(
       url.startsWith("/auth/logout") ||
       url.startsWith("/auth/verify-email") ||
       url.startsWith("/auth/forgot-password") ||
-      url.startsWith("/auth/reset-password") ||
+      url.startsWith("/auth/reset-password")||
+      url.startsWith("/auth/refresh") ||
       url.startsWith("/auth/sso")
     ) {
       return Promise.reject(error);
@@ -55,14 +62,13 @@ api.interceptors.response.use(
         await api.post("/auth/refresh");
 
         isRefreshing = false;
+
         resolveQueue();
 
         return api(original);
       } catch (refreshErr) {
         isRefreshing = false;
         queue = [];
-
-        // ❌ REMOVE redirect
         return Promise.reject(refreshErr);
       }
     }
@@ -154,5 +160,8 @@ export const getUserNotes = () => api.get("/notes/me");
 
 export const getUserNotesByUserName = (username) =>
   api.get(`/notes/${username}`);
+
+export const deletePostApi = (postId) =>
+  api.delete(`/posts/${postId}`)
 
 export default api;

@@ -9,6 +9,11 @@
     width: 100%;
 }
 
+.left{
+    display: flex;
+    gap: 5px;
+}
+
 .post-footer-icon {
     width: 25px;
     cursor: pointer;

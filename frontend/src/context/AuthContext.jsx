@@ -19,27 +19,37 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
 
   const fetchUser = useCallback(async () => {
-    console.log("FETCH USER START");
+    setLoading(true);
 
     try {
       const res = await getUser();
-      console.log("USER:", res.data);
       setUser(res.data);
     } catch (err) {
-      console.log("ERROR:", err);
-      setUser(null);
+      try {
+        // 🔥 attempt refresh BEFORE deciding user is null
+        await api.post("/auth/refresh");
+
+        const res = await getUser();
+        setUser(res.data);
+      } catch (refreshErr) {
+        setUser(null); // only here ❗
+      }
     } finally {
-      console.log("SETTING LOADING FALSE");
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchUser();
+    const init = async () => {
+      await fetchUser();
+      setInitialized(true);
+    };
+    init();
   }, [fetchUser]);
 
   const login = async (identifier, password, timezone) => {
@@ -53,9 +63,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const googleLoginHandler = async (token) => {
-    const res = await googleLogin(token);
-    await fetchUser();
-    return res;
+    try {
+      setAuthLoading(true);
+      const res = await googleLogin(token);
+      await fetchUser();
+      return res;
+    } finally {
+      setAuthLoading(false);
+    }
   };
 
   const register = async (data) => {
@@ -86,8 +101,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await logoutUser();
-    setUser(null);
+    try {
+      await logoutUser();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setUser(null);
+    }
   };
 
   const value = useMemo(
@@ -95,6 +115,7 @@ export const AuthProvider = ({ children }) => {
       user,
       googleLogin: googleLoginHandler,
       loading,
+      initialized,
       authLoading,
       setAuthLoading,
       login,
@@ -103,7 +124,7 @@ export const AuthProvider = ({ children }) => {
       resendOtp,
       logout,
     }),
-    [user, loading, authLoading],
+    [user, loading, authLoading, initialized],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

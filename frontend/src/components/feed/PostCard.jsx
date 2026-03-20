@@ -3,9 +3,10 @@ import { PostHeader } from "./PostHeader";
 import { PostBody } from "./PostBody";
 import { PostFooter } from "./PostFooter";
 import { CommentModal } from "./CommentModal";
-import { forwardRef, useMemo, useState } from "react";
+import { forwardRef, useContext, useMemo, useState } from "react";
 import "./PostCard.css";
 import { TimeAgo } from "../../../utils/TimeAgo";
+import { PostContext } from "../../context/PostContext";
 
 export const PostCard = forwardRef(({
   post,
@@ -16,7 +17,11 @@ export const PostCard = forwardRef(({
   userNameClickable,
 }, ref) => {
   const [showComments, setShowComments] = useState(false);
+  const { deletePost } = useContext(PostContext);
 
+  const handleDelete = async () => {
+    await deletePost(post.postId);
+  };
   const createdAt = useMemo(
     () => TimeAgo(post.createdAt),
     [post.createdAt]
@@ -32,6 +37,7 @@ export const PostCard = forwardRef(({
         displayCommunityBadge={displayCommunityBadge}
         displayStreakBadge={displayStreakBadge}
         userNameClickable={userNameClickable}
+        onDelete={handleDelete}
       />
 
       <PostBody

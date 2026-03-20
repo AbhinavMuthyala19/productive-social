@@ -1,4 +1,5 @@
 .post-header {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 5px;
@@ -43,11 +44,41 @@
 
 }
 
-.menu-option {
+.menu-wrapper {
+    position: relative;
     margin-left: auto;
     margin-top: -40px;
     margin-right: 5px;
     cursor: pointer;
+}
+
+.post-menu {
+    position: absolute;
+    top: 30px;
+    width: 150px;
+    padding: 4px;
+    right: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+    z-index: var(--z-dropdown);
+}
+
+.post-menu-item {
+    width: 100%;
+    padding: 8px 12px;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+}
+
+.post-menu-item:hover {
+    background: var(--bg-soft);
+}
+
+.post-menu-item.delete {
+    color: var(--color-red);
 }
 
 @media(max-width:767px) {
@@ -66,10 +97,10 @@
     }
 
     .menu-option {
-       width: 15px;
+        width: 15px;
     }
 
-    .community-badge{
-    font-size: 10px;
+    .community-badge {
+        font-size: 10px;
     }
 }
