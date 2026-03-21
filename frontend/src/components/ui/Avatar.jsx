@@ -7,7 +7,7 @@ export const Avatar = ({ src, alt = "", className }) => {
       role="img"
       aria-label={alt}
     >
-      {src ? <img src={src} alt={alt} /> : alt.charAt(0).toUpperCase()}
+      {src ? <img src={`${import.meta.env.VITE_API_URL}/${src}`} alt={alt} /> : alt.charAt(0).toUpperCase()}
     </div>
   );
 };

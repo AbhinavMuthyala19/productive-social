@@ -164,4 +164,10 @@ export const getUserNotesByUserName = (username) =>
 export const deletePostApi = (postId) =>
   api.delete(`/posts/${postId}`)
 
+export const updateProfile = ({username, name, bio}) =>
+  api.patch("/profile/me", {username, name, bio})
+
+export const updateProfileImage = (formData) =>
+  api.post("/profile/me/profile-picture", formData)
+
 export default api;

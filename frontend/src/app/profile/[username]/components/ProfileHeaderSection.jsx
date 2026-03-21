@@ -17,6 +17,7 @@ export const ProfileHeaderSection = ({
         name={userProfile.name}
         username={userProfile.username}
         bio={userProfile.bio}
+        profilePicture={userProfile.profilePicture}
         streak={userProfile.stats.streak}
         longestStreak={userProfile.stats.longestStreak}
         posts={userProfile.stats.posts}

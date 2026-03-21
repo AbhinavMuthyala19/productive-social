@@ -12,6 +12,7 @@ import { Toaster } from "sonner";
 import { VerifyEmail } from "./app/verify-email/Page";
 import { ForgotPassword } from "./app/forgot-password/page";
 import { ResetPassword } from "./app/reset-password/page";
+import { EditProfile } from "./app/accounts/edit-profile/page";
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
           <Route path="/notes" element={<Notes />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:username" element={<Profile />} />
+          <Route path="/accounts/edit-profile" element={<EditProfile />} />
         </Route>
       </Routes>
     </>

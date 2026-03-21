@@ -113,6 +113,7 @@ export const AuthProvider = ({ children }) => {
   const value = useMemo(
     () => ({
       user,
+      fetchUser,
       googleLogin: googleLoginHandler,
       loading,
       initialized,

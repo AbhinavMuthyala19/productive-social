@@ -78,7 +78,7 @@ export const Navbar = () => {
           setProfileOptionsClick((v) => !v);
         }}
       >
-        <Avatar className={"nav-avatar"} alt={user.name} size={50} />
+        <Avatar className={"nav-avatar"} src={user.profilePicture} alt={user.name} size={50} />
 
         <div className="profile-details">
           <p className="profile-name">{user.name}</p>
