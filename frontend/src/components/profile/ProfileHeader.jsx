@@ -5,6 +5,8 @@ import "./Profile.css";
 import { Tooltip } from "../ui/Tooltip";
 import { Button } from "../ui/Button";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 export const ProfileHeader = ({
   name,
@@ -16,7 +18,12 @@ export const ProfileHeader = ({
   posts,
   communities,
 }) => {
+  
   const navigate = useNavigate()
+
+  const { user } = useContext(AuthContext);
+  const isOwnProfile = user?.username === username;
+
   return (
     <div className="profile-header">
       <Avatar src={profilePicture} alt={name} size={70} />
@@ -44,14 +51,14 @@ export const ProfileHeader = ({
           />
         </div>
       </div>
-      <div className="edit-profile">
+      {isOwnProfile && <div className="edit-profile">
 
       <Tooltip label={"Edit profile"}>
         <Button onClick={() => navigate("/accounts/edit-profile")} className="edit-profile-button">
           <Pen className="edit-profile-icon" size={20} />
         </Button>
       </Tooltip>
-      </div>
+      </div>}
     </div>
   );
 };

@@ -45,7 +45,7 @@ export const PostHeader = ({
 
   return (
     <div className="post-header">
-      <Avatar alt={user.name} size={60} />
+      <Avatar src={user.profilePicture} alt={user.name} size={60} />
       <div className="post-header-details">
         <div className="post-user-details">
           <p

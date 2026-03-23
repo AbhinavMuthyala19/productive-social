@@ -150,9 +150,9 @@ export const Profile = () => {
   }, [userNotes, notesSearch]);
 
   const handleNotesDownload = async (notesId) => {
-      const res = await downloadNotes(notesId);
-      downloadFile(res.data, "notes.pdf")
-    };
+    const res = await downloadNotes(notesId);
+    downloadFile(res.data, "notes.pdf");
+  };
 
   console.log(userProfile);
   return (
@@ -201,7 +201,11 @@ export const Profile = () => {
 
             {filteredNotes.length > 0 ? (
               filteredNotes.map((file) => (
-                <NotesCard key={file.id} file={file} onDownload={handleNotesDownload} />
+                <NotesCard
+                  key={file.id}
+                  file={file}
+                  onDownload={handleNotesDownload}
+                />
               ))
             ) : (
               <p>No notes found</p>
@@ -229,6 +233,9 @@ export const Profile = () => {
       <NotesUploadModal
         isOpen={showNotesUploadModal}
         onClose={() => setShowNotesUploadModal(false)}
+        onUploadSuccess={(newNote) => {
+          setUserNotes((prev) => [newNote, ...prev]); // prepend new note
+        }}
       />
     </PageContainer>
   );

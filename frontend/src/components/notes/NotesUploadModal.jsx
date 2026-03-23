@@ -8,7 +8,7 @@ import { CommunityContext } from "../../context/CommunityContext";
 import { AttachmentsModal } from "../feed/AttachmentsModal";
 import { uploadNotes } from "../../lib/api";
 
-export const NotesUploadModal = ({ isOpen, onClose }) => {
+export const NotesUploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
   const { communities, syllabusMap, fetchSyllabus } =
     useContext(CommunityContext);
   const [communityId, setCommunityId] = useState("");
@@ -40,43 +40,52 @@ export const NotesUploadModal = ({ isOpen, onClose }) => {
       setNotes([]);
     }
   }, [isOpen]);
+
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (notes.length === 0) return;
+  if (notes.length === 0) return;
 
-    try {
-      setPosting(true);
+  try {
+    setPosting(true);
 
-      const formData = new FormData();
+    const formData = new FormData();
 
-      formData.append("file", notes[0]);
+    formData.append("file", notes[0]);
 
-      formData.append(
-        "data",
-        new Blob(
-          [
-            JSON.stringify({
-              communityId,
-              taskId,
-            }),
-          ],
-          { type: "application/json" },
-        ),
-      );
+    formData.append(
+      "data",
+      new Blob(
+        [
+          JSON.stringify({
+            communityId,
+            taskId,
+          }),
+        ],
+        { type: "application/json" }
+      )
+    );
 
-      await uploadNotes(formData); // API call
+    const res = await uploadNotes(formData); // ✅ capture response
 
-      setCommunityId("");
-      setTaskId("");
-      setNotes([]);
-      onClose();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setPosting(false);
-    }
-  };
+    // ✅ send new note back to parent
+    onUploadSuccess?.(res.data);
+    console.log(res.data)
+
+    // reset
+    setCommunityId("");
+    setTaskId("");
+    setNotes([]);
+    onClose();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setPosting(false);
+  }
+};
+
+
   return (
     <Modal className="notes-upload-modal" isOpen={isOpen} onClose={onClose}>
       <div className="notes-upload-header">

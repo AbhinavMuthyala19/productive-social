@@ -6,6 +6,7 @@
     border-left: 4px solid var(--color-blue);
     align-items: center;
     border-radius: var(--radius-md);
+    padding-left: 10px;
 }
 
 .task-details{
