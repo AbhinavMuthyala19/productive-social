@@ -7,6 +7,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { CommunityContext } from "../../context/CommunityContext";
 import { AttachmentsModal } from "../feed/AttachmentsModal";
 import { uploadNotes } from "../../lib/api";
+import { toast } from "sonner";
 
 export const NotesUploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
   const { communities, syllabusMap, fetchSyllabus } =
@@ -71,8 +72,7 @@ export const NotesUploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
 
     // ✅ send new note back to parent
     onUploadSuccess?.(res.data);
-    console.log(res.data)
-
+    toast.success("Notes uploaded...")
     // reset
     setCommunityId("");
     setTaskId("");
@@ -80,6 +80,7 @@ export const NotesUploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
     onClose();
   } catch (error) {
     console.error(error);
+    toast.error("Notes upload failed")
   } finally {
     setPosting(false);
   }
