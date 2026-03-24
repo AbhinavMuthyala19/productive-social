@@ -5,8 +5,15 @@
     margin: 5px;
 }
 
-@media(max-width:480px){
-    .auth-logo img{
+.auth-logo img {
+    max-width: 100%;
+    height: auto;
+    /* ✅ prevents distortion */
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .auth-logo img {
         width: 80px;
     }
 }

@@ -1,17 +1,19 @@
 @import "../../styles/variables.css";
 
 .avatar {
-  background: var(--gray-200);
+  background: var(--bg-soft); /* ✅ FIXED */
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   font-weight: 600;
   overflow: hidden;
-  color: var(--gray-900);
+  color: var(--text-primary); /* ✅ FIXED */
   margin: 5px;
   width: 60px;
   height: 60px;
+
+  transition: background var(--fast), color var(--fast); /* ✅ smooth theme */
 }
 
 .avatar img {
@@ -30,7 +32,8 @@
     font-size: 14px;
     margin: 2px;
   }
-  .avatar.nav-avatar{
+
+  .avatar.nav-avatar {
     width: 35px;
     height: 35px;
   }

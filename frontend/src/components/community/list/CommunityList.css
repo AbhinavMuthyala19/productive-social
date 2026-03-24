@@ -4,14 +4,14 @@
   grid-template-columns: repeat(3, 1fr);
   align-items: stretch;
   justify-content: center;
-  gap: 30px;
+  gap: var(--space-2xl);
 }
 
 .community-list {
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 20px;
+  gap: var(--space-lg);
 }
 
 /* =========================
@@ -20,7 +20,7 @@
 @media (max-width: 1023px) {
   .community-grid {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: var(--space-xl);
   }
 }
 
@@ -30,21 +30,21 @@
 @media (max-width: 767px) {
   .community-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: var(--space-lg);
   }
 
   .community-list {
-    gap: 16px;
+    gap: var(--space-md);
   }
 }
 
 @media (max-width: 500px) {
   .community-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: var(--space-lg);
   }
 
   .community-list {
-    gap: 16px;
+    gap: var(--space-md);
   }
 }

@@ -12,46 +12,64 @@
   display: none;
 }
 
-/* custom checkbox */
+/* =========================
+   CUSTOM CHECKBOX
+   ========================= */
 .checkmark {
   width: 30px;
   height: 30px;
-  border: 2px solid #999;
+  border: 2px solid var(--border-light); /* ✅ FIXED */
   border-radius: 50%;
   position: relative;
-  transition: all 0.2s ease;
+
+  background: var(--bg-card); /* ✅ ensures contrast in dark mode */
+  transition: all var(--fast);
 }
 
-/* checked state */
-.checkbox-container input:checked+.checkmark {
+/* hover (only when enabled) */
+.checkbox-container:hover input:not(:disabled) + .checkmark {
+  background: var(--bg-hover); /* ✅ subtle feedback */
+}
+
+/* =========================
+   CHECKED STATE
+   ========================= */
+.checkbox-container input:checked + .checkmark {
   background-color: var(--color-blue);
   border-color: var(--color-blue);
 }
 
-.checkbox-container input:checked+.checkmark::after {
+.checkbox-container input:checked + .checkmark::after {
   content: "";
   position: absolute;
   left: 8px;
   top: 3px;
   width: 6px;
   height: 12px;
-  border: solid white;
+  border: solid #ffffff; /* ✅ keep strong contrast */
   border-width: 0 3px 3px 0;
   transform: rotate(45deg);
 }
 
+/* =========================
+   DISABLED STATE
+   ========================= */
 .checkbox-container input:disabled + .checkmark {
   cursor: not-allowed;
   opacity: 0.6;
 }
 
-@media(max-width:767px){
-  .checkmark{
+/* =========================
+   MOBILE
+   ========================= */
+@media (max-width: 767px) {
+  .checkmark {
     width: 20px;
     height: 20px;
   }
-  .checkbox-container input:checked+.checkmark::after {
-    width:3px;
+
+  .checkbox-container input:checked + .checkmark::after {
+    width: 3px;
     height: 6px;
     left: 5px;
   }

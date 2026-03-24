@@ -1,42 +1,59 @@
 @import "../../styles/variables.css";
 
+/* =========================
+   TABS CONTAINER
+   ========================= */
 .tabs {
   display: flex;
   gap: 28px;
 }
 
+/* =========================
+   TAB ITEM
+   ========================= */
 .tab-item {
   background: none;
   border: none;
   padding: 0 14px;
+
   font-size: 15px;
   font-weight: 500;
-  color: var(--color-blue);
-  /* for blue header */
+
+  color: var(--text-muted); /* ✅ FIXED (default state) */
   cursor: pointer;
   position: relative;
+
+  transition: color var(--fast);
 }
 
+/* Hover */
 .tab-item:hover {
-  color: var(--color-blue);
+  color: var(--text-primary); /* ✅ subtle feedback */
 }
 
+/* Active */
 .tab-item.active {
-  color: var(--color-blue);
+  color: var(--color-blue); /* ✅ highlight */
 }
 
+/* Active underline */
 .tab-item.active::after {
   content: "";
   position: absolute;
   left: 0;
   bottom: -10px;
+
   width: 100%;
   height: 2px;
   background: var(--color-blue);
   border-radius: 2px;
 }
-@media(max-width:600px){
-  .tab-item{
+
+/* =========================
+   MOBILE
+   ========================= */
+@media (max-width: 600px) {
+  .tab-item {
     font-size: 13px;
   }
 }

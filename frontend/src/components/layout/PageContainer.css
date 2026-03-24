@@ -1,6 +1,6 @@
 .page-container {
-  margin-left: 320px;
-  width: calc(100% - 320px);
+  margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
 }
 
 /* =========================

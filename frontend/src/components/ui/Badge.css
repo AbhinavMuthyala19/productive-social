@@ -1,5 +1,8 @@
 @import "../../styles/variables.css";
 
+/* =========================
+   BASE BADGE
+   ========================= */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -8,53 +11,63 @@
   border-radius: var(--radius-md);
   font-weight: 600;
   margin: 5px;
-  background: var(--gray-100);
-  color: var(--gray-500);
+
+  background: var(--bg-soft); /* ✅ FIXED */
+  color: var(--text-secondary); /* ✅ FIXED */
+
+  transition: background var(--fast), color var(--fast);
 }
 
+/* =========================
+   VARIANTS
+   ========================= */
 
 .transparent-badge {
   background-color: transparent;
   font-size: 12px;
-  color: var(--gray-500);
+  color: var(--text-muted); /* ✅ FIXED */
   padding: 0;
 }
 
 .white-badge {
-  background-color: white;
+  background-color: var(--bg-card); /* ✅ FIXED */
   font-size: 12px;
-  color: var(--gray-900);
+  color: var(--text-primary); /* ✅ FIXED */
   margin: 20px;
 }
 
+/* BRAND BADGES */
+
 .purple-badge {
   background: rgba(124, 58, 237, 0.15);
-  font-size: 12px;
   color: var(--color-purple);
+  font-size: 12px;
 }
 
 .blue-badge {
-  background: rgba(58, 106, 237, 0.15);
-  font-size: 12px;
+  background: rgba(37, 99, 235, 0.15); /* aligned with your blue */
   color: var(--color-blue);
+  font-size: 12px;
   width: auto;
 }
 
-.aqua-badge{
-  background-color: #7FFFD4;
+/* CUSTOM BADGES (THEME-SAFE TUNED COLORS) */
+
+.aqua-badge {
+  background-color: rgba(127, 255, 212, 0.15); /* ✅ softened */
+  color: #2aa198; /* ✅ toned for dark mode */
   font-size: 12px;
-  color: 	#008080;
 }
 
 .pink-badge {
-  background: #ffbfdf;
+  background: rgba(255, 191, 223, 0.2); /* ✅ softened */
+  color: #d63384;
   font-size: 12px;
-  color: #DE3163;
   width: auto;
 }
 
 .streak-badge {
-  background-color: #fae8d0;
+  background-color: rgba(250, 232, 208, 0.2); /* ✅ softened */
   color: #e28e4a;
   font-size: 12px;
   padding: 2px 10px;
@@ -64,13 +77,20 @@
   width: 16px;
 }
 
-@media(max-width:767px) {
+/* =========================
+   MOBILE
+   ========================= */
 
+@media (max-width: 767px) {
   .streak-badge img {
     width: 12px;
   }
 
-  .blue-badge .aqua-badge .streak-badge .pink-badge{
+  /* ⚠️ FIXED SELECTOR (was broken) */
+  .blue-badge,
+  .aqua-badge,
+  .streak-badge,
+  .pink-badge {
     font-size: 10px;
   }
 }

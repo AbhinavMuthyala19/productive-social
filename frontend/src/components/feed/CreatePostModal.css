@@ -1,86 +1,121 @@
 .create-post-modal {
-    width: 50%;
-    height: auto;
-    max-height: 900px;
+  width: 50%;
+  height: auto;
+  max-height: 900px;
+
+  background: var(--bg-card); /* ✅ ADDED */
+  color: var(--text-primary); /* ✅ ADDED */
 }
 
 .create-post-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
 }
 
-.create-post-header img {
-    width: 30px;
-    cursor: pointer;
+.close-icon {
+  cursor: pointer;
+  color: var(--text-primary);
+  /* ✅ subtle + theme-safe */
+  transition: color var(--fast);
 }
 
+/* =========================
+   FORM
+   ========================= */
 .create-post-form form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .create-post-select {
-    width: 100%;
+  width: 100%;
 }
 
 .create-post-select:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .community-input {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .create-post-upload {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
+/* =========================
+   UPLOAD BUTTON
+   ========================= */
 .create-post-upload-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    width: 200px;
-    background-color: white;
-    border: 1px solid var(--color-blue);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+
+  width: 200px;
+
+  background-color: var(--bg-card); /* ✅ FIXED */
+  border: 1px solid var(--border-light); /* ✅ FIXED */
+  color: var(--text-primary);
+
+  border-radius: var(--radius-sm);
+
+  transition: background var(--fast), border var(--fast);
+}
+
+.create-post-upload-button:hover {
+  background: var(--bg-hover); /* ✅ FIXED */
+  border-color: var(--color-blue); /* ✅ accent on hover */
 }
 
 .create-post-upload-button img {
-    width: 16px;
+  width: 16px;
 }
 
+/* =========================
+   SUBMIT BUTTON
+   ========================= */
 .create-post-submit-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: var(--color-blue);
-    color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
+  background: var(--color-blue);
+  color: #ffffff; /* ✅ FIXED */
+
+  transition: background var(--fast);
 }
 
 .create-post-submit-button:hover {
-    background: var(--hover-blue);
-    cursor: pointer;
+  background: var(--hover-blue);
+  cursor: pointer;
 }
 
+/* =========================
+   SUCCESS MESSAGE
+   ========================= */
 .images-add-msg {
-    color: green;
-    text-align: center;
+  color: var(--success); /* ✅ FIXED */
+  text-align: center;
 }
 
-@media(max-width:1000px){
-    .create-post-modal{
-        width: 70%;
-    }
+/* =========================
+   RESPONSIVE
+   ========================= */
+@media (max-width: 1000px) {
+  .create-post-modal {
+    width: 70%;
+  }
 }
-@media(max-width:767px){
-    .create-post-modal{
-        width: 90%;
-    }
+
+@media (max-width: 767px) {
+  .create-post-modal {
+    width: 90%;
+  }
 }

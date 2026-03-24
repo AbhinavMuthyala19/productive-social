@@ -5,6 +5,7 @@ import plusIcon from "../../assets/icons/plus.svg";
 import "./AttachmentsModal.css";
 import { Tabs } from "../ui/Tabs";
 import { Button } from "../ui/Button";
+import { X } from "lucide-react";
 
 export const AttachmentsModal = ({
   isOpen,
@@ -53,7 +54,7 @@ export const AttachmentsModal = ({
       <div className="create-post-header">
         <h3>Attachments</h3>
         <Button variant={"transparent-button"} onClick={onClose}>
-          <img src={closeIcon} alt="close" />
+          <X className="close-icon" size={20} />
         </Button>
       </div>
       <div className="attachment-tabs">

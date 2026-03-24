@@ -9,19 +9,27 @@
   bottom: -32px;
   left: 50%;
   transform: translateX(-50%);
-  background: #111;
-  color: #fff;
+
+  background: var(--bg-card); /* ✅ FIXED */
+  color: var(--text-primary); /* ✅ FIXED */
+
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 12px;
   white-space: nowrap;
 
+  border: 1px solid var(--border-light); /* ✅ subtle separation */
+  box-shadow: var(--shadow-soft); /* ✅ elevation */
+
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease;
+
+  transition: opacity var(--fast), transform var(--fast);
 }
 
+/* Hover */
 .tooltip-wrapper:hover .tooltip {
   opacity: 1;
   visibility: visible;
+  transform: translateX(-50%) translateY(4px); /* ✅ slight motion */
 }

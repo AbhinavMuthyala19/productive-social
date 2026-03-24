@@ -1,7 +1,8 @@
 .skeleton {
-  background: #e5e7eb;
+  background: var(--bg-soft); /* ✅ FIXED */
   position: relative;
   overflow: hidden;
+  border-radius: var(--radius-sm); /* ✅ optional but nicer */
 }
 
 /* shimmer animation */
@@ -16,11 +17,21 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.4), /* ✅ softened */
     transparent
   );
 
   animation: shimmer 1.2s infinite;
+}
+
+/* Dark mode shimmer adjustment */
+[data-theme="dark"] .skeleton.shimmer::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08), /* ✅ much softer for dark */
+    transparent
+  );
 }
 
 @keyframes shimmer {

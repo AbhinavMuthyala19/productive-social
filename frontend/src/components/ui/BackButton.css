@@ -1,19 +1,21 @@
-.back-arrow-button{
-    display: flex;
-    align-items: center;
-    background: transparent;
+.back-arrow-button {
+  display: flex;
+  align-items: center;
+  background: transparent;
 }
 
 .back-arrow {
-    border-radius: 50%;
-    padding: 5px;
-    margin-right: 20px;
+  border-radius: 50%;
+  padding: 5px;
+  margin-right: 20px;
+
+  transition: background-color var(--fast); /* ✅ smooth hover */
 }
 
-.back-arrow:focus{
-    outline: none;
+.back-arrow:focus {
+  outline: none;
 }
 
 .back-arrow:hover {
-    background-color: var(--gray-200);
+  background-color: var(--bg-hover); /* ✅ FIXED */
 }

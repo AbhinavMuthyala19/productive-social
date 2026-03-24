@@ -11,7 +11,7 @@ import { createPost } from "../../lib/api";
 import { AttachmentsModal } from "./AttachmentsModal";
 import { toast } from "sonner";
 import { CommunityContext } from "../../context/CommunityContext";
-import { Loader } from "lucide-react";
+import { Loader, X } from "lucide-react";
 
 export const CreatePostModal = ({
   isOpen,
@@ -111,7 +111,7 @@ export const CreatePostModal = ({
       <div className="create-post-header">
         <h3>Create Post</h3>
         <Button variant={"transparent-button"} onClick={handleClose}>
-          <img src={closeIcon} alt="close" />
+          <X className="close-icon" size={20} />
         </Button>
       </div>
 

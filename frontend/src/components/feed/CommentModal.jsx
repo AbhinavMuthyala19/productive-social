@@ -1,12 +1,11 @@
 import { Modal } from "../ui/Modal";
 import { TextArea } from "../ui/TextArea";
 import { Button } from "../ui/Button";
-import { Avatar } from "../ui/Avatar";
 import "./CommentModal.css";
-import closeIcon from "../../assets/icons/cross.svg";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getPostComments, postComments } from "../../lib/api";
 import { CommentItem } from "./CommentItem";
+import { X } from "lucide-react";
 
 export const CommentModal = ({ postId, onClose, isOpen, onCommentAdded }) => {
   const [comments, setComments] = useState([]);
@@ -80,7 +79,7 @@ export const CommentModal = ({ postId, onClose, isOpen, onCommentAdded }) => {
       <div className="comment-header">
         <h3>Comments</h3>
         <Button variant={"transparent-button"} onClick={onClose}>
-          <img src={closeIcon} alt="close" />
+          <X className="close-icon" size={20} />
         </Button>
       </div>
 

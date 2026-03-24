@@ -1,21 +1,35 @@
 @import "../../styles/variables.css";
 
-/* Base Card Style */
+/* =========================
+   BASE CARD
+   ========================= */
 .card {
   background: var(--bg-card);
   box-shadow: var(--shadow-card);
   border: 1px solid var(--border-light);
-  transition: transform var(--fast), box-shadow var(--fast);
+
+  transition: transform var(--fast), box-shadow var(--fast), background var(--fast);
 }
 
-/* Profile Stats Card */
+/* Optional but recommended */
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* =========================
+   PROFILE STATS CARD
+   ========================= */
 .stats-card {
   text-align: center;
   padding: 24px;
-  background: var(--gray-50);
+
+  background: var(--bg-soft); /* ✅ FIXED */
 }
 
-/* Minimal Card (like a container) */
+/* =========================
+   FLAT CARD
+   ========================= */
 .flat-card {
   box-shadow: none;
   border: none;

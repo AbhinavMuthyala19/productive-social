@@ -3,30 +3,44 @@
   justify-content: space-between;
   align-items: center;
   margin: 20px 0;
+  
 }
 
+/* =========================
+   MODAL
+   ========================= */
 .comment-modal {
   width: 520px;
   padding: 10px 30px;
   max-height: 500px;
+
+  background: var(--bg-card); /* ✅ ADDED */
+  color: var(--text-primary); /* ✅ ADDED */
 }
 
+/* Close icon */
 .comment-header img {
   width: 30px;
   cursor: pointer;
 }
 
+/* =========================
+   COMMENTS LIST
+   ========================= */
 .comments-list {
   flex: 1;
   overflow-y: auto;
   margin-bottom: 10px;
 }
 
-
+/* =========================
+   INPUT CONTAINER
+   ========================= */
 .comment-input-container {
   width: 100%;
   padding-top: 10px;
-  border-top: 1px solid #eee;
+
+  border-top: 1px solid var(--border-light); /* ✅ FIXED */
 }
 
 .comment-input-container form {
@@ -35,18 +49,38 @@
   gap: 10px;
 }
 
+/* =========================
+   BUTTON
+   ========================= */
 .comment-button {
   background-color: var(--color-blue);
-  color: var(--gray-100);
+  color: #ffffff; /* ✅ FIXED */
+
   font-weight: 500;
   width: 100px;
+
+  transition: background var(--fast);
 }
 
-/* Comment Textarea */
+.comment-button:hover {
+  background-color: var(--hover-blue);
+}
+
+/* =========================
+   TEXTAREA
+   ========================= */
 .comment-textarea {
   height: 60px;
+
   border: none;
   padding: 5px;
+
+  background: var(--bg-card); /* ✅ ADDED */
+  color: var(--text-primary); /* ✅ ADDED */
+}
+
+.comment-textarea::placeholder {
+  color: var(--text-muted); /* ✅ FIXED */
 }
 
 .comment-textarea:focus {

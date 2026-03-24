@@ -1,22 +1,23 @@
 .auth-title {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 5px;
-    padding: 10px;
-    width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+  padding: 10px;
+  width: 100%;
 }
 
 .auth-title h1 {
-    font-size: 26px;
-    font-weight: 500;
+  font-size: 26px;
+  font-weight: 600; /* ✅ slightly stronger */
 
+  color: var(--text-primary); /* ✅ explicit + safe */
 }
 
-@media(max-width:480px) {
-    .auth-title h1 {
-        font-size: 20px;
-        text-align: center;
-    }
-
+/* Mobile */
+@media (max-width: 480px) {
+  .auth-title h1 {
+    font-size: 20px;
+    text-align: center;
+  }
 }

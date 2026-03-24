@@ -6,8 +6,6 @@
 @import "./variables.css";
 @import "./animations.css";
 
-
-
 /* Reset defaults */
 * {
   margin: 0;
@@ -15,18 +13,19 @@
   box-sizing: border-box;
 }
 
-/* Smooth fonts */
+/* Smooth fonts + THEME SAFE */
 html,
 body {
   font-family: var(--font-primary);
   background: var(--bg-main);
-  color: var(--gray-900);
+  color: var(--text-primary); /* ✅ FIXED */
   height: 100%;
   min-height: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
 
+  transition: background var(--normal), color var(--normal); /* ✅ smooth theme switch */
+}
 
 /* Remove list styles */
 ul,
@@ -50,30 +49,39 @@ select {
   font-family: inherit;
   border: none;
   outline: none;
+  background: transparent; /* ✅ prevents white inputs in dark mode */
+  color: inherit;
 }
 
-/* Make scrolling smooth */
+/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
 
-/* Scrollbar styling (modern + subtle) */
+/* ================================
+   SCROLLBAR (THEME AWARE)
+   ================================ */
+
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--gray-50);
+  background: var(--bg-soft); /* ✅ FIXED */
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--gray-200);
+  background: var(--border-light); /* ✅ FIXED */
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--gray-300);
+  background: var(--text-muted); /* ✅ FIXED */
 }
+
+/* ================================
+   SPINNER
+   ================================ */
 
 .spinner-icon {
   animation: spin 1s linear infinite;

@@ -1,23 +1,55 @@
-.community-leave-modal{
-    display: flex;
+.community-leave-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  width: 500px;
+  max-width: 90%;
+  min-width: 300px;
+
+  background: var(--bg-card);
+  color: var(--text-primary);
+
+  border-radius: var(--radius-lg);
+  padding: 20px;
+
+  box-shadow: var(--shadow-card);
+}
+
+.community-leave-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-icon {
+  cursor: pointer;
+  color: var(--text-primary);
+  /* ✅ subtle + theme-safe */
+  transition: color var(--fast);
+}
+
+.close-icon:hover {
+  color: var(--text-primary);
+  /* ✅ better interaction */
+}
+
+.leave-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .community-leave-modal {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .leave-buttons {
     flex-direction: column;
-    gap: 20px;
-    width: 500px;
-    min-width: 300px;
-}
-
-.community-leave-header{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.close-icon{
-    cursor: pointer;
-}
-.leave-buttons{
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    gap: 20px;
+    /* ✅ better stacking */
+  }
 }

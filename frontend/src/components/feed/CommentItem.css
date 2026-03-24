@@ -12,54 +12,77 @@
   flex: 1;
 }
 
+/* =========================
+   NAME
+   ========================= */
 .name {
   display: flex;
   align-items: center;
   gap: 8px;
   font-weight: 600;
+  color: var(--text-primary); /* ✅ ADDED */
 }
 
 .name span {
   font-weight: 500;
-  color: var(--gray-600);
+  color: var(--text-muted); /* ✅ FIXED */
   font-size: 13px;
 }
 
 .name p {
-    cursor: pointer;
+  cursor: pointer;
 }
 
+/* =========================
+   COMMENT TEXT
+   ========================= */
 .comment-text {
   margin-left: 36px;
   margin-top: 4px;
+
   font-size: 14px;
   line-height: 1.5;
-  color: var(--gray-900);
+
+  color: var(--text-primary); /* ✅ FIXED */
 }
 
+/* =========================
+   REPLY BUTTON
+   ========================= */
 .comment-reply {
   font-size: 13px;
   font-weight: 500;
-  color: var(--primary-600);
+
+  color: var(--color-blue); /* ✅ FIXED */
   background: transparent;
+
   cursor: pointer;
   white-space: nowrap;
   margin-right: 15px;
+
+  transition: color var(--fast);
 }
 
 .comment-reply:hover {
   text-decoration: underline;
 }
 
+/* =========================
+   REPLIES
+   ========================= */
 .replies {
   margin-left: 36px;
   padding-left: 12px;
-  border-left: 2px solid var(--gray-200);
+
+  border-left: 2px solid var(--border-light); /* ✅ FIXED */
   margin-top: 8px;
 }
 
+/* =========================
+   MENTION
+   ========================= */
 .mention {
-  color: var(--primary-600);
+  color: var(--color-blue); /* ✅ FIXED */
   font-weight: 500;
   text-decoration: none;
 }

@@ -6,6 +6,8 @@ import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { CommunityProvider } from "./context/CommunityContext.jsx";
 import { PostProvider } from "./context/PostContext.jsx";
+import { ThemeProvider } from "./context/ThemeContext.jsx";
+import { ThemeToggle } from "./components/ui/ThemeToggle.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -13,7 +15,10 @@ createRoot(document.getElementById("root")).render(
       <AuthProvider>
         <CommunityProvider>
           <PostProvider>
-            <App />
+            <ThemeProvider>
+              <App />
+              <ThemeToggle/>
+            </ThemeProvider>
           </PostProvider>
         </CommunityProvider>
       </AuthProvider>

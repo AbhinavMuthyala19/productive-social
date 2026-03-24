@@ -29,7 +29,7 @@ export const NotesViewModal = ({ notes, onClose, isOpen }) => {
       </div>
 
       <div className="post-notes-list">
-        {notes.map((file) => (
+        {notes?.map((file) => (
           <NotesCard
             key={file.id}
             file={file}

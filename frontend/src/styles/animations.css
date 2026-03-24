@@ -8,7 +8,6 @@
     opacity: 0;
     transform: translateY(4px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -16,7 +15,8 @@
 }
 
 .fade-in {
-  animation: fadeIn 0.25s var(--fast) forwards;
+  animation: fadeIn var(--normal) forwards; /* ✅ FIXED */
+  will-change: opacity, transform;
 }
 
 /* Slide Up */
@@ -25,7 +25,6 @@
     opacity: 0;
     transform: translateY(20px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -33,7 +32,8 @@
 }
 
 .slide-up {
-  animation: slideUp 0.3s var(--normal) forwards;
+  animation: slideUp var(--normal) forwards;
+  will-change: opacity, transform;
 }
 
 /* Pop In */
@@ -42,27 +42,30 @@
     transform: scale(0.9);
     opacity: 0;
   }
-
   80% {
     transform: scale(1.03);
     opacity: 1;
   }
-
   100% {
     transform: scale(1);
   }
 }
 
 .pop-in {
-  animation: popIn 0.25s ease-out forwards;
+  animation: popIn var(--fast) ease-out forwards; /* ✅ cleaned */
+  will-change: transform, opacity;
 }
 
-/* Soft Hover Card Effect */
+/* ================================
+   HOVER EFFECTS
+   ================================ */
+
 .card-hover {
   transition: transform var(--fast), box-shadow var(--fast);
+  will-change: transform, box-shadow;
 }
 
 .card-hover:hover {
   transform: translateY(-3px);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-card-hover); /* ✅ BETTER than shadow-card */
 }

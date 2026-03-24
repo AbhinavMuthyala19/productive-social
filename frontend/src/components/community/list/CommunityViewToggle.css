@@ -1,17 +1,35 @@
 .card-view {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center; /* ✅ better vertical alignment */
+
+  gap: 10px;
+  padding: 10px;
 }
 
-@media(max-width:767px){
-    .card-view{
-        gap: 5px;
-        padding: 5px;
-    }
-    .grid-icon, .list-icon{
-        width: 15px;
-    }
+/* Icons */
+.grid-icon,
+.list-icon {
+  cursor: pointer;
+  color: var(--text-muted); /* ✅ future-proof if using SVG/icons */
+  transition: color var(--fast);
+}
+
+.grid-icon:hover,
+.list-icon:hover {
+  color: var(--text-primary); /* ✅ interactive feedback */
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .card-view {
+    gap: 5px;
+    padding: 5px;
+  }
+
+  .grid-icon,
+  .list-icon {
+    width: 15px;
+  }
 }

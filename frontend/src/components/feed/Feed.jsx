@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
+import { CommentModal } from "./CommentModal";
 import { PostCard } from "./PostCard";
 import { PostCardSkeleton } from "./PostCardSkeleton";
+import { NotesViewModal } from "../notes/NotesViewModal";
 
 export const Feed = ({
   posts,
@@ -13,7 +16,8 @@ export const Feed = ({
   displayStreakBadge = false,
   userNameClickable = true,
 }) => {
-
+  const [activePostId, setActivePostId] = useState(null);
+  const [activeNotes, setActiveNotes] = useState(null);
   const lastPostRef = useInfiniteScroll(loading, hasMore, loadMore);
 
   // First load skeleton
@@ -39,6 +43,8 @@ export const Feed = ({
             post={post}
             onCommentAdded={() => onCommentAdded(post.postId)}
             onToggleLike={onToggleLike}
+            onOpenComments={() => setActivePostId(post.postId)}
+            onOpenNotes={(notes) => setActiveNotes(notes)}
             displayCommunityBadge={displayCommunityBadge}
             displayStreakBadge={displayStreakBadge}
             userNameClickable={userNameClickable}
@@ -47,6 +53,17 @@ export const Feed = ({
       })}
 
       {loading && <PostCardSkeleton />}
+      <CommentModal
+        postId={activePostId}
+        isOpen={!!activePostId}
+        onClose={() => setActivePostId(null)}
+        onCommentAdded={onCommentAdded}
+      />
+      <NotesViewModal
+        notes={activeNotes}
+        isOpen={!!activeNotes}
+        onClose={() => setActiveNotes(null)}
+      />
     </>
   );
 };
