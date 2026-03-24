@@ -5,6 +5,7 @@ import "./Notes.css";
 import { downloadNotes } from "../../lib/api";
 import { NotesCard } from "./NotesCard";
 import { downloadFile } from "../../lib/downloadFile";
+import { X } from "lucide-react";
 
 export const NotesViewModal = ({ notes, onClose, isOpen }) => {
 
@@ -24,7 +25,7 @@ export const NotesViewModal = ({ notes, onClose, isOpen }) => {
         <h3>Notes Attached</h3>
 
         <Button variant="transparent-button" onClick={onClose}>
-          <img src={closeIcon} alt="close" />
+          <X className="close-icon" size={20} />
         </Button>
       </div>
 

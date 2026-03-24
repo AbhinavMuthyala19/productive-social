@@ -92,7 +92,7 @@ export const NotesUploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
       <div className="notes-upload-header">
         <h3>Upload Notes</h3>
         <Button variant={"transparent-button"} onClick={onClose}>
-          <X size={20} />
+          <X className="close-icon" size={20} />
         </Button>
       </div>
       <div className="create-post-form">
