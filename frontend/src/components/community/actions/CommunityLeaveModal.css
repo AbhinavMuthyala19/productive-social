@@ -16,23 +16,7 @@
   box-shadow: var(--shadow-card);
 }
 
-.community-leave-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
 
-.close-icon {
-  cursor: pointer;
-  color: var(--text-primary);
-  /* ✅ subtle + theme-safe */
-  transition: color var(--fast);
-}
-
-.close-icon:hover {
-  color: var(--text-primary);
-  /* ✅ better interaction */
-}
 
 .leave-buttons {
   display: flex;

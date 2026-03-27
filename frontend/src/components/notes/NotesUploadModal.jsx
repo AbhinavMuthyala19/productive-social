@@ -1,4 +1,4 @@
-import { Loader, X } from "lucide-react";
+import { Loader} from "lucide-react";
 import { Button } from "../ui/Button";
 import { Modal } from "../ui/Modal";
 import "./Notes.css";
@@ -8,6 +8,7 @@ import { CommunityContext } from "../../context/CommunityContext";
 import { AttachmentsModal } from "../feed/AttachmentsModal";
 import { uploadNotes } from "../../lib/api";
 import { toast } from "sonner";
+import { ModalHeader } from "../ui/ModalHeader";
 
 export const NotesUploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
   const { communities, syllabusMap, fetchSyllabus } =
@@ -89,12 +90,7 @@ export const NotesUploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
 
   return (
     <Modal className="notes-upload-modal" isOpen={isOpen} onClose={onClose}>
-      <div className="notes-upload-header">
-        <h3>Upload Notes</h3>
-        <Button variant={"transparent-button"} onClick={onClose}>
-          <X className="close-icon" size={20} />
-        </Button>
-      </div>
+      <ModalHeader title={"Upload Notes"} onClose={onClose} />
       <div className="create-post-form">
         <form onSubmit={handleSubmit}>
           <div className="community-input">

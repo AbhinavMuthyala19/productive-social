@@ -3,8 +3,8 @@
 
 .sidebar {
   width: 320px;
-  background: var(--bg-card); /* ✅ FIXED */
-  border-right: 1px solid var(--border-light); /* ✅ FIXED */
+  background: var(--bg-card);
+  border-right: 1px solid var(--border-light); 
   padding: 15px;
   height: 100%;
   display: flex;
@@ -70,7 +70,7 @@
 }
 
 .nav-item:hover {
-  background-color: var(--gray-100);
+  background-color: var(--bg-hover);
 }
 
 .profile-card {
@@ -112,9 +112,9 @@
   position: absolute;
   top: -60px;
   left: -1px;
-  background: var(--bg-card); /* ✅ ADDED */
-  border: 1px solid var(--border-light); /* ✅ ADDED */
-  box-shadow: var(--shadow-card); /* ✅ FIXED */
+  background: var(--bg-card); 
+  border: 1px solid var(--border-light); 
+  box-shadow: var(--shadow-card); 
   border-radius: var(--radius-sm);
   opacity: 0;
   transform: translateY(8px);
@@ -139,7 +139,7 @@
 
 .profile-options p:hover {
   cursor: pointer;
-  background-color: var(--gray-200);
+  background-color: var(--bg-hover);
 }
 
 .options-card {
@@ -195,7 +195,6 @@
     justify-content: center;
     border-radius: 50%;
     font-size: 0;
-    /* 🔑 hides text nodes */
     gap: 0;
   }
 
@@ -210,7 +209,7 @@
   }
 
   .nav-item:hover {
-    background-color: var(--gray-100);
+    background-color: var(--bg-hover);
   }
 
   .nav-item svg {
@@ -218,7 +217,6 @@
     height: 20px;
   }
 
-  /* Profile section cleanup */
   .profile-details,
   .profile-more-icon {
     display: none;

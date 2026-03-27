@@ -9,7 +9,6 @@ import { AuthTitle } from "./AuthTitle";
 import { GoogleSignButton } from "./GoogleSignButton";
 import { OrDivider } from "./OrDivider";
 import { AuthFooterSwitch } from "./AuthFooterSwitch";
-import loginHeader from "../../assets/loginheader.svg";
 import { Button } from "../ui/Button";
 import "./Auth.css";
 import { Loader } from "lucide-react";
@@ -23,7 +22,7 @@ export const LoginPage = ({
 }) => {
   return (
     <AuthLayout
-      left={<AuthLeftPanel imageSrc={loginHeader} />}
+      left={<AuthLeftPanel/>}
       right={
         <AuthRightPanel>
           <form onSubmit={onSubmit} className="auth-form">

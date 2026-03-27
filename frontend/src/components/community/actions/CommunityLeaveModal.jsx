@@ -1,7 +1,7 @@
 import { Modal } from "../../ui/Modal";
-import { X } from "lucide-react";
 import "./CommunityLeaveModal.css";
 import { Button } from "../../ui/Button";
+import { ModalHeader } from "../../ui/ModalHeader";
 
 export const CommunityLeaveModal = ({ isOpen, onClose, onConfirm }) => {
   return (
@@ -11,12 +11,7 @@ export const CommunityLeaveModal = ({ isOpen, onClose, onConfirm }) => {
       onClose={onClose}
       closeOnOutsideClick={false}
     >
-      <div className="community-leave-header">
-        <h3>Warning</h3>
-        <Button variant={"transparent-button"} onClick={onClose}>
-        <X className="close-icon" size={20} />
-        </Button>
-      </div>
+      <ModalHeader title={"Warning"} onClose={onClose} />
       <div className="leave-warning-message">
         <p>
           Are you sure? Leaving this community will reset your streak progress.

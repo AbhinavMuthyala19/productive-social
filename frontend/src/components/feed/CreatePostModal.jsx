@@ -1,17 +1,17 @@
 import { useContext, useEffect, useState } from "react";
 import { Modal } from "../ui/Modal";
 import { Select } from "../ui/Select";
-import closeIcon from "../../assets/icons/cross.svg";
 import "./CreatePostModal.css";
 import { Input } from "../ui/Input";
 import { TextArea } from "../ui/TextArea";
 import { Button } from "../ui/Button";
 import attachmentIcon from "../../assets/icons/attachment.svg";
-import { createPost } from "../../lib/api";
+import { createPost, getUserNotes } from "../../lib/api";
 import { AttachmentsModal } from "./AttachmentsModal";
 import { toast } from "sonner";
 import { CommunityContext } from "../../context/CommunityContext";
-import { Loader, X } from "lucide-react";
+import { Loader } from "lucide-react";
+import { ModalHeader } from "../ui/ModalHeader";
 
 export const CreatePostModal = ({
   isOpen,
@@ -27,6 +27,7 @@ export const CreatePostModal = ({
   const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
   const [notes, setNotes] = useState([]);
+  const [existingNotes, setExistingNotes] = useState([]);
   const [posting, setPosting] = useState(false);
   const [showAttachmentsModal, setShowAttachmentsModal] = useState(false);
   const syllabusOptions = syllabusMap[communityId] || [];
@@ -43,6 +44,12 @@ export const CreatePostModal = ({
     }
   }, [communityId, fetchSyllabus]);
 
+  useEffect(() => {
+    if (showAttachmentsModal) {
+      fetchExistingNotes();
+    }
+  }, [showAttachmentsModal]);
+
   const resetForm = () => {
     setCommunityId(defaultCommunityId || "");
     setTaskId("");
@@ -50,6 +57,18 @@ export const CreatePostModal = ({
     setContent("");
     setImages([]);
     setNotes([]);
+    setExistingNotes([]);
+  };
+
+  const fetchExistingNotes = async () => {
+    try {
+      const res = await getUserNotes();
+
+      // expected format: [{ id, fileName, url }]
+      setExistingNotes(res.data);
+    } catch (err) {
+      console.error("Failed to fetch notes", err);
+    }
   };
 
   const handleClose = () => {
@@ -82,9 +101,21 @@ export const CreatePostModal = ({
       formData.append("images", file);
     });
 
-    notes.forEach((file) => {
+    const newNotes = notes.filter((n) => !n.existing);
+    const existingNoteIds = notes.filter((n) => n.existing).map((n) => n.id);
+
+    newNotes.forEach((file) => {
       formData.append("notes", file);
     });
+
+    if (existingNoteIds.length > 0) {
+      formData.append(
+        "existingNoteIds",
+        new Blob([JSON.stringify(existingNoteIds)], {
+          type: "application/json",
+        }),
+      );
+    }
 
     try {
       setPosting(true);
@@ -101,6 +132,10 @@ export const CreatePostModal = ({
     }
   };
 
+  const imageCount = images.length;
+  const noteCount = notes.length;
+  const totalAttachments = imageCount + noteCount;
+
   return (
     <Modal
       className="create-post-modal"
@@ -108,12 +143,7 @@ export const CreatePostModal = ({
       onClose={handleClose}
       closeOnOutsideClick={false}
     >
-      <div className="create-post-header">
-        <h3>Create Post</h3>
-        <Button variant={"transparent-button"} onClick={handleClose}>
-          <X className="close-icon" size={20} />
-        </Button>
-      </div>
+      <ModalHeader title={"Create Post"} onClose={handleClose} />
 
       <div className="create-post-form">
         <form onSubmit={handleSubmit}>
@@ -182,11 +212,8 @@ export const CreatePostModal = ({
               onClick={() => setShowAttachmentsModal(true)}
             >
               <img src={attachmentIcon} alt="notes" />
-              Attachments
+              Attachments {totalAttachments > 0 && `(${totalAttachments})`}
             </Button>
-            {images.length > 0 && (
-              <div className="images-add-msg">{images.length} Images Added</div>
-            )}
           </div>
 
           <Button
@@ -194,17 +221,25 @@ export const CreatePostModal = ({
             className={"create-post-submit-button"}
             disabled={posting}
           >
-            {posting ? <Loader className="spinner-icon" size={24} /> : "Publish"}
+            {posting ? (
+              <Loader className="spinner-icon" size={24} />
+            ) : (
+              "Publish"
+            )}
           </Button>
         </form>
 
         <AttachmentsModal
           isOpen={showAttachmentsModal}
-          onClose={() => setShowAttachmentsModal(false)}
+          onClose={() =>{ 
+            setShowAttachmentsModal(false)
+            resetForm()
+          }}
           images={images}
           setImages={setImages}
           notes={notes}
           setNotes={setNotes}
+          existingNotes={existingNotes}
         />
       </div>
     </Modal>

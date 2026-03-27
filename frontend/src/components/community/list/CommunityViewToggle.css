@@ -2,8 +2,7 @@
   width: 100%;
   display: flex;
   justify-content: flex-end;
-  align-items: center; /* ✅ better vertical alignment */
-
+  align-items: center; 
   gap: 10px;
   padding: 10px;
 }
@@ -12,13 +11,13 @@
 .grid-icon,
 .list-icon {
   cursor: pointer;
-  color: var(--text-muted); /* ✅ future-proof if using SVG/icons */
+  color: var(--text-primary); 
   transition: color var(--fast);
 }
 
 .grid-icon:hover,
 .list-icon:hover {
-  color: var(--text-primary); /* ✅ interactive feedback */
+  color: var(--text-primary);
 }
 
 /* Mobile */
