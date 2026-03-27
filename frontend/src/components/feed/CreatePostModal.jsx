@@ -233,7 +233,6 @@ export const CreatePostModal = ({
           isOpen={showAttachmentsModal}
           onClose={() =>{ 
             setShowAttachmentsModal(false)
-            resetForm()
           }}
           images={images}
           setImages={setImages}
