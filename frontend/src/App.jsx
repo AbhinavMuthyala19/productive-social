@@ -9,7 +9,7 @@ import { Notes } from "./app/notes/page";
 import { Profile } from "./app/profile/[username]/page";
 import { ProtectedRoute } from "./components/layout/ProtectedRoute";
 import { Toaster } from "sonner";
-import { VerifyEmail } from "./app/verify-email/Page";
+import { VerifyEmail } from "./app/verify-email/page";
 import { ForgotPassword } from "./app/forgot-password/page";
 import { ResetPassword } from "./app/reset-password/page";
 import { EditProfile } from "./app/accounts/edit-profile/page";
