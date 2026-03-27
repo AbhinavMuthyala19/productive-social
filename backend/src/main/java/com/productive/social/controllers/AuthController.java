@@ -36,7 +36,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    	return ResponseEntity.ok(authService.registerAndSendEmail(request));
     }
     
     @PostMapping("/verify-email")

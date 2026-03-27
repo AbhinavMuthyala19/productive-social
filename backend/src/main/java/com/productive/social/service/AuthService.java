@@ -46,38 +46,43 @@ public class AuthService {
     // REGISTER
     // -------------------------
     @Transactional
-    public String register(RegisterRequest request) {
+    public User register(RegisterRequest request) {
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            log.warn("Registration failed - email already exists {}", request.getEmail());
+            throw new BadRequestException("Email already exists");
+        }
+
+        if (userRepository.existsByUsername(request.getUsername())) {
+            log.warn("Registration failed - username already exists {}", request.getUsername());
+            throw new BadRequestException("Username already exists");
+        }
+
+        User user = User.builder()
+                .username(request.getUsername())
+                .name(request.getName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .timezone(request.getTimezone())
+                .build();
+
+        userRepository.save(user);
+
+        log.info("User saved successfully. userId={}", user.getId());
+
+        return user;
+    }
+    
+    public String registerAndSendEmail(RegisterRequest request) {
+
         try {
-            // 1️⃣ Check if email already exists
-            if (userRepository.existsByEmail(request.getEmail())) {
-                log.warn("Registration failed - email already exists {}", request.getEmail());
-                throw new BadRequestException("Email already exists");
-            }
+            // 1️⃣ DB operation
+            User user = register(request);
 
-            // 2️⃣ Check if username already exists
-            if (userRepository.existsByUsername(request.getUsername())) {
-                log.warn("Registration failed - username already exists {}", request.getUsername());
-                throw new BadRequestException("Username already exists");
-            }
-
-            // 3️⃣ Create new user with encrypted password
-            User user = User.builder()
-                    .username(request.getUsername())
-                    .name(request.getName())
-                    .email(request.getEmail())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .timezone(request.getTimezone())
-                    .build();
-
-            // 4️⃣ Save user
-            userRepository.save(user);
-
-            log.info("User registered successfully. userId={}", user.getId());
-
-            // 5️⃣ Generate OTP for verification
+            // 2️⃣ Generate OTP
             String otp = otpService.generateVerificationOtp(user.getId());
 
-            // 6️⃣ Publish event to send verification email
+            // 3️⃣ Publish email event
             eventPublisher.publishEvent(
                     new UserVerificationEmailEvent(
                             user.getEmail(),
@@ -86,7 +91,9 @@ public class AuthService {
                     )
             );
 
-            // 7️⃣ Return response
+            log.info("User registered successfully and verification email triggered. userId={}", user.getId());
+
+            // 4️⃣ Return SAME response as before
             return "User registered successfully. Verification email sent.";
 
         } catch (BadRequestException e) {
