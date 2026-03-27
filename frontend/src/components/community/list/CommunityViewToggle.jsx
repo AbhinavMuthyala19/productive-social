@@ -11,7 +11,7 @@ export const CommunityViewToggle = ({ view, setView }) => {
         aria-label="Grid View"
         onClick={() => setView("grid")}
       >
-        <Grid className="grid-icon" size={20} color={view === "grid" ? "#2563eb" : "#111113"} />
+        <Grid className="grid-icon" size={20} color={view === "grid" ? "#2563eb" : "var(--text-primary)"} />
       </Button>
       <Button
         variant={"transparent-button"}
@@ -19,7 +19,7 @@ export const CommunityViewToggle = ({ view, setView }) => {
         aria-label="List View"
         onClick={() => setView("list")}
       >
-        <List className="list-icon" size={20} color={view === "list" ? "#2563eb" : "#111113"} />
+        <List className="list-icon" size={20} color={view === "list" ? "#2563eb" : "var(--text-primary)"} />
       </Button>
     </div>
   );

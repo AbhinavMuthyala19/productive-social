@@ -154,7 +154,6 @@ export const Profile = () => {
     downloadFile(res.data, "notes.pdf");
   };
 
-  console.log(userProfile);
   return (
     <PageContainer>
       <Navbar />
@@ -168,17 +167,18 @@ export const Profile = () => {
         />
       )}
       <div className="main">
-        {active === "Feed" && (
-          <Feed
-            posts={profilePosts}
-            loading={postsLoading.user}
-            hasMore={hasMore.user}
-            loadMore={() => loadMoreUser(username)}
-            onCommentAdded={handleCommentAdded}
-            onToggleLike={toggleLike}
-            displayCommunityBadge
-            userNameClickable={false}
-          />
+        {active === "Feed" && (   
+            <Feed
+              posts={profilePosts}
+              loading={postsLoading.user}
+              hasMore={hasMore.user}
+              loadMore={() => loadMoreUser(username)}
+              onCommentAdded={handleCommentAdded}
+              onToggleLike={toggleLike}
+              displayCommunityBadge
+              userNameClickable={false}
+            />
+          
         )}
 
         {active === "Notes" && (

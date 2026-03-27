@@ -5,7 +5,6 @@ import { AuthLeftPanel } from "./AuthLeftPanel";
 import { AuthLogo } from "./AuthLogo";
 import { AuthRightPanel } from "./AuthRightPanel";
 import { AuthTitle } from "./AuthTitle";
-import loginHeader from "../../assets/loginheader.svg";
 import { Button } from "../ui/Button";
 import "./Auth.css";
 import { Loader } from "lucide-react";
@@ -20,7 +19,7 @@ export const ResetPasswordPage = ({
 }) => {
   return (
     <AuthLayout
-      left={<AuthLeftPanel imageSrc={loginHeader} />}
+      left={<AuthLeftPanel />}
       right={
         <AuthRightPanel>
           <form onSubmit={onSubmit} className="auth-form">

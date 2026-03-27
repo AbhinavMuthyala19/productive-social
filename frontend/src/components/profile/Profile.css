@@ -1,21 +1,26 @@
 .profile-header {
     display: flex;
     align-items: self-start;
-    margin: 15px 0 30px 20px;
+    margin: 15px 0 30px 0;
     gap: 5px;
     width: 100%;
 }
 
+.profile-pic{
+    width: 140px;
+    min-width: 50px;
+    height: auto;
+}
 .profile-page-details {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding-left: 10px;
 }
 
 .user-name {
     display: flex;
     flex-direction: column;
-    padding-left: 10px;
 }
 
 .user-name h2 {
@@ -34,18 +39,22 @@
 .user-bio {
     display: flex;
     flex-wrap: wrap;
-    min-width: 300px;
-    padding-left: 10px;
     color: var(--text-secondary);
 }
 
 .profile-stats {
     display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+}
+
+.stats-button{
+    font-size: 12px;
 }
 
 .edit-profile {
     margin-left: auto;
-    margin-right: 40px;
 }
 
 .edit-profile-button {
@@ -110,19 +119,12 @@
     color: var(--hover-purple);
 }
 
-@media(max-width:920px) {
-    .profile-stats {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-    }
-}
 
 @media(max-width:767px) {
 
     .user-name {
         display: flex;
         flex-direction: column;
-        padding-left: 10px;
     }
 
     .user-name h2 {
@@ -142,5 +144,9 @@
 
     .edit-profile-form {
         width: 95%;
+    }
+
+    .edit-profile{
+        margin-right: 5px;
     }
 }

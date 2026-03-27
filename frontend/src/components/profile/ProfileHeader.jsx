@@ -18,47 +18,54 @@ export const ProfileHeader = ({
   posts,
   communities,
 }) => {
-  
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const { user } = useContext(AuthContext);
   const isOwnProfile = user?.username === username;
 
   return (
     <div className="profile-header">
-      <Avatar src={profilePicture} alt={name} size={70} />
+      <Avatar className={"profile-pic"} src={profilePicture} alt={name} />
       <div className="profile-page-details">
         <div className="user-name">
           <h2>{name}</h2>
           <p>@{username}</p>
+        </div>
+        <div className="profile-stats">
+          <Button
+            onClick={() => navigate("/profile?tab=Feed")}
+            variant={"stats-button"}
+          >
+            {posts} {posts === 1 ? "post" : "posts"}
+          </Button>
+          <Button
+            onClick={() => navigate("/profile?tab=Communities")}
+            variant={"stats-button"}
+          >
+            {communities} {communities === 1 ? "community" : "communities"}
+          </Button>
+          <Button variant={"stats-button"}>
+            longest streak {longestStreak}
+          </Button>
         </div>
         {bio && (
           <div className="user-bio">
             <p>{bio}</p>
           </div>
         )}
-        <div className="profile-stats">
-          <Badge variant={"blue-badge"} label={`${posts} posts`} />
-          <Badge variant={"aqua-badge"} label={`${communities} communities`} />
-
-          <Badge
-            variant={"streak-badge"}
-            label={`current streak - ${streak}`}
-          />
-          <Badge
-            variant={"pink-badge"}
-            label={`longest streak - ${longestStreak}`}
-          />
-        </div>
       </div>
-      {isOwnProfile && <div className="edit-profile">
-
-      <Tooltip label={"Edit profile"}>
-        <Button onClick={() => navigate("/accounts/edit-profile")} className="edit-profile-button">
-          <Pen className="edit-profile-icon" size={20} />
-        </Button>
-      </Tooltip>
-      </div>}
+      {isOwnProfile && (
+        <div className="edit-profile">
+          <Tooltip label={"Edit profile"}>
+            <Button
+              onClick={() => navigate("/accounts/edit-profile")}
+              className="edit-profile-button"
+            >
+              <Pen className="edit-profile-icon" size={20} />
+            </Button>
+          </Tooltip>
+        </div>
+      )}
     </div>
   );
 };

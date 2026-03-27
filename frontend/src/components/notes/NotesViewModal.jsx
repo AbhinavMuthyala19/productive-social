@@ -1,11 +1,9 @@
 import { Modal } from "../ui/Modal";
-import closeIcon from "../../assets/icons/cross.svg";
-import { Button } from "../ui/Button";
 import "./Notes.css";
 import { downloadNotes } from "../../lib/api";
 import { NotesCard } from "./NotesCard";
 import { downloadFile } from "../../lib/downloadFile";
-import { X } from "lucide-react";
+import { ModalHeader } from "../ui/ModalHeader";
 
 export const NotesViewModal = ({ notes, onClose, isOpen }) => {
 
@@ -21,13 +19,7 @@ export const NotesViewModal = ({ notes, onClose, isOpen }) => {
       onClose={onClose}
       closeOnOutsideClick={true}
     >
-      <div className="post-notes-header">
-        <h3>Notes Attached</h3>
-
-        <Button variant="transparent-button" onClick={onClose}>
-          <X className="close-icon" size={20} />
-        </Button>
-      </div>
+      <ModalHeader title={"Notes attached"} onClose={onClose}/>
 
       <div className="post-notes-list">
         {notes?.map((file) => (

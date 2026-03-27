@@ -5,7 +5,7 @@ import "./CommentModal.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getPostComments, postComments } from "../../lib/api";
 import { CommentItem } from "./CommentItem";
-import { X } from "lucide-react";
+import { ModalHeader } from "../ui/ModalHeader";
 
 export const CommentModal = ({ postId, onClose, isOpen, onCommentAdded }) => {
   const [comments, setComments] = useState([]);
@@ -76,12 +76,7 @@ export const CommentModal = ({ postId, onClose, isOpen, onCommentAdded }) => {
 
   return (
     <Modal className="comment-modal" isOpen={isOpen} onClose={onClose}>
-      <div className="comment-header">
-        <h3>Comments</h3>
-        <Button variant={"transparent-button"} onClick={onClose}>
-          <X className="close-icon" size={20} />
-        </Button>
-      </div>
+      <ModalHeader title={"Comments"} onClose={onClose}/>
 
       <div className="comments-list">
         <div ref={commentsTopRef} />

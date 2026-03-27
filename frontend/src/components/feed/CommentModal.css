@@ -1,11 +1,3 @@
-.comment-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 20px 0;
-  
-}
-
 /* =========================
    MODAL
    ========================= */
@@ -16,12 +8,6 @@
 
   background: var(--bg-card); /* ✅ ADDED */
   color: var(--text-primary); /* ✅ ADDED */
-}
-
-/* Close icon */
-.comment-header img {
-  width: 30px;
-  cursor: pointer;
 }
 
 /* =========================

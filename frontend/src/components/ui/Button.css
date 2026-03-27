@@ -4,7 +4,6 @@
    BASE BUTTON
    ========================= */
 .btn {
-  height: 50px;
   font-size: 15px;
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -18,13 +17,13 @@
    ========================= */
 .leave-button {
   width: 120px;
-  background-color: var(--color-red); /* ✅ FIXED */
-  color: #ffffff; /* ✅ keep white for contrast */
+  background-color: var(--color-red);
+  color: #ffffff; 
   font-weight: 600;
 }
 
 .leave-button:hover {
-  background-color: var(--hover-red); /* ✅ FIXED */
+  background-color: var(--hover-red); 
 }
 
 .leave-button:active {
@@ -36,13 +35,13 @@
    ========================= */
 .cancel-button {
   width: 120px;
-  background-color: var(--bg-soft); /* ✅ FIXED */
-  color: var(--text-primary); /* ✅ FIXED */
+  background-color: var(--bg-soft); 
+  color: var(--text-primary); 
   font-weight: 600;
 }
 
 .cancel-button:hover {
-  background-color: var(--bg-hover); /* ✅ */
+  background-color: var(--bg-hover); 
 }
 
 .cancel-button:active {
@@ -57,22 +56,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted); /* ✅ FIXED */
+  color: #ffffff; 
   font-size: 14px;
   gap: 5px;
-  width: 25px;
-  height: 25px;
-
   border-radius: 50%; /* ✅ improves hover feel */
   transition: background var(--fast), color var(--fast);
   -webkit-tap-highlight-color: transparent;
-}
 
-.transparent-button:hover {
-  background: var(--bg-hover); /* ✅ FIXED */
-  color: var(--text-primary);
-}
-
-.transparent-button:active {
-  transform: scale(0.92);
 }
