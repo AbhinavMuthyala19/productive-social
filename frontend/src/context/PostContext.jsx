@@ -17,12 +17,13 @@ import {
 } from "../lib/api";
 import { AuthContext } from "./AuthContext";
 import { toast } from "sonner";
-
+import { CommunityContext } from "./CommunityContext";
 
 export const PostContext = createContext();
 
 export const PostProvider = ({ children }) => {
   const { user, loading: authLoading } = useContext(AuthContext);
+  const { incrementStreak } = useContext(CommunityContext);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState({
     global: false,
@@ -81,7 +82,7 @@ export const PostProvider = ({ children }) => {
         mergePosts(posts);
 
         setPage((p) => ({ ...p, [type]: pageNumber }));
-        setHasMore((h) => ({ ...h, [type]: posts.length === PAGE_SIZE}));
+        setHasMore((h) => ({ ...h, [type]: posts.length === PAGE_SIZE }));
       } catch (e) {
         setError(e);
       } finally {
@@ -151,9 +152,17 @@ export const PostProvider = ({ children }) => {
     [updatePost],
   );
 
-  const addPost = useCallback((post) => {
-    setPosts((prev) => [post, ...prev]);
-  }, []);
+  const addPost = useCallback(
+    (post) => {
+      setPosts((prev) => [post, ...prev]);
+
+      // 🔥 update streak globally
+      if (post?.community?.id) {
+        incrementStreak(post.community.id);
+      }
+    },
+    [incrementStreak],
+  );
 
   const likePost = async (postId) => {
     updatePost(postId, (p) => ({
@@ -210,23 +219,26 @@ export const PostProvider = ({ children }) => {
     [likePost, unlikePost],
   );
 
-  const deletePost = useCallback(async (postId) => {
-  // optimistic update
-  setPosts((prev) => prev.filter((p) => p.postId !== postId));
+  const deletePost = useCallback(
+    async (postId) => {
+      // optimistic update
+      setPosts((prev) => prev.filter((p) => p.postId !== postId));
 
-  try {
-    await deletePostApi(postId);
-    toast.success("Post deleted...")
-  } catch (error) {
-    toast.error(
-      error.response?.data?.message ||
-        "Failed to delete post, try again later"
-    );
+      try {
+        await deletePostApi(postId);
+        toast.success("Post deleted...");
+      } catch (error) {
+        toast.error(
+          error.response?.data?.message ||
+            "Failed to delete post, try again later",
+        );
 
-    // rollback (optional advanced)
-    fetchPosts(); // simple fallback
-  }
-}, [fetchPosts]);
+        // rollback (optional advanced)
+        fetchPosts(); // simple fallback
+      }
+    },
+    [fetchPosts],
+  );
 
   useEffect(() => {
     if (authLoading) return;

@@ -2,6 +2,7 @@
   background: var(--bg-soft); /* ✅ FIXED */
   position: relative;
   overflow: hidden;
+  margin: 5px;
   border-radius: var(--radius-sm); /* ✅ optional but nicer */
 }
 

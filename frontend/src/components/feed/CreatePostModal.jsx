@@ -231,9 +231,10 @@ export const CreatePostModal = ({
 
         <AttachmentsModal
           isOpen={showAttachmentsModal}
-          onClose={() =>{ 
-            setShowAttachmentsModal(false)
+          onClose={() => {
+            setShowAttachmentsModal(false);
           }}
+          onDone={() => setShowAttachmentsModal(false)}
           images={images}
           setImages={setImages}
           notes={notes}

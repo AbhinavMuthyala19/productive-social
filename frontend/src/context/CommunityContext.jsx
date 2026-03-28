@@ -74,6 +74,11 @@ export const CommunityProvider = ({ children }) => {
           await joinCommunity(communityId);
         } else {
           await leaveCommunity(communityId);
+
+          // 🔥 reset streak on leave
+          setCommunities((prev) =>
+            prev.map((c) => (c.id === communityId ? { ...c, streak: 0 } : c)),
+          );
         }
       } catch {
         // rollback
@@ -132,6 +137,26 @@ export const CommunityProvider = ({ children }) => {
     }
   }, []);
 
+  const incrementStreak = useCallback((communityId) => {
+    setCommunities((prev) =>
+      prev.map((c) =>
+        c.id === communityId ? { ...c, streak: (c.streak || 0) + 1 } : c,
+      ),
+    );
+  }, []);
+
+  const resetStreak = useCallback((communityId) => {
+    setCommunities((prev) =>
+      prev.map((c) => (c.id === communityId ? { ...c, streak: 0 } : c)),
+    );
+  }, []);
+
+  const updateStreak = useCallback((communityId, newStreak) => {
+    setCommunities((prev) =>
+      prev.map((c) => (c.id === communityId ? { ...c, streak: newStreak } : c)),
+    );
+  }, []);
+
   useEffect(() => {
     if (authLoading) return;
     if (!user) {
@@ -148,6 +173,7 @@ export const CommunityProvider = ({ children }) => {
       error,
       fetchCommunities,
       toggleJoinCommunity,
+      incrementStreak,
       syllabusMap,
       syllabusLoading,
       fetchSyllabus,
@@ -159,6 +185,7 @@ export const CommunityProvider = ({ children }) => {
       error,
       fetchCommunities,
       toggleJoinCommunity,
+      incrementStreak,
       syllabusMap,
       syllabusLoading,
       fetchSyllabus,

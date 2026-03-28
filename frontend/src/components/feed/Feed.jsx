@@ -27,7 +27,7 @@ export const Feed = ({
     ));
   }
 
-  if (!loading && posts.length === 0) {
+  if (posts.length === 0 && !loading) {
     return <div className="empty-feed">No posts yet</div>;
   }
 

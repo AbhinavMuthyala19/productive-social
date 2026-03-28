@@ -2,7 +2,13 @@ import { Button } from "../ui/Button";
 import "./PostBody.css";
 import notesIcon from "../../assets/icons/notes.svg";
 
-export const PostBody = ({ title, content, images = [], notes, onOpenNotes }) => {
+export const PostBody = ({
+  title,
+  content,
+  images = [],
+  notes,
+  onOpenNotes,
+}) => {
   return (
     <div className="post-body">
       <h3 className="post-heading">{title}</h3>
@@ -11,14 +17,20 @@ export const PostBody = ({ title, content, images = [], notes, onOpenNotes }) =>
 
       <div className="post-images">
         {images.length > 0 &&
-          images.map((image) => (
-            <img
-              key={image.id || image.imageUrl}
-              className="post-image"
-              src={`${import.meta.env.VITE_API_URL}/${image.imageUrl}`}
-              alt="Post media"
-            />
-          ))}
+          images.map((image) => {
+            const url = `${import.meta.env.VITE_API_URL}/${image.imageUrl}`;
+
+            return (
+              <a
+                key={image.id || image.imageUrl} // ✅ FIX
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img className="post-image" src={url} alt="Post media" />
+              </a>
+            );
+          })}
       </div>
 
       {notes && notes.length >= 1 && (

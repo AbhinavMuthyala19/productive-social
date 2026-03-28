@@ -5,8 +5,6 @@ import "../../Profile.css";
 
 export const ProfileHeaderSection = ({
   userProfile,
-  activeTab,
-  setActive,
   tabs,
   setSearchParams,
 }) => {
@@ -25,8 +23,6 @@ export const ProfileHeaderSection = ({
       />
 
       <ProfileTabs
-        active={activeTab}
-        setActive={setActive}
         tabs={tabs}
         setSearchParams={setSearchParams}
       />

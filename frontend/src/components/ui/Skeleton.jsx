@@ -5,6 +5,7 @@ export const Skeleton = ({
   height,
   variant = "rect", // rect | text | circle
   style = {},
+  className
 }) => {
   const getStyles = () => {
     switch (variant) {
@@ -31,7 +32,7 @@ export const Skeleton = ({
 
   return (
     <div
-      className="skeleton shimmer"
+      className={`skeleton shimmer ${className}`}
       aria-hidden="true"
       style={{
         width,

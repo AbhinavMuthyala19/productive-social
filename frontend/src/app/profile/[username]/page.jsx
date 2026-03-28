@@ -26,6 +26,7 @@ import { Button } from "../../../components/ui/Button";
 import { Plus } from "lucide-react";
 import { NotesCard } from "../../../components/notes/NotesCard";
 import { downloadFile } from "../../../lib/downloadFile";
+import { ProfileHeaderSkeleton } from "../../../components/profile/ProfileHeaderSkeleton";
 
 export const Profile = () => {
   const { toggleJoinCommunity } = useContext(CommunityContext);
@@ -49,9 +50,9 @@ export const Profile = () => {
   const [notesLoading, setNotesLoading] = useState(false);
   const [showNotesUploadModal, setShowNotesUploadModal] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const tabFromUrl = searchParams.get("tab") || "Feed";
-  const [active, setActive] = useState(tabFromUrl);
   const tabs = ["Feed", "Notes", "Communities"];
+  const tabFromUrl = searchParams.get("tab");
+  const active = tabs.includes(tabFromUrl) ? tabFromUrl : "Feed";
   const { username } = useParams();
 
   const profilePosts = useMemo(
@@ -157,28 +158,29 @@ export const Profile = () => {
   return (
     <PageContainer>
       <Navbar />
-      {userProfile && (
-        <ProfileHeaderSection
-          userProfile={userProfile}
-          activeTab={active}
-          setActive={setActive}
-          tabs={tabs}
-          setSearchParams={setSearchParams}
-        />
+      {profileLoading ? (
+        <ProfileHeaderSkeleton />
+      ) : (
+        userProfile && (
+          <ProfileHeaderSection
+            userProfile={userProfile}
+            tabs={tabs}
+            setSearchParams={setSearchParams}
+          />
+        )
       )}
       <div className="main">
-        {active === "Feed" && (   
-            <Feed
-              posts={profilePosts}
-              loading={postsLoading.user}
-              hasMore={hasMore.user}
-              loadMore={() => loadMoreUser(username)}
-              onCommentAdded={handleCommentAdded}
-              onToggleLike={toggleLike}
-              displayCommunityBadge
-              userNameClickable={false}
-            />
-          
+        {active === "Feed" && (
+          <Feed
+            posts={profilePosts}
+            loading={postsLoading.user}
+            hasMore={hasMore.user}
+            loadMore={() => loadMoreUser(username)}
+            onCommentAdded={handleCommentAdded}
+            onToggleLike={toggleLike}
+            displayCommunityBadge
+            userNameClickable={false}
+          />
         )}
 
         {active === "Notes" && (

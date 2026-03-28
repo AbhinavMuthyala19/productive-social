@@ -22,6 +22,7 @@ export const ProfileHeader = ({
 
   const { user } = useContext(AuthContext);
   const isOwnProfile = user?.username === username;
+  const basePath = isOwnProfile ? "/profile" : `/profile/${username}`;
 
   return (
     <div className="profile-header">
@@ -33,19 +34,20 @@ export const ProfileHeader = ({
         </div>
         <div className="profile-stats">
           <Button
-            onClick={() => navigate("/profile?tab=Feed")}
+            onClick={() => navigate(`${basePath}?tab=Feed`)}
             variant={"stats-button"}
           >
-            {posts} {posts === 1 ? "post" : "posts"}
+            {posts === 1 ? "post" : "posts"} - {posts}
           </Button>
+
           <Button
-            onClick={() => navigate("/profile?tab=Communities")}
+            onClick={() => navigate(`${basePath}?tab=Communities`)}
             variant={"stats-button"}
           >
-            {communities} {communities === 1 ? "community" : "communities"}
+            {communities === 1 ? "community" : "communities"} - {communities}
           </Button>
           <Button variant={"stats-button"}>
-            longest streak {longestStreak}
+            longest streak - {longestStreak}
           </Button>
         </div>
         {bio && (
@@ -61,7 +63,7 @@ export const ProfileHeader = ({
               onClick={() => navigate("/accounts/edit-profile")}
               className="edit-profile-button"
             >
-              <Pen className="edit-profile-icon" size={20} />
+              <Pen className="edit-profile-icon" size={15} />
             </Button>
           </Tooltip>
         </div>

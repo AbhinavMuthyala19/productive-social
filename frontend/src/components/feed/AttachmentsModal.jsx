@@ -9,6 +9,7 @@ import { ModalHeader } from "../ui/ModalHeader";
 export const AttachmentsModal = ({
   isOpen,
   onClose,
+  onDone,
   images = [],
   setImages,
   notes = [],
@@ -16,15 +17,15 @@ export const AttachmentsModal = ({
   setNotes,
   allowedTabs = ["Images", "Notes", "Existing Notes"],
 }) => {
+  const [tempImages, setTempImages] = useState([]);
+  const [tempNotes, setTempNotes] = useState([]);
   const [active, setActive] = useState(allowedTabs[0]);
   const [previews, setPreviews] = useState([]);
   const attachmentTabs = allowedTabs;
   const isImagesTab = active === "Images";
-  const files = active === "Images" ? images : active === "Notes" ? notes : [];
-  const setFiles =
-    active === "Images" ? setImages : active === "Notes" ? setNotes : null;
+  const files = active === "Images" ? tempImages : tempNotes;
+  const setFiles = active === "Images" ? setTempImages : setTempNotes;
   const isExistingNotesTab = active === "Existing Notes";
-
   const removeFile = (index) => {
     if (!setFiles) return;
     setFiles((prev) => prev.filter((_, i) => i !== index));
@@ -33,7 +34,11 @@ export const AttachmentsModal = ({
   const inputId = `attachment-upload-${active.toLowerCase()}`;
 
   useEffect(() => {
-    if (isOpen) setActive(attachmentTabs[0]);
+    if (isOpen) {
+      setActive(attachmentTabs[0]);
+      setTempImages(images);
+      setTempNotes(notes);
+    }
   }, [isOpen]);
 
   useEffect(() => {
@@ -46,15 +51,25 @@ export const AttachmentsModal = ({
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [files, isImagesTab]);
-  console.log(notes)
+
+  const handleCancel = () => {
+    onClose(); // no commit
+  };
+
+  const handleDone = () => {
+    setImages(tempImages);
+    setNotes(tempNotes);
+    onDone();
+  };
+  console.log(notes);
   return (
     <Modal
       className="attachment-modal"
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleCancel}
       closeOnOutsideClick={false}
     >
-      <ModalHeader title={"Attachments"} onClose={onClose} />
+      <ModalHeader title={"Attachments"} onClose={handleCancel} />
       <div className="attachment-tabs">
         <Tabs tabs={attachmentTabs} active={active} onChange={setActive} />
       </div>
@@ -86,7 +101,7 @@ export const AttachmentsModal = ({
         <div className="attachment-preview">
           {isExistingNotesTab
             ? existingNotes.map((note) => {
-                const isAlreadyAdded = notes.some((n) => n.id === note.id);
+                const isAlreadyAdded = tempNotes.some((n) => n.id === note.id);
 
                 return (
                   <div key={note.id} className="preview-wrapper">
@@ -96,7 +111,7 @@ export const AttachmentsModal = ({
                       <Button
                         type="button"
                         onClick={() =>
-                          setNotes((prev) => {
+                          setTempNotes((prev) => {
                             const exists = prev.some((p) => p.id === note.id);
 
                             if (exists) {
@@ -141,7 +156,7 @@ export const AttachmentsModal = ({
               ))}
         </div>
       </div>
-      <Button className={"attachment-button"} onClick={onClose}>
+      <Button className={"attachment-button"} onClick={handleDone}>
         Done
       </Button>
     </Modal>
