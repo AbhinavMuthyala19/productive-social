@@ -1,6 +1,5 @@
 import { Pen } from "lucide-react";
 import { Avatar } from "../ui/Avatar";
-import { Badge } from "../ui/Badge";
 import "./Profile.css";
 import { Tooltip } from "../ui/Tooltip";
 import { Button } from "../ui/Button";

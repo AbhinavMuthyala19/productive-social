@@ -91,6 +91,7 @@ export const Profile = () => {
       setCommunitiesLoading(false);
     }
   }, [username]);
+
   useEffect(() => {
     fetchUserProfile();
   }, [username, fetchUserProfile]);
@@ -113,22 +114,18 @@ export const Profile = () => {
   useEffect(() => {
     if (!userProfile?.id) return;
 
-    if (active === "Feed" && profilePosts.length === 0) {
-      fetchUserPosts(username);
-    } else if (active === "Communities") {
+    fetchUserPosts(username);
+  }, [userProfile?.id, username]);
+
+  useEffect(() => {
+    if (!userProfile?.id) return;
+
+    if (active === "Communities" && userCommunities.length === 0) {
       fetchUserCommunities();
-    } else if (active === "Notes") {
+    } else if (active === "Notes" && userNotes.length === 0) {
       fetchUserNotes();
     }
-  }, [
-    active,
-    userProfile?.id,
-    profilePosts.length,
-    username,
-    fetchUserPosts,
-    fetchUserCommunities,
-    fetchUserNotes,
-  ]);
+  }, [active, userProfile?.id, userCommunities.length, userNotes.length]);
 
   const handleLeaveClick = (community) => {
     leaveModal.open(community);
@@ -158,17 +155,12 @@ export const Profile = () => {
   return (
     <PageContainer>
       <Navbar />
-      {profileLoading ? (
-        <ProfileHeaderSkeleton />
-      ) : (
-        userProfile && (
-          <ProfileHeaderSection
-            userProfile={userProfile}
-            tabs={tabs}
-            setSearchParams={setSearchParams}
-          />
-        )
-      )}
+      <ProfileHeaderSection
+        loading={profileLoading}
+        userProfile={userProfile}
+        tabs={tabs}
+        setSearchParams={setSearchParams}
+      />
       <div className="main">
         {active === "Feed" && (
           <Feed

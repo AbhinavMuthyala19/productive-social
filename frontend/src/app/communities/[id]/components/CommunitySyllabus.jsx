@@ -8,10 +8,13 @@ export const CommunitySyllabus = ({ communityId, joined, onViewNotes }) => {
     useContext(CommunityContext);
 
   const syllabus = syllabusMap[communityId] || [];
+  const hasSyllabus = communityId in syllabusMap;
 
   useEffect(() => {
+    if (!communityId || hasSyllabus) return;
+
     fetchSyllabus(communityId);
-  }, [communityId]);
+  }, [communityId, hasSyllabus]);
 
   return (
     <>
@@ -19,6 +22,10 @@ export const CommunitySyllabus = ({ communityId, joined, onViewNotes }) => {
         <p className="syllabus-join-message">
           Join community to track progress
         </p>
+      )}
+
+      {!syllabusLoading && syllabus.length === 0 && (
+        <p className="empty-syllabus">No tasks available for this community</p>
       )}
 
       <TaskList

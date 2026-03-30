@@ -46,10 +46,12 @@ export const CommunityPage = () => {
   );
 
   useEffect(() => {
-    if (active === "Feed" && communityPosts.length === 0) {
+    if (!id) return;
+
+    if (communityPosts.length === 0) {
       fetchCommunityPosts(id);
     }
-  }, [active, id, fetchCommunityPosts, communityPosts.length]);
+  }, [id, communityPosts.length]);
 
   const handleTabChange = (tab) => {
     setActive(tab);
@@ -59,9 +61,9 @@ export const CommunityPage = () => {
   const handleViewNotes = async (taskId) => {
     try {
       const res = await getNotesFromSyllabus(taskId);
-      console.log(res)
+      console.log(res);
       setNotes(res.data);
-      console.log(res.data)
+      console.log(res.data);
       setShowNotesModal(true);
     } catch (err) {
       console.error(err);

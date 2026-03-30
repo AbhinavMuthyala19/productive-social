@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import { CommentModal } from "./CommentModal";
 import { PostCard } from "./PostCard";
@@ -18,16 +18,21 @@ export const Feed = ({
 }) => {
   const [activePostId, setActivePostId] = useState(null);
   const [activeNotes, setActiveNotes] = useState(null);
+  const [hasMounted, setHasMounted] = useState(false);
   const lastPostRef = useInfiniteScroll(loading, hasMore, loadMore);
 
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
   // First load skeleton
-  if (loading && posts.length === 0) {
+  if (!hasMounted || (loading && posts.length === 0)) {
     return Array.from({ length: 3 }).map((_, i) => (
       <PostCardSkeleton key={`feed-skeleton-${i}`} />
     ));
   }
 
-  if (posts.length === 0 && !loading) {
+  if (!loading && posts.length === 0 && hasMore === false) {
     return <div className="empty-feed">No posts yet</div>;
   }
 
